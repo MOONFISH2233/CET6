@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>真题重点词 · 六级真题精读</title>
+<meta name="description" content="六级历年真题高频词总表，按 CEFR 等级与出现频次整理">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="apple-touch-icon" href="assets/img/logo.png">
+
+</head>
+<body class="">
+<header class="site">
+  <div class="site-inner">
+    <a class="brand" href="index.html"><img class="logo" src="assets/img/logo.png" alt="">六级真题精读</a>
+    <a class="tools" style="margin:0" href="hfw.html">重点词</a>
+    <a class="tools" style="margin:0" href="me.html">我的学习<span class="vcount" id="vocabCount">0</span></a>
+    <button class="tools" style="margin:0" onclick="toggleTheme()" aria-label="切换主题" id="themeBtn">◐</button>
+  </div>
+</header>
+<div class="wrap">
+
+<div class="crumb"><a href="index.html">首页</a> / 重点词</div>
+<h1 class="page">真题重点词</h1>
+<p class="sub">各套解析页附的「真题高频词」汇总去重后共 2062 词，默认按累计出现次数排序。</p>
+<div class="card">
+  <h2><span class="tag">等级</span>CEFR 等级怎么看</h2>
+  <p class="hfw-note"><b>A1 / A2</b> 入门基础（多半已经会）· <b>B1 / B2</b> 中级，
+  六级阅读的生词主要在这一档，优先背 · <b>C1 / C2</b> 高级，认识即可，考到就是拉分项。
+  点一下只看该等级。</p>
+  <div class="lvrow" id="hfwLevels"><button class="lvchip on" data-lv="">全部<i class="lv-n">2062</i></button><button class="lvchip" data-lv="A1">A1<i class="lv-n">24</i><em>入门</em></button><button class="lvchip" data-lv="A2">A2<i class="lv-n">222</i><em>基础</em></button><button class="lvchip" data-lv="B1">B1<i class="lv-n">694</i><em>中级·六级起点</em></button><button class="lvchip" data-lv="B2">B2<i class="lv-n">931</i><em>六级主力</em></button><button class="lvchip" data-lv="C1">C1<i class="lv-n">189</i><em>高级·拉分</em></button><button class="lvchip" data-lv="C2">C2<i class="lv-n">2</i><em>精通</em></button></div>
+</div>
+<div class="card">
+  <div class="hfwtools">
+    <input id="hfwSearch" type="search" placeholder="搜索单词或中文释义…" autocomplete="off">
+    <span class="hfw-total" id="hfwTotal"></span>
+  </div>
+  <div class="hfw-list hfw-page" id="hfwPage"></div>
+  <button class="mebtn hfw-more" id="hfwMore" hidden></button>
+</div>
+
+<footer class="site">
+  <p>真题与解析整理自公开资料，仅供个人学习使用。内容版权归原权利人所有。</p>
+  <p>页面上的台词与图片版权归原作者／版权方所有，仅作个人学习非商业使用，侵删。</p>
+  <p>共 33 套 · 197 个题型模块 · 覆盖 2022 年 6 月 — 2026 年 6 月</p>
+</footer>
+</div>
+<script src="assets/app.js"></script>
+<script src="assets/word.js"></script>
+<script src="assets/quotes.js"></script>
+<script src="assets/quiz.js"></script>
+
+</body>
+</html>

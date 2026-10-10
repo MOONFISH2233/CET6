@@ -1,0 +1,334 @@
+/* ==========================================================================
+   打印 / PDF 专用样式
+   目标：A4、黑白也能读、解析完整、不浪费纸
+   ========================================================================== */
+
+@page {
+  size: A4;
+  margin: 16mm 14mm 16mm 14mm;
+}
+
+body {
+  background: #fff !important;
+  color: #111 !important;
+  font-size: 10.5pt;
+  line-height: 1.55;
+}
+
+/* 隐藏一切交互元素 */
+header.site, .tools, .modnav, .steps, .anshint,
+footer.site, .vpanel, .wpop, .wrongbtn,
+button, input, .crumb { display: none !important; }
+
+.wrap { max-width: none; padding: 0; margin: 0; }
+
+/* 打印时全部展开 */
+body.hide-ans .ansbadge,
+body.hide-ans .oa,
+body.hide-ans .ana,
+body.hide-ans .locate { display: block !important; }
+
+/* ---------------------------------------------------------------- 标题 */
+
+h1.page {
+  font-size: 16pt;
+  margin: 0 0 2mm;
+  padding-bottom: 2mm;
+  border-bottom: 1.5pt solid #111;
+}
+
+.sub { font-size: 9pt; color: #555; margin: 0 0 4mm; }
+
+.card {
+  border: none;
+  padding: 0;
+  margin: 0 0 6mm;
+  break-inside: auto;
+}
+
+.card h2 {
+  font-size: 11.5pt;
+  margin: 5mm 0 2mm;
+  padding: 1.2mm 2.5mm;
+  background: #eee;
+  border-left: 3pt solid #333;
+  break-after: avoid;
+}
+
+.card h2 .tag { display: none; }
+
+/* 一级分隔：题型之间另起一页 */
+.part-break { break-before: page; }
+
+/* ---------------------------------------------------------------- 文章 */
+
+.para {
+  padding-left: 0;
+  margin: 0 0 3mm;
+  break-inside: avoid;
+}
+
+.para .pno {
+  position: static;
+  display: inline-block;
+  font-size: 8pt;
+  background: #ddd;
+  color: #333;
+  padding: 0.3mm 1.2mm;
+  border-radius: 1mm;
+  margin-right: 1.5mm;
+  vertical-align: 0.3mm;
+}
+
+.en {
+  font-size: 10.5pt;
+  line-height: 1.5;
+  margin: 0 0 1mm;
+  color: #000;
+}
+
+.zh {
+  font-size: 9.5pt;
+  line-height: 1.5;
+  margin: 0 0 2mm;
+  color: #444;
+}
+
+/* 原文中译用浅底区分 */
+.para .zh { padding-left: 3mm; border-left: 1.5pt solid #ccc; }
+
+/* ---------------------------------------------------------------- 题目 */
+
+.q {
+  break-inside: avoid;
+  padding: 2mm 0 2.5mm;
+  border-top: 0.5pt solid #ccc;
+  margin-top: 0;
+}
+
+.q-head { margin-bottom: 1.5mm; }
+
+.q-no {
+  font-size: 10.5pt;
+  color: #000;
+  font-weight: 700;
+  min-width: 7mm;
+}
+
+.opts { margin: 0 0 2mm; }
+
+.opts li {
+  padding: 0.5mm 1.5mm;
+  margin-bottom: 0.3mm;
+  background: none;
+}
+
+.opts li.correct {
+  background: #e8f0e8;
+  font-weight: 600;
+}
+
+.opts li .ltr { font-weight: 700; }
+
+/* 答案徽标 */
+.ansbadge {
+  background: #222;
+  color: #fff;
+  font-size: 10pt;
+  padding: 0.8mm 3mm;
+  border-radius: 1mm;
+  margin: 1mm 0 2mm;
+  display: inline-block;
+}
+
+.ansbadge .qt { color: #ccc; }
+
+/* 选项分析 */
+.oa {
+  margin: 0.5mm 0 1mm 5mm;
+  font-size: 9pt;
+  line-height: 1.5;
+  color: #333;
+}
+
+.oa .flag {
+  display: inline-block;
+  font-size: 8pt;
+  font-weight: 700;
+  padding: 0.2mm 1.5mm;
+  border-radius: 0.8mm;
+  margin-right: 1.5mm;
+  background: #eee;
+  color: #333;
+}
+
+.oa .flag.ok { background: #cfe6cf; color: #16401a; }
+.oa .flag.bad { background: #f0d4d4; color: #5a1a1a; }
+
+/* 同义替换对 */
+.pairs { margin: 1mm 0 0; font-size: 8.5pt; }
+.pairs li {
+  background: #f4f4f4;
+  padding: 0.8mm 2mm;
+  margin-bottom: 0.5mm;
+  border-radius: 1mm;
+}
+.pairs .arrow { margin: 0 1.5mm; font-weight: 700; }
+
+/* 解析块 */
+.ana {
+  background: #f7f7f7;
+  border-radius: 1mm;
+  padding: 1.5mm 2.5mm;
+  margin: 1.5mm 0 0;
+  font-size: 9pt;
+}
+
+.ana .row {
+  margin-bottom: 1.2mm;
+  display: block;
+}
+
+.ana .tag {
+  display: inline-block;
+  font-size: 8pt;
+  font-weight: 700;
+  background: #ddd;
+  color: #222;
+  border-radius: 0.8mm;
+  padding: 0.2mm 1.5mm;
+  margin-right: 1.5mm;
+}
+
+.ana .txt { color: #333; }
+
+/* 定位句 */
+.locate {
+  border-left: 2pt solid #666;
+  padding-left: 3mm;
+  margin: 1.5mm 0;
+}
+
+.locate .pn { font-size: 8pt; font-weight: 700; }
+
+/* ---------------------------------------------------------------- 听力 */
+
+.sec-head {
+  font-size: 10.5pt;
+  background: #eee;
+  color: #000;
+  padding: 1mm 2mm;
+  margin: 4mm 0 2mm;
+  break-after: avoid;
+}
+
+.piece {
+  border: 0.5pt solid #ccc;
+  border-radius: 1mm;
+  padding: 2mm 2.5mm;
+  margin: 0 0 3mm;
+  break-inside: avoid;
+}
+
+.piece-head {
+  font-size: 9pt;
+  margin: 0 0 2mm;
+  padding-bottom: 1.2mm;
+  border-bottom: 0.5pt solid #ddd;
+}
+
+.piece-head .seek { display: none; }
+
+.tr-line {
+  padding-left: 0;
+  margin: 0 0 2mm;
+  break-inside: avoid;
+}
+
+.tr-line .no {
+  position: static;
+  display: inline-block;
+  font-size: 8pt;
+  background: #e5e5e5;
+  padding: 0.2mm 1.2mm;
+  border-radius: 0.8mm;
+  margin-right: 1.5mm;
+}
+
+/* ---------------------------------------------------------------- 翻译 */
+
+.zhblock, .enblock {
+  border-radius: 1mm;
+  padding: 2.5mm 3mm;
+  margin: 0 0 3mm;
+  font-size: 10pt;
+  line-height: 1.6;
+}
+
+.zhblock { background: #f4f4f4; }
+.enblock { background: #eef3ee; }
+
+.sent {
+  break-inside: avoid;
+  border-bottom: 0.5pt solid #ddd;
+  padding-bottom: 2.5mm;
+  margin-bottom: 2.5mm;
+}
+
+.sent .sn {
+  font-size: 8.5pt;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 1mm;
+}
+
+/* ---------------------------------------------------------------- 封面 */
+
+.pdf-cover {
+  padding: 40mm 0 0;
+  text-align: center;
+  break-after: page;
+}
+
+.pdf-cover .t {
+  font-size: 24pt;
+  font-weight: 700;
+  margin-bottom: 4mm;
+}
+
+.pdf-cover .s {
+  font-size: 12pt;
+  color: #555;
+  margin-bottom: 12mm;
+}
+
+.pdf-cover .m {
+  font-size: 10pt;
+  color: #666;
+  line-height: 2;
+}
+
+.pdf-cover .rule {
+  width: 30mm;
+  height: 2pt;
+  background: #333;
+  margin: 6mm auto;
+}
+
+/* ---------------------------------------------------------------- 目录 */
+
+.pdf-toc {
+  break-after: page;
+}
+
+.pdf-toc h2 { font-size: 13pt; margin-bottom: 4mm; }
+
+.pdf-toc ol { padding-left: 6mm; }
+
+.pdf-toc li { font-size: 10pt; line-height: 1.9; }
+
+/* 速查版紧凑 */
+.cheat .q { padding: 1.5mm 0; }
+.cheat .ansbadge { font-size: 9.5pt; padding: 0.5mm 2mm; }
+.cheat .oa { font-size: 8.5pt; }
+.cheat .pairs li { padding: 0.5mm 1.5mm; }
