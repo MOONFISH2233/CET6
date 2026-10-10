@@ -617,7 +617,7 @@
       var q = (window.CET6Quotes && window.CET6Quotes.pick) ? window.CET6Quotes.pick(tabHash(tab)) : null;
       if (q) {
         h += '<p class="vempty-quote">「' + esc(q.t) + '」<br>——' + esc(q.a) +
-             (q.s ? ' ·《' + esc(q.s) + '》' : '') + '</p>';
+             ((q.s && q.s !== q.a) ? ' ·《' + esc(q.s) + '》' : '') + '</p>';
       }
       return h;
     }

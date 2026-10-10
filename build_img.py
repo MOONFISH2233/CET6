@@ -18,8 +18,13 @@ ART = os.path.join(os.path.dirname(HERE), "美工")
 OUT = os.path.join(HERE, "site", "assets", "img")
 
 
-def trim_to_content(im, thr=246, keep_alpha=False):
-    """裁到内容边界（并把接近白色的底变透明）。"""
+def cutout_line_art(im, lo=20, hi=60):
+    """把白底线条图抠成透明底，并裁到内容边界。
+
+    这张 logo 的白底上还压着一层很淡的蓝色水彩云（RGB 差 5~30），只按「接近白色」判断
+    抠不干净。改成按**色彩饱和度**（max-min 通道差）做蒙版：
+      差 ≥ hi  → 实心线条；差 ≤ lo → 全透明（白底 + 淡云一起去掉）；中间按比例渐变，保住边缘抗锯齿。
+    """
     im = im.convert("RGBA")
     w, h = im.size
     px = im.load()
@@ -27,10 +32,15 @@ def trim_to_content(im, thr=246, keep_alpha=False):
     for y in range(h):
         for x in range(w):
             r, g, b, a = px[x, y]
-            if r > thr and g > thr and b > thr:
-                if not keep_alpha and a > 0:
-                    px[x, y] = (r, g, b, 0)
+            sp = max(r, g, b) - min(r, g, b)
+            if sp <= lo:
+                alpha = 0
+            elif sp >= hi:
+                alpha = 255
             else:
+                alpha = int((sp - lo) * 255 / (hi - lo))
+            px[x, y] = (r, g, b, alpha)
+            if alpha > 8:
                 if x < minx:
                     minx = x
                 if y < miny:
@@ -56,13 +66,34 @@ def square(im, pad=0.12, size=256):
 def main():
     os.makedirs(OUT, exist_ok=True)
 
-    # 1) logo：白底蓝鱼 -> 透明底方块
+    # 0) 说话人头像：从本人照片裁头肩方图（文件名映射由用户 2026-10-11 指认）
+    #    Image_17916587{26,29,31}* + Camera_XHS_* = 孙路路；Image_17916587{18,23,69,70,71}* = 蒲熠星
+    AVATARS = [
+        ("sll.jpg", "Camera_XHS_1791658626377.jpg", (650, 210, 1130, 690)),
+        ("pyx.jpg", "Image_1791658697127_390.jpg", (555, 930, 985, 1360)),
+    ]
+    for out_name, src_name, box in AVATARS:
+        p = os.path.join(ART, src_name)
+        if not os.path.exists(p):
+            print("  缺 %s，跳过 %s" % (src_name, out_name))
+            continue
+        im = Image.open(p).convert("RGB").crop(box).resize((192, 192), Image.LANCZOS)
+        im.save(os.path.join(OUT, out_name), quality=88, optimize=True)
+        print("  %-9s <- %s %s" % (out_name, src_name[:28], box))
+
+    # 1) logo：白底蓝鱼 -> 透明底方块（按饱和度抠掉白底和那层淡蓝水彩云）
     src = os.path.join(ART, "1791647276381.png")
     if os.path.exists(src):
-        im = trim_to_content(Image.open(src))
+        im = cutout_line_art(Image.open(src))
         square(im, 0.10, 256).save(os.path.join(OUT, "logo.png"))
         square(im, 0.10, 64).save(os.path.join(OUT, "favicon.png"))
-        print("  logo.png / favicon.png  <- 1791647276381.png  %s" % (im.size,))
+        print("  logo.png / favicon.png  <- 1791647276381.png  裁后 %s" % (im.size,))
+        # 预览：分别压在浅色/深色底上看抠得干不干净
+        for name, bg in (("_preview-light", (247, 247, 245)), ("_preview-dark", (22, 23, 26))):
+            canvas = Image.new("RGB", (256, 256), bg)
+            logo = square(im, 0.10, 256)
+            canvas.paste(logo, (0, 0), logo)
+            canvas.save(os.path.join(OUT, name + ".png"))
     else:
         print("  缺 %s，跳过 logo" % src)
 

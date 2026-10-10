@@ -23,7 +23,12 @@
     return s.replace(/assets\/quotes\.js.*$/, '');
   })();
 
-  var AVATAR = { '温迪': 'assets/img/venti.png' };   // 相对站点根，只有温迪有头像图
+  // 说话人头像（相对站点根；没有头像的作者就不显示）
+  var AVATAR = {
+    '温迪': 'assets/img/venti.png',
+    '蒲熠星': 'assets/img/pyx.jpg',
+    '孙路路': 'assets/img/sll.jpg'
+  };
   var list = null, loading = null;
 
   function load() {
@@ -61,7 +66,8 @@
 
   // 卡片内文（不含外层 .qcard）
   function inner(q) {
-    var src = q.s ? '《' + esc(q.s) + '》' : '';
+    // 作者就是作品（原神）时不重复写《原神》
+    var src = (q.s && q.s !== q.a) ? '《' + esc(q.s) + '》' : '';
     var av = AVATAR[q.a] ? '<img class="qav" src="' + esc(BASE + AVATAR[q.a]) + '" alt="">' : '';
     return '<div class="qtext">' + esc(q.t) + '</div>' +
            '<div class="qfoot">' + av +
@@ -86,10 +92,12 @@
     if (!q) return;
     card.dataset.filled = '1';
     paint(card, q);
-    var btn = card.querySelector('.qbtn');
-    if (btn) btn.onclick = function () {
-      var nq = random();
-      if (nq) paint(card, nq);
+    // 事件委托：paint() 会重写 innerHTML（按钮元素被替换），绑在按钮上只能点一次
+    card.onclick = function (e) {
+      if (e.target && e.target.classList && e.target.classList.contains('qbtn')) {
+        var nq = random();
+        if (nq) paint(card, nq);
+      }
     };
   }
 

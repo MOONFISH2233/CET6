@@ -1154,9 +1154,10 @@ details[open] > summary .hfw-caret { transform: rotate(180deg); }
 .qcard {
   background: linear-gradient(135deg, var(--accent-soft), var(--bg-card) 72%);
   border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 16px 18px 13px;
+  border-radius: 12px;
+  padding: 18px 20px 14px;
   margin: 0 0 14px;
+  box-shadow: var(--shadow);
 }
 
 .qhead {
@@ -1189,7 +1190,7 @@ details[open] > summary .hfw-caret { transform: rotate(180deg); }
 
 .qtext {
   font-family: var(--font-quote);
-  font-size: 16.5px;
+  font-size: 17px;
   line-height: 1.95;
   white-space: pre-line;
   letter-spacing: .01em;
@@ -1200,11 +1201,18 @@ details[open] > summary .hfw-caret { transform: rotate(180deg); }
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
-  margin-top: 10px;
+  margin-top: 12px;
 }
 
-.qav { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; }
-.qfrom { font-size: 12.5px; color: var(--fg-faint); }
+.qav {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 2px var(--bg-card), 0 0 0 3px var(--line);
+}
+
+.qfrom { font-size: 13px; color: var(--fg-faint); }
 
 .qfade { animation: qfade .45s ease both; }
 @keyframes qfade {
