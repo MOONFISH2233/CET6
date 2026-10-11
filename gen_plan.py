@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-生成备考打卡站（起始 2026-10-11 到考前 12-11，共 62 天；考试 12-12）。
+生成备考打卡站（起始 2026-10-12 到考前 12-11，共 61 天；考试 12-12）。
 
 输出到 site/plan/：
   index.html   打卡站单页（内联 CSS/JS，读精读站的 localStorage 做互通）
   plan.json    计划数据（供页面 fetch，也方便人工核对）
 
 排程依据：建议.txt（刘晓艳两个月备考讲座逐字稿）
-  阶段一 10/11-11/08  只做阅读 + 听力，写作翻译完全不碰（原文：「建议到11月8号」这一个月）
+  阶段一 10/12-11/08  只做阅读 + 听力，写作翻译完全不碰（原文：「建议到11月8号」这一个月）
   阶段二 11/09-11/30  加写作 + 翻译，阅读听力继续但减量
   阶段三 12/01-12/11  整套模考 + 复盘
     （原文：「不进入12月份，我们没必要整套的做题」→ 阶段三从 12/01 起；
@@ -28,7 +28,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, "data")
 OUT = os.path.join(HERE, "site", "plan")
 
-START = dt.date(2026, 10, 11)         # 第一天 = 10/11（改这里要同步 plan_tpl 的静态文案）
+START = dt.date(2026, 10, 12)         # 第一天 = 10/12（改这里要同步 plan_tpl 的静态文案 + 迁移链）
 EXAM = dt.date(2026, 12, 12)          # 六级考试日（周六）
 PHASE1_END = dt.date(2026, 11, 8)     # 建议.txt：「建议到11月8号」这一个月只动阅读+听力
 PHASE2_END = dt.date(2026, 11, 30)    # 建议.txt：「不进入12月份，我们没必要整套的做题」
@@ -60,7 +60,7 @@ def load_meta():
 
 
 def build_schedule(meta):
-    """排日程（10/11 起，到考前 12/11，共 62 天）。返回 (days, stats)"""
+    """排日程（10/12 起，到考前 12/11，共 61 天）。返回 (days, stats)"""
     papers = {p["set"]: p for p in meta["papers"]}
 
     # 阶段一池：选词填空 -> 仔细阅读① -> 仔细阅读②（由易到难），共 45 篇
@@ -88,7 +88,7 @@ def build_schedule(meta):
     q2i = 0
     day_no = 0
     p3_first = None          # 阶段三首日的 day_no：模考循环锚它，起始日挪动时模考日才不会漂
-    while d < EXAM:          # 不含考试当天，共 62 天（10/11–12/11）
+    while d < EXAM:          # 不含考试当天，共 61 天（10/12–12/11）
         day_no += 1
         if d <= PHASE1_END:
             phase = 1

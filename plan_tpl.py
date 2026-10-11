@@ -7,7 +7,7 @@ PAGE_TPL = r"""<!DOCTYPE html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
-<title>六级 62 天备考计划</title>
+<title>六级 61 天备考计划</title>
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="icon" href="../assets/img/favicon.png">
 <link rel="apple-touch-icon" href="../assets/img/logo.png">
@@ -101,7 +101,7 @@ PAGE_TPL = r"""<!DOCTYPE html>
 <div class="wrap">
 
 <div class="hero plan-hero">
-  <h1>六级 62 天备考计划</h1>
+  <h1>六级 61 天备考计划</h1>
   <p class="sub" id="examLine"></p>
   <div class="countdown" id="cd">—<small>天后考试</small></div>
   <div class="pbar"><i id="pbar" style="width:0"></i></div>
@@ -111,7 +111,7 @@ PAGE_TPL = r"""<!DOCTYPE html>
 <div class="card today" id="todayCard"></div>
 
 <div class="card">
-  <h2><span class="tag">进度</span>62 天一览</h2>
+  <h2><span class="tag">进度</span>61 天一览</h2>
   <p style="font-size:13px;color:var(--fg-faint);margin:-4px 0 4px">
     青=阶段一（阅读+听力）· 黄=阶段二（加写作翻译）· 红=阶段三（模考复盘）。点格子跳转。</p>
   <div class="wk" id="grid"></div>
@@ -124,7 +124,7 @@ PAGE_TPL = r"""<!DOCTYPE html>
 
 <div class="card">
   <h2><span class="tag">说明</span>三个阶段</h2>
-  <div class="phase-card p1"><b>阶段一 · 10/11–11/08（29 天）</b>
+  <div class="phase-card p1"><b>阶段一 · 10/12–11/08（28 天）</b>
     <p style="font-size:13.5px;line-height:1.8;margin:6px 0 0">
       只做<strong>阅读 + 听力</strong>，写作翻译完全不碰。阅读一天一篇，走四步：
       按方法做题 → 核实对错（写清错因）→ 精读全文（生词查出来写在旁边）→ 在句子里背单词。<br>
@@ -169,9 +169,18 @@ function loadProg(){ try{ return JSON.parse(localStorage.getItem(LS_KEY))||{}; }
 function saveProg(p){ try{ localStorage.setItem(LS_KEY, JSON.stringify(p)); }catch(e){} }
 function loadVocab(){ try{ return JSON.parse(localStorage.getItem(VOCAB_KEY))||[]; }catch(e){ return []; } }
 
-/* 一次性迁移：起始日从 2026-10-10 挪到 10-11 那次。
-   每天的任务是按第几天（day_no）排的，和日历无关，所以日期整体后移一天、
-   旧的打卡键同步 +1 天即可对得上。用版本标记保证只跑一次（幂等）。 */
+/* 打卡记录迁移。起始日改过两次，每次「每天的任务是按第几天排的、和日历无关」，
+   所以对应区间的日期键整体 +1 天即可对上内容。按**版本链**逐条应用、各自只跑一次，
+   这样不论用户上次打开的是哪一版（哪怕从没打开过）都不会重复平移或漏平移。
+
+   区间怎么定：内容由 day_no 决定的那些天（阶段一、阶段二）要平移；
+   阶段三（12/01 起）的内容是按日期锚的（模考循环锚阶段三首日、考前 N 天锚考试日），
+   同样的日期在新旧计划里本来就是同一件事，所以不平移。 */
+var MIGRATIONS = [
+  { ver: '2026-10-11', lo: '2026-10-10', hi: '2026-12-17' },   // 起始日 10/10 → 10/11
+  { ver: '2026-10-12', lo: '2026-10-11', hi: '2026-11-30' }    // 起始日 10/11 → 10/12
+];
+
 function shiftDay(s, n){
   var d = new Date(s+'T00:00:00');
   d.setDate(d.getDate()+n);
@@ -180,15 +189,22 @@ function shiftDay(s, n){
 function migratePlan(){
   var VER_KEY = 'cet6:planVer';
   try{
-    if(localStorage.getItem(VER_KEY) === PLAN.start_date) return;
-    var OLD_LO = '2026-10-10', OLD_HI = '2026-12-17';   // 旧计划的起止日期（含）
-    var p = loadProg(), q = {}, moved = 0;
-    Object.keys(p).forEach(function(k){
-      if(k >= OLD_LO && k <= OLD_HI){ q[shiftDay(k,1)] = p[k]; moved++; }
-      else { q[k] = p[k]; }
+    var raw = localStorage.getItem(VER_KEY) || '';
+    var done = raw ? raw.split(',') : [];          // 兼容早期存的单个版本号
+    var todo = MIGRATIONS.filter(function(m){ return done.indexOf(m.ver) < 0; });
+    if(!todo.length) return;
+    var p = loadProg();
+    todo.forEach(function(m){
+      var q = {}, moved = 0;
+      Object.keys(p).forEach(function(k){
+        if(k >= m.lo && k <= m.hi){ q[shiftDay(k,1)] = p[k]; moved++; }
+        else { q[k] = p[k]; }
+      });
+      if(moved) p = q;
+      done.push(m.ver);
     });
-    if(moved) saveProg(q);
-    localStorage.setItem(VER_KEY, PLAN.start_date);
+    saveProg(p);
+    localStorage.setItem(VER_KEY, done.join(','));
   }catch(e){}
 }
 
