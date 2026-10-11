@@ -1192,30 +1192,6 @@ details[open] > summary .hfw-caret { transform: rotate(180deg); }
 
 .q-flash { animation: qflash 1.6s ease; border-radius: 8px; }
 
-/* ---------------------------------------------------------------- 收藏墙
-   只有图，没有标题/图注（版权声明在页脚） */
-
-.gal {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
-  gap: 8px;
-}
-
-.gal img {
-  width: 100%;
-  aspect-ratio: 1;
-  object-fit: cover;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--line);
-  display: block;
-  transition: transform .18s, border-color .18s, box-shadow .18s;
-}
-
-.gal img:hover {
-  transform: translateY(-2px) scale(1.02);
-  border-color: var(--accent-line);
-  box-shadow: var(--shadow);
-}
 
 .vitem {
   display: flex;
