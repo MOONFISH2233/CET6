@@ -13,7 +13,13 @@ PAGE_TPL = r"""<!DOCTYPE html>
 <link rel="apple-touch-icon" href="../assets/img/logo.png">
 <style>
 /* 打卡站专属样式。色/圆角/阴影都用 style.css 里的设计变量 */
-.plan-hero{text-align:center;padding:24px 16px 18px}
+.plan-hero{text-align:center;padding:24px 16px 18px;position:relative;overflow:hidden;
+  border-radius:var(--radius)}
+.plan-hero::before{content:'';position:absolute;inset:0;pointer-events:none;
+  background:url(../assets/img/venti-splash.jpg) center 22%/cover no-repeat;opacity:.16}
+.plan-hero>*{position:relative}
+[data-theme="dark"] .plan-hero::before{opacity:.11}
+[data-theme="oled"] .plan-hero::before{opacity:.15}
 .plan-hero h1{font-size:23px;margin:0 0 6px;letter-spacing:-.3px}
 .countdown{font-size:46px;font-weight:800;line-height:1.05;color:var(--accent-text);
   font-variant-numeric:tabular-nums;letter-spacing:-1.5px}
@@ -428,17 +434,26 @@ function resetPlan(){
   render();
 }
 
+/* 主题三档循环：浅色 → 深色 → 纯黑（与精读站一致，共用 cet6-theme 键） */
+var THEMES = ['light', 'dark', 'oled'];
+function curTheme(){
+  var t = document.documentElement.getAttribute('data-theme');
+  return THEMES.indexOf(t) >= 0 ? t : 'light';
+}
 function toggleTheme(){
-  var cur = document.documentElement.getAttribute('data-theme');
-  var next = cur==='dark' ? 'light' : 'dark';
+  var next = THEMES[(THEMES.indexOf(curTheme()) + 1) % THEMES.length];
   document.documentElement.setAttribute('data-theme', next);
   try{ localStorage.setItem('cet6-theme', next); }catch(e){}
+  var b = document.querySelector('header.site .tools:last-child');
+  if(b) b.textContent = next==='light' ? '◐' : (next==='dark' ? '◑' : '☀');
 }
 (function(){
   try{
     var th = localStorage.getItem('cet6-theme');
     if(th) document.documentElement.setAttribute('data-theme', th);
   }catch(e){}
+  var b = document.querySelector('header.site .tools:last-child');
+  if(b){ var t = curTheme(); b.textContent = t==='light' ? '◐' : (t==='dark' ? '◑' : '☀'); }
 })();
 
 migratePlan();

@@ -1,8 +1,15 @@
 // 六级真题精读站 · 交互
 
+// 主题三档循环：浅色 → 深色 → 纯黑（OLED，夜里看更省电更不刺眼）
+var THEMES = ['light', 'dark', 'oled'];
+
+function curTheme() {
+  var t = document.documentElement.dataset.theme;
+  return THEMES.indexOf(t) >= 0 ? t : 'light';
+}
+
 function toggleTheme() {
-  var cur = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
-  var next = cur === 'dark' ? 'light' : 'dark';
+  var next = THEMES[(THEMES.indexOf(curTheme()) + 1) % THEMES.length];
   document.documentElement.dataset.theme = next;
   try { localStorage.setItem('cet6-theme', next); } catch (e) {}
   syncButtons();
@@ -25,11 +32,11 @@ function toggleAns() {
 }
 
 function syncButtons() {
-  var dark = document.documentElement.dataset.theme === 'dark';
+  var t = curTheme();
   var nozh = document.body.classList.contains('no-zh');
   var noans = document.body.classList.contains('hide-ans');
-  setText('themeBtn', dark ? '☀' : '◐');
-  setText('themeBtn2', dark ? '浅色' : '深色');
+  setText('themeBtn', t === 'light' ? '◐' : (t === 'dark' ? '◑' : '☀'));
+  setText('themeBtn2', t === 'light' ? '深色' : (t === 'dark' ? '纯黑' : '浅色'));
   setText('zhBtn', nozh ? '显示中文' : '中文对照');
   setText('ansBtn', noans ? '显示答案' : '隐藏答案');
   var b = document.getElementById('zhBtn'); if (b) b.classList.toggle('on', !nozh);

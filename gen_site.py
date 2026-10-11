@@ -43,6 +43,31 @@ MODULE_PARTS = {
 # 只有这几个题型的源页带「真题高频词」表；写作/翻译恒为空
 HFW_MODULES = ("listening", "cloze", "longreading", "reading1", "reading2")
 
+# 题型图标（24×24 线性图标，stroke 用 currentColor，跟着主题变色）
+MODULE_ICONS = {
+    "writing": '<path d="M4 20h4L20 8a2.8 2.8 0 0 0-4-4L4 16v4z"/><path d="M14 6l4 4"/>',
+    "listening": '<path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="2"/>'
+                 '<rect x="17" y="14" width="4" height="6" rx="2"/>',
+    "cloze": '<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M8 10h8M8 14h4"/>',
+    "longreading": '<path d="M4 6h16M4 10h16M4 14h10M4 18h6"/>',
+    "reading1": '<path d="M12 7c-2-1.5-5-2-8-2v13c3 0 6 .5 8 2 2-1.5 5-2 8-2V5c-3 0-6 .5-8 2z"/>'
+                '<path d="M12 7v13"/>',
+    "reading2": '<path d="M12 7c-2-1.5-5-2-8-2v13c3 0 6 .5 8 2 2-1.5 5-2 8-2V5c-3 0-6 .5-8 2z"/>'
+                '<path d="M12 7v13"/><path d="M7 9h2M7 12h2"/>',
+    "translation": '<path d="M4 6h9M8 6c0 5-1.5 8-4 10"/><path d="M6 12c1.5 3 4 5 6 5.5"/>'
+                   '<path d="M13 20l4-9 4 9"/><path d="M14.5 17h5"/>',
+}
+
+
+def icon(m, cls="ico"):
+    """题型小图标；没有对应图标就返回空串（不影响原有布局）。"""
+    p = MODULE_ICONS.get(m)
+    if not p:
+        return ""
+    return (f'<svg class="{cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" '
+            f'stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" '
+            f'aria-hidden="true">{p}</svg>')
+
 
 def esc(s):
     return html.escape(str(s or ""), quote=True)
@@ -79,7 +104,7 @@ def page(title, body, depth=0, subtitle="", extra_head="", body_class="",
     <button class="tools" style="margin:0" onclick="toggleTheme()" aria-label="切换主题" id="themeBtn">◐</button>
   </div>
 </header>
-<div class="wrap">
+<div class="wrap" id="top">
 {body}
 <footer class="site">
   <p>真题与解析整理自公开资料，仅供个人学习使用。内容版权归原权利人所有。</p>
@@ -142,7 +167,7 @@ def build_index(meta):
         if not n:
             continue
         quick.append(
-            f'<a href="section/{m}.html"><span class="k">{MODULE_NAMES[m]}</span>'
+            f'<a href="section/{m}.html"><span class="k">{icon(m)}{MODULE_NAMES[m]}</span>'
             f'<span class="v">{n} 套可练 · 横向刷历年</span></a>'
         )
     quick.append('</div>')
@@ -288,6 +313,25 @@ def module_desc(m, d):
     return ""
 
 
+def float_nav(present, m):
+    """右下角浮动条：回到顶部 / 上一篇 / 下一篇（同一套里按题型顺序走）。"""
+    i = present.index(m)
+    prev_m = present[i - 1] if i else None
+    next_m = present[i + 1] if i < len(present) - 1 else None
+
+    def link(mod, arrow, label):
+        if not mod:
+            return f'<span class="fn off" aria-hidden="true">{arrow}</span>'
+        return (f'<a class="fn" href="{mod}.html" title="{label}：{esc(MODULE_NAMES[mod])}" '
+                f'aria-label="{label} {esc(MODULE_NAMES[mod])}">{arrow}</a>')
+
+    return ('<div class="floatnav">'
+            '<a class="fn" href="#top" title="回到顶部" aria-label="回到顶部">↑</a>'
+            + link(prev_m, '←', '上一篇')
+            + link(next_m, '→', '下一篇')
+            + '</div>')
+
+
 def hfw_card(m, s):
     """模块页底部的「本篇重点词」折叠块（默认收起的 details）。
 
@@ -348,7 +392,8 @@ def build_module(p, m):
         cls = "" if mm in mods else " off"
         href = f"{mm}.html" if mm in mods else "#"
         cur = ' style="border-color:var(--accent)"' if mm == m else ""
-        nav.append(f'<a class="{cls.strip()}" href="{href}"{cur}>{MODULE_NAMES[mm]}'
+        nav.append(f'<a class="{cls.strip()}" href="{href}"{cur}>{icon(mm)}'
+                   f'<span class="mt">{MODULE_NAMES[mm]}</span>'
                    f'<span class="n">{MODULE_PARTS[mm]}</span></a>')
     nav.append("</div>")
 
@@ -361,6 +406,7 @@ def build_module(p, m):
 {ANSHINT if with_ans else ""}
 {inner}
 {hfw_card(m, s)}
+{float_nav([mm for mm in MODULE_ORDER if mm in mods], m)}
 """
     return page(f'{p["label"]} {name} · 六级真题解析', body, 2,
                 body_class="hide-ans" if with_ans else "")
@@ -732,7 +778,9 @@ def render_question(q, show_passage=True):
             out.append('</span></li>')
         out.append('</ul>')
 
-    # 答案
+    # 答案 + 解析：整块套一个可折叠的 details（默认展开，想扫读时可以逐个收起）
+    out.append('<details class="qana" open><summary>解析</summary>')
+
     if ans:
         out.append(f'<div class="ansbadge">{esc(ans)}'
                    f'<span class="qt">{esc(q.get("qtype", ""))}</span></div>')
@@ -781,6 +829,7 @@ def render_question(q, show_passage=True):
                        f'<span class="txt">{esc(ana[k])}</span></div>')
         out.append('</div>')
 
+    out.append('</details>')
     out.append('</div>')
     return "".join(out)
 
@@ -841,8 +890,10 @@ def build_hfw(meta):
 
     body = f"""
 {crumb([("首页", "index.html"), ("重点词", None)], 0)}
-<h1 class="page">真题重点词</h1>
-<p class="sub">各套解析页附的「真题高频词」汇总去重后共 {total} 词，默认按累计出现次数排序。</p>
+<div class="hero hero-art hero-splash">
+  <h1>真题重点词</h1>
+  <p>各套解析页附的「真题高频词」汇总去重后共 <b>{total}</b> 词，默认按累计出现次数排序。</p>
+</div>
 <div class="card">
   <h2><span class="tag">等级</span>CEFR 等级怎么看</h2>
   <p class="hfw-note"><b>A1 / A2</b> 入门基础（多半已经会）· <b>B1 / B2</b> 中级，
@@ -903,9 +954,16 @@ def build_me(meta):
 
 APP_JS = r"""// 六级真题精读站 · 交互
 
+// 主题三档循环：浅色 → 深色 → 纯黑（OLED，夜里看更省电更不刺眼）
+var THEMES = ['light', 'dark', 'oled'];
+
+function curTheme() {
+  var t = document.documentElement.dataset.theme;
+  return THEMES.indexOf(t) >= 0 ? t : 'light';
+}
+
 function toggleTheme() {
-  var cur = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
-  var next = cur === 'dark' ? 'light' : 'dark';
+  var next = THEMES[(THEMES.indexOf(curTheme()) + 1) % THEMES.length];
   document.documentElement.dataset.theme = next;
   try { localStorage.setItem('cet6-theme', next); } catch (e) {}
   syncButtons();
@@ -928,11 +986,11 @@ function toggleAns() {
 }
 
 function syncButtons() {
-  var dark = document.documentElement.dataset.theme === 'dark';
+  var t = curTheme();
   var nozh = document.body.classList.contains('no-zh');
   var noans = document.body.classList.contains('hide-ans');
-  setText('themeBtn', dark ? '☀' : '◐');
-  setText('themeBtn2', dark ? '浅色' : '深色');
+  setText('themeBtn', t === 'light' ? '◐' : (t === 'dark' ? '◑' : '☀'));
+  setText('themeBtn2', t === 'light' ? '深色' : (t === 'dark' ? '纯黑' : '浅色'));
   setText('zhBtn', nozh ? '显示中文' : '中文对照');
   setText('ansBtn', noans ? '显示答案' : '隐藏答案');
   var b = document.getElementById('zhBtn'); if (b) b.classList.toggle('on', !nozh);

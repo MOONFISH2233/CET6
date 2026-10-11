@@ -106,6 +106,18 @@ def main():
     else:
         print("  缺 %s，跳过温迪头像" % src)
 
+    # 2.5) 温迪抽卡立绘（宽幅）做 hero 装饰底图，压到 1000 宽
+    src = os.path.join(ART, "温迪抽卡立绘.png")
+    if os.path.exists(src):
+        im = Image.open(src).convert("RGB")
+        w, h = im.size
+        im = im.resize((1000, int(h * 1000 / w)), Image.LANCZOS)
+        im.save(os.path.join(OUT, "venti-splash.jpg"), quality=76, optimize=True)
+        print("  venti-splash.jpg  %s  %.0f KB" % (
+            im.size, os.path.getsize(os.path.join(OUT, "venti-splash.jpg")) / 1024))
+    else:
+        print("  缺 %s，跳过抽卡立绘" % src)
+
     # 3) 温迪青色横幅（hero 背景，压到 720 宽）
     src = os.path.join(ART, "温迪_天青.png")
     if os.path.exists(src):

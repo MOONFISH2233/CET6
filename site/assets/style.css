@@ -83,6 +83,40 @@
   --ring: 0 0 0 3px rgba(18,165,148,.35);
 }
 
+/* 纯黑（OLED）：夜里看的第三档，底色压到接近纯黑，卡片和描边只留一点层次 */
+[data-theme="oled"] {
+  --bg: #000000;
+  --bg-card: #0b0b0c;
+  --bg-soft: #141416;
+  --bg-hover: #1c1c1f;
+  --line: #232326;
+  --line-strong: #33333a;
+  --fg: #f2f1ee;
+  --fg-soft: #b8b5ae;
+  --fg-faint: #807c74;
+  --accent: #12a594;
+  --accent-hover: #0eb39e;
+  --accent-text: #0bd8b6;
+  --accent-soft: #082522;
+  --accent-line: #17544e;
+  --accent-ink: #adf0dd;
+  --en: #f2f1ee;
+  --zh: #b8b5ae;
+  --ok: #1fd8a4;
+  --ok-bg: #062018;
+  --ok-line: #1b5745;
+  --bad: #ff9592;
+  --bad-bg: #2a0d12;
+  --bad-line: #72232a;
+  --warn: #ffca16;
+  --warn-bg: #241a06;
+  --warn-line: #57400f;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.6);
+  --shadow: 0 2px 6px rgba(0,0,0,.65), 0 12px 28px rgba(0,0,0,.5);
+  --shadow-lg: 0 10px 24px rgba(0,0,0,.7), 0 28px 60px rgba(0,0,0,.6);
+  --ring: 0 0 0 3px rgba(18,165,148,.4);
+}
+
 * { box-sizing: border-box; }
 
 /* 正文里的链接统一用强调色文字色，别落到浏览器默认蓝 */
@@ -1245,6 +1279,17 @@ details[open] > summary .hfw-caret { transform: rotate(180deg); }
 .hero-art > * { position: relative; }
 [data-theme="dark"] .hero-art::before { opacity: .14; }
 
+/* 重点词页用温迪抽卡立绘做装饰底 */
+.hero-art.hero-splash::before {
+  background-image: url(img/venti-splash.jpg);
+  background-position: center 28%;
+  opacity: .20;
+}
+
+.hero-art.hero-splash .hero { padding: 0; }
+[data-theme="dark"] .hero-art.hero-splash::before { opacity: .13; }
+[data-theme="oled"] .hero-art.hero-splash::before { opacity: .18; }
+
 /* 台词卡片 */
 .qcard {
   background: linear-gradient(135deg, var(--accent-soft), var(--bg-card) 72%);
@@ -1333,6 +1378,104 @@ details[open] > summary .hfw-caret { transform: rotate(180deg); }
   .qfade { animation: none; }
 }
 
+/* ---------------------------------------------------------------- 题型图标 */
+
+.ico {
+  width: 20px;
+  height: 20px;
+  display: block;
+  margin: 0 auto 6px;
+  color: var(--accent-text);
+}
+
+.quick .k .ico {
+  display: inline-block;
+  width: 17px;
+  height: 17px;
+  margin: 0 7px -3px 0;
+}
+
+.modnav a .mt { display: block; }
+
+/* ---------------------------------------------------------------- 浮动导航 */
+
+.floatnav {
+  position: fixed;
+  right: 14px;
+  bottom: 20px;
+  z-index: 55;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 答题栏在底部时往上让一让 */
+body.has-quiz-bar .floatnav { bottom: 86px; }
+
+.fn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  color: var(--fg-soft);
+  text-decoration: none;
+  font-size: 15px;
+  line-height: 1;
+  transition: border-color .15s, color .15s, background .15s, transform .15s;
+}
+
+.fn:hover {
+  border-color: var(--accent);
+  color: var(--accent-text);
+  background: var(--accent-soft);
+  transform: translateY(-1px);
+}
+
+.fn.off { opacity: .28; pointer-events: none; box-shadow: none; }
+
+/* ---------------------------------------------------------------- 解析折叠
+   每题的答案解析默认展开；想扫读时逐个收起。练习模式下整块连标题一起藏。 */
+
+.qana { margin-top: 6px; }
+
+.qana > summary {
+  font-size: 12px;
+  color: var(--fg-faint);
+  cursor: pointer;
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 11px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--bg-soft);
+  transition: border-color .15s, color .15s;
+}
+
+.qana > summary::-webkit-details-marker { display: none; }
+.qana > summary:hover { border-color: var(--accent-line); color: var(--accent-text); }
+
+.qana > summary::after {
+  content: '▾';
+  font-size: 10px;
+  transition: transform .15s;
+}
+
+.qana[open] > summary::after { transform: rotate(180deg); }
+
+body.hide-ans .qana { display: none; }
+
+html { scroll-behavior: smooth; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
 /* ---------------------------------------------------------------- 打印 */
 
 @media print {
@@ -1343,6 +1486,8 @@ details[open] > summary .hfw-caret { transform: rotate(180deg); }
   .para { page-break-inside: avoid; }
   /* 重点词块是交互用的，收起时打印行为跨浏览器不稳，直接不打印 */
   .hfw-card { display: none; }
+  .floatnav { display: none; }
+  .qana > summary { display: none; }
 }
 
 /* ---------------------------------------------------------------- 宽屏 */
