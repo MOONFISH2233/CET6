@@ -545,8 +545,9 @@ def render_cloze(d):
         out.append('<div class="card"><h2><span class="tag">词库</span>'
                    f'{len(bank)} 词选 10</h2>')
         out.append('<p style="font-size:13px;color:var(--fg-faint);margin:-4px 0 14px">'
-                   '点一个词选中它，再点文中空格填入；点已填入的空可退回词库。'
-                   '每词最多用一次。</p>')
+                   '点一个词选中它，再点文中空格填入；点已填入的空可退回词库。每词最多用一次。'
+                   '（跟真题一样，这里只给裸单词 —— 词性和释义默认藏起来，'
+                   '点上方「显示答案」才出现。）</p>')
         out.append('<ul class="wordbank">')
         for w in bank:
             out.append(

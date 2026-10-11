@@ -696,6 +696,10 @@ body.hide-ans .ana,
 body.hide-ans .locate,
 body.hide-ans .pairs { display: none !important; }
 
+/* 选词填空的词库同理：真题卷面只有 15 个裸单词，词性和释义得等「显示答案」才给看 */
+body.hide-ans .wb-p,
+body.hide-ans .wb-g { display: none !important; }
+
 /* 隐藏答案时，正确选项也不着色（否则等于给了提示） */
 body.hide-ans .opts li.correct { background: transparent; }
 body.hide-ans .opts li.correct .ltr { color: var(--fg-soft); }
