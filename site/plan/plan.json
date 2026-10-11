@@ -1,6 +1,6 @@
 {
  "generated": "2026-10-11",
- "exam_date": "2026-12-19",
+ "exam_date": "2026-12-12",
  "start_date": "2026-10-11",
  "phase_bounds": {
   "1": [
@@ -9,11 +9,11 @@
   ],
   "2": [
    "2026-11-09",
-   "2026-12-05"
+   "2026-11-30"
   ],
   "3": [
-   "2026-12-06",
-   "2026-12-18"
+   "2026-12-01",
+   "2026-12-11"
   ]
  },
  "module_names": {
@@ -32,11 +32,11 @@
   "句子里背单词"
  ],
  "stats": {
-  "total_days": 69,
+  "total_days": 62,
   "phase1": 29,
-  "phase2": 27,
-  "phase3": 13,
-  "reading_planned": 42,
+  "phase2": 22,
+  "phase3": 11,
+  "reading_planned": 40,
   "reading_pool_p1": 45,
   "reading_pool_p2": 15,
   "listen_sets": 10
@@ -1256,119 +1256,88 @@
   {
    "d": "2026-12-01",
    "day": 52,
-   "phase": 2,
+   "phase": 3,
    "weekday": "周二",
-   "reading": null,
-   "listening": {
-    "set": "2023-06-2",
-    "mod": "listening",
-    "round": 9,
-    "sentences": 15
+   "reading": {
+    "set": "2024-12-1",
+    "mod": null,
+    "whole": true
    },
-   "extra": {
-    "mod": "writing",
-    "set": "2024-12-3"
-   },
+   "listening": null,
+   "extra": null,
    "review": false,
-   "steps": []
+   "steps": [],
+   "note": "整套模考：按考试时间一次做完，中途不停。"
   },
   {
    "d": "2026-12-02",
    "day": 53,
-   "phase": 2,
+   "phase": 3,
    "weekday": "周三",
-   "reading": {
-    "set": "2024-12-3",
-    "mod": "longreading"
-   },
-   "listening": {
-    "set": "2023-12-1",
-    "mod": "listening",
-    "round": 9,
-    "sentences": 15
-   },
-   "extra": {
-    "mod": "translation",
-    "set": "2024-12-3"
-   },
-   "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "reading": null,
+   "listening": null,
+   "extra": null,
+   "review": true,
+   "steps": [],
+   "note": "对答案 + 看错题本，逐个写清错因。"
   },
   {
    "d": "2026-12-03",
    "day": 54,
-   "phase": 2,
+   "phase": 3,
    "weekday": "周四",
    "reading": null,
-   "listening": {
-    "set": "2023-12-2",
-    "mod": "listening",
-    "round": 9,
-    "sentences": 15
-   },
-   "extra": {
-    "mod": "writing",
-    "set": "2025-06-1"
-   },
+   "listening": null,
+   "extra": null,
    "review": true,
-   "steps": []
+   "steps": [],
+   "note": "重读生词本里的词，回到原句里再读一遍。"
   },
   {
    "d": "2026-12-04",
    "day": 55,
-   "phase": 2,
+   "phase": 3,
    "weekday": "周五",
    "reading": {
-    "set": "2025-06-1",
-    "mod": "longreading"
+    "set": "2025-06-3",
+    "mod": null,
+    "whole": true
    },
-   "listening": {
-    "set": "2024-06-1",
-    "mod": "listening",
-    "round": 9,
-    "sentences": 15
-   },
-   "extra": {
-    "mod": "translation",
-    "set": "2025-06-1"
-   },
+   "listening": null,
+   "extra": null,
    "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "steps": [],
+   "note": "整套模考：按考试时间一次做完，中途不停。"
   },
   {
    "d": "2026-12-05",
    "day": 56,
-   "phase": 2,
+   "phase": 3,
    "weekday": "周六",
    "reading": null,
-   "listening": {
-    "set": "2024-06-2",
-    "mod": "listening",
-    "round": 9,
-    "sentences": 15
-   },
-   "extra": {
-    "mod": "writing",
-    "set": "2025-06-2"
-   },
-   "review": false,
-   "steps": []
+   "listening": null,
+   "extra": null,
+   "review": true,
+   "steps": [],
+   "note": "对答案 + 看错题本，逐个写清错因。"
   },
   {
    "d": "2026-12-06",
    "day": 57,
    "phase": 3,
    "weekday": "周日",
+   "reading": null,
+   "listening": null,
+   "extra": null,
+   "review": true,
+   "steps": [],
+   "note": "重读生词本里的词，回到原句里再读一遍。"
+  },
+  {
+   "d": "2026-12-07",
+   "day": 58,
+   "phase": 3,
+   "weekday": "周一",
    "reading": {
     "set": "2025-06-2",
     "mod": null,
@@ -1381,18 +1350,6 @@
    "note": "整套模考：按考试时间一次做完，中途不停。"
   },
   {
-   "d": "2026-12-07",
-   "day": 58,
-   "phase": 3,
-   "weekday": "周一",
-   "reading": null,
-   "listening": null,
-   "extra": null,
-   "review": true,
-   "steps": [],
-   "note": "对答案 + 看错题本，逐个写清错因。"
-  },
-  {
    "d": "2026-12-08",
    "day": 59,
    "phase": 3,
@@ -1402,23 +1359,19 @@
    "extra": null,
    "review": true,
    "steps": [],
-   "note": "重读生词本里的词，回到原句里再读一遍。"
+   "note": "对答案 + 看错题本，逐个写清错因。"
   },
   {
    "d": "2026-12-09",
    "day": 60,
    "phase": 3,
    "weekday": "周三",
-   "reading": {
-    "set": "2025-06-1",
-    "mod": null,
-    "whole": true
-   },
+   "reading": null,
    "listening": null,
    "extra": null,
-   "review": false,
+   "review": true,
    "steps": [],
-   "note": "整套模考：按考试时间一次做完，中途不停。"
+   "note": "重读生词本里的词，回到原句里再读一遍。"
   },
   {
    "d": "2026-12-10",
@@ -1430,103 +1383,11 @@
    "extra": null,
    "review": true,
    "steps": [],
-   "note": "对答案 + 看错题本，逐个写清错因。"
+   "note": "考前 2 天：只看错题本和生词本，不做新题，调好作息。"
   },
   {
    "d": "2026-12-11",
    "day": 62,
-   "phase": 3,
-   "weekday": "周五",
-   "reading": null,
-   "listening": null,
-   "extra": null,
-   "review": true,
-   "steps": [],
-   "note": "重读生词本里的词，回到原句里再读一遍。"
-  },
-  {
-   "d": "2026-12-12",
-   "day": 63,
-   "phase": 3,
-   "weekday": "周六",
-   "reading": {
-    "set": "2024-12-3",
-    "mod": null,
-    "whole": true
-   },
-   "listening": null,
-   "extra": null,
-   "review": false,
-   "steps": [],
-   "note": "整套模考：按考试时间一次做完，中途不停。"
-  },
-  {
-   "d": "2026-12-13",
-   "day": 64,
-   "phase": 3,
-   "weekday": "周日",
-   "reading": null,
-   "listening": null,
-   "extra": null,
-   "review": true,
-   "steps": [],
-   "note": "对答案 + 看错题本，逐个写清错因。"
-  },
-  {
-   "d": "2026-12-14",
-   "day": 65,
-   "phase": 3,
-   "weekday": "周一",
-   "reading": null,
-   "listening": null,
-   "extra": null,
-   "review": true,
-   "steps": [],
-   "note": "重读生词本里的词，回到原句里再读一遍。"
-  },
-  {
-   "d": "2026-12-15",
-   "day": 66,
-   "phase": 3,
-   "weekday": "周二",
-   "reading": {
-    "set": "2024-12-2",
-    "mod": null,
-    "whole": true
-   },
-   "listening": null,
-   "extra": null,
-   "review": false,
-   "steps": [],
-   "note": "整套模考：按考试时间一次做完，中途不停。"
-  },
-  {
-   "d": "2026-12-16",
-   "day": 67,
-   "phase": 3,
-   "weekday": "周三",
-   "reading": null,
-   "listening": null,
-   "extra": null,
-   "review": true,
-   "steps": [],
-   "note": "对答案 + 看错题本，逐个写清错因。"
-  },
-  {
-   "d": "2026-12-17",
-   "day": 68,
-   "phase": 3,
-   "weekday": "周四",
-   "reading": null,
-   "listening": null,
-   "extra": null,
-   "review": true,
-   "steps": [],
-   "note": "考前 2 天：只看错题本和生词本，不做新题，调好作息。"
-  },
-  {
-   "d": "2026-12-18",
-   "day": 69,
    "phase": 3,
    "weekday": "周五",
    "reading": null,

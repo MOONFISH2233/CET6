@@ -7,7 +7,7 @@ PAGE_TPL = r"""<!DOCTYPE html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
-<title>六级 69 天备考计划</title>
+<title>六级 62 天备考计划</title>
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="icon" href="../assets/img/favicon.png">
 <link rel="apple-touch-icon" href="../assets/img/logo.png">
@@ -66,7 +66,7 @@ PAGE_TPL = r"""<!DOCTYPE html>
 <div class="wrap">
 
 <div class="hero plan-hero">
-  <h1>六级 69 天备考计划</h1>
+  <h1>六级 62 天备考计划</h1>
   <p class="sub" id="examLine"></p>
   <div class="countdown" id="cd">—<small>天后考试</small></div>
   <div class="pbar"><i id="pbar" style="width:0"></i></div>
@@ -76,7 +76,7 @@ PAGE_TPL = r"""<!DOCTYPE html>
 <div class="card today" id="todayCard"></div>
 
 <div class="card">
-  <h2><span class="tag">进度</span>69 天一览</h2>
+  <h2><span class="tag">进度</span>62 天一览</h2>
   <p style="font-size:13px;color:var(--fg-faint);margin:-4px 0 4px">
     蓝=阶段一（阅读+听力）· 黄=阶段二（加写作翻译）· 红=阶段三（模考复盘）。点格子跳转。</p>
   <div class="wk" id="grid"></div>
@@ -95,11 +95,11 @@ PAGE_TPL = r"""<!DOCTYPE html>
       按方法做题 → 核实对错（写清错因）→ 精读全文（生词查出来写在旁边）→ 在句子里背单词。<br>
       顺序：选词填空（最简单）→ 仔细阅读 → 长篇阅读（留到阶段二）。<br>
       听力每天模仿：听懂→模仿；听不懂→再听一遍；两遍还不懂→看原文查词，再听再模仿。模仿句数 5→10→15 递增。</p></div>
-  <div class="phase-card p2"><b>阶段二 · 11/09–12/05（27 天）</b>
+  <div class="phase-card p2"><b>阶段二 · 11/09–11/30（22 天）</b>
     <p style="font-size:13.5px;line-height:1.8;margin:6px 0 0">
       加<strong>写作 + 翻译</strong>（核心是语法，语法别错，不会写的词就降级表达）。
       阅读减为隔天一篇，转入复盘。听力继续模仿。</p></div>
-  <div class="phase-card p3"><b>阶段三 · 12/06–12/18（13 天）</b>
+  <div class="phase-card p3"><b>阶段三 · 12/01–12/11（11 天）</b>
     <p style="font-size:13.5px;line-height:1.8;margin:6px 0 0">
       <strong>整套模考</strong>（按考试时间一次做完）+ 复盘错题本和生词本。不再做新题。</p></div>
   <p style="font-size:13px;color:var(--fg-faint);margin-top:14px">
