@@ -59,9 +59,37 @@ def load_meta():
         return json.load(f)
 
 
+def question_counts():
+    """每套每个模块有几道题 —— 打卡站据此自动判断「这一篇做完了没」。"""
+    out = {}
+    pdir = os.path.join(DATA, "paper")
+    if not os.path.isdir(pdir):
+        return out
+    for fn in os.listdir(pdir):
+        if not fn.endswith(".json"):
+            continue
+        try:
+            with open(os.path.join(pdir, fn), encoding="utf-8") as f:
+                d = json.load(f)
+        except Exception:
+            continue
+        for mod, md in (d.get("modules") or {}).items():
+            n = 0
+            if mod in ("reading1", "reading2", "listening"):
+                n = len(md.get("questions", []))
+            elif mod == "longreading":
+                n = len(md.get("statements", []))
+            elif mod == "cloze":
+                n = len([r for r in md.get("rows", []) if r.get("tag") == "答案"])
+            if n:
+                out[(d["set"], mod)] = n
+    return out
+
+
 def build_schedule(meta):
     """排日程（10/12 起，到考前 12/11，共 61 天）。返回 (days, stats)"""
     papers = {p["set"]: p for p in meta["papers"]}
+    qn = question_counts()
 
     # 阶段一池：选词填空 -> 仔细阅读① -> 仔细阅读②（由易到难），共 45 篇
     queue = []
@@ -108,13 +136,14 @@ def build_schedule(meta):
             if qi < len(queue):
                 s, mod = queue[qi]
                 qi += 1
-                item["reading"] = {"set": s, "mod": mod}
+                item["reading"] = {"set": s, "mod": mod, "q_total": qn.get((s, mod), 0)}
                 item["steps"] = list(STEPS)
             # 听力：10 套整齐循环（第 3 套缺听力，已从 listen_sets 剔除）
             rnd = (day_no - 1) // len(listen_sets) + 1   # 第几轮：1,2,3
             item["listening"] = {
                 "set": listen_sets[(day_no - 1) % len(listen_sets)],
                 "mod": "listening",
+                "q_total": qn.get((listen_sets[(day_no - 1) % len(listen_sets)], "listening"), 0),
                 "round": rnd,
                 # 模仿句数逐轮递增：第1轮 5 句，第2轮 10 句，第3轮 15 句
                 "sentences": min(5 * rnd, 15),
@@ -129,11 +158,12 @@ def build_schedule(meta):
             if day_no % 2 == 1 and q2i < len(queue2):
                 s, mod = queue2[q2i]
                 q2i += 1
-                item["reading"] = {"set": s, "mod": mod}
+                item["reading"] = {"set": s, "mod": mod, "q_total": qn.get((s, mod), 0)}
                 item["steps"] = list(STEPS)
             item["listening"] = {
                 "set": listen_sets[(day_no - 1) % len(listen_sets)],
                 "mod": "listening",
+                "q_total": qn.get((listen_sets[(day_no - 1) % len(listen_sets)], "listening"), 0),
                 "round": 4 + (day_no - 1) // len(listen_sets),
                 "sentences": 15,
             }

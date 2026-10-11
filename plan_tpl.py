@@ -36,6 +36,10 @@ PAGE_TPL = r"""<!DOCTYPE html>
 
 /* 今日卡片：柔和的强调圈，不用硬边框 */
 .today{border:1px solid var(--accent-line);box-shadow:0 0 0 3px var(--accent-soft)}
+/* 今天做完了：圈换成绿色 */
+.today.done{border-color:var(--ok-line);box-shadow:0 0 0 3px var(--ok-bg)}
+.note.auto{color:var(--fg-faint)}
+.today.done .note.auto{color:var(--ok)}
 .today .th{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .today .th b{font-size:16.5px;letter-spacing:-.2px}
 .big{font-size:18px;font-weight:700;margin:12px 0 4px;letter-spacing:-.2px}
@@ -231,7 +235,29 @@ function modLink(set, mod){
   return mod ? ('../p/'+set+'/'+mod+'.html') : ('../p/'+set+'.html');
 }
 
+/* 进度主要看「题做完了没」：精读站每判一道题都会往 cet6:answers 写
+   （键是 "<set>/<mod>/<题号>"，值带 ok），打卡站读它就知道这一篇做没做完。
+   四个步骤的手动勾选保留着，两条路任一满足就算这天完成。 */
+var ANS_KEY = 'cet6:answers';
+var ANS = {};
+function refreshAns(){
+  try{ ANS = JSON.parse(localStorage.getItem(ANS_KEY)) || {}; }catch(e){ ANS = {}; }
+}
+function autoOf(r){
+  if(!r || !r.set || !r.mod || !r.q_total) return null;
+  var pre = r.set + '/' + r.mod + '/', judged = 0, ok = 0;
+  Object.keys(ANS).forEach(function(k){
+    if(k.indexOf(pre) !== 0) return;
+    judged++;
+    if(ANS[k] && ANS[k].ok) ok++;
+  });
+  return { judged: judged, total: r.q_total, ok: ok, bad: judged - ok,
+           done: judged >= r.q_total };
+}
+
 function dayDone(dayObj, prog){
+  var a = autoOf(dayObj.reading);
+  if(a && a.done) return true;
   var p = prog[dayObj.d];
   if(!p) return false;
   if(dayObj.steps && dayObj.steps.length){
@@ -242,6 +268,7 @@ function dayDone(dayObj, prog){
 
 function render(){
   var prog = loadProg();
+  refreshAns();
   var td = todayStr();
   var exam = new Date(PLAN.exam_date+'T00:00:00');
   var now = new Date(td+'T00:00:00');
@@ -264,6 +291,7 @@ function render(){
       (next? '点下方清单查看该日任务。' : '考试就在眼前，把错题本和生词本过一遍。')+'</p>';
   } else {
     $('todayCard').innerHTML = todayHTML(t, prog);
+    $('todayCard').classList.toggle('done', dayDone(t, prog));   // 做完了给个绿圈
     bindSteps(t, prog);
     /* 今日卡片被整体重建了，重新填一下「今天的鼓励」（quotes.js 只填没填过的卡片） */
     if(window.CET6Quotes) window.CET6Quotes.fill();
@@ -319,6 +347,14 @@ function todayHTML(d, prog){
          '<a href="'+modLink(d.extra.set,d.extra.mod)+'">'+d.extra.set+' · '+lab+'</a></div>';
   }
   if(d.note) h += '<div class="note">'+esc(d.note)+'</div>';
+  /* 自动进度：这一篇判了多少题、对几个（不用自己勾四个步骤） */
+  var a = autoOf(d.reading);
+  if(a){
+    h += '<div class="note auto">' + (a.done ? '✓ ' : '') +
+         '本篇已判 ' + a.judged + '/' + a.total + ' 题' +
+         (a.judged ? '（对 ' + a.ok + ' 错 ' + a.bad + '）' : '') +
+         (a.done ? ' · 本日进度已自动记上' : ' · 做完点提交，进度自动记') + '</div>';
+  }
   h += stepsHTML(d, prog);
   /* 今天的鼓励：按第几天取一句温柔台词（quotes.js 填内容） */
   h += '<div class="qcard qsmall" data-quote="day" data-day="'+d.day+'"></div>';
@@ -349,6 +385,14 @@ function rowHTML(d, prog, td){
   }
   h += '</div>';
   if(d.note) h += '<div class="note">'+esc(d.note)+'</div>';
+  /* 自动进度：这一篇判了多少题、对几个（不用自己勾四个步骤） */
+  var a = autoOf(d.reading);
+  if(a){
+    h += '<div class="note auto">' + (a.done ? '✓ ' : '') +
+         '本篇已判 ' + a.judged + '/' + a.total + ' 题' +
+         (a.judged ? '（对 ' + a.ok + ' 错 ' + a.bad + '）' : '') +
+         (a.done ? ' · 本日进度已自动记上' : ' · 做完点提交，进度自动记') + '</div>';
+  }
   h += stepsHTML(d, prog);
   h += '</div>';
   return h;
@@ -390,6 +434,7 @@ function updateStepsUI(dayId, prog){
 
 /* 只刷新顶部进度统计 */
 function updateStats(prog){
+  refreshAns();
   var doneN = 0;
   for(var i=0;i<PLAN.days.length;i++){
     if(dayDone(PLAN.days[i], prog)) doneN++;
@@ -398,7 +443,7 @@ function updateStats(prog){
   if(pb) pb.style.width = Math.round(doneN/PLAN.days.length*100)+'%';
   var pm = document.getElementById('pmeta');
   if(pm) pm.textContent = '已完成 ' + doneN + ' / ' + PLAN.days.length +
-    ' 天 · 阅读计划 ' + PLAN.stats.reading_planned +
+    ' 天（做完一篇判完分就自动记上） · 阅读计划 ' + PLAN.stats.reading_planned +
     ' 篇 · 听力 ' + PLAN.stats.listen_sets + ' 套循环';
 }
 

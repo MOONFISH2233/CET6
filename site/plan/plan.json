@@ -49,11 +49,13 @@
    "weekday": "周一",
    "reading": {
     "set": "2023-06-1",
-    "mod": "cloze"
+    "mod": "cloze",
+    "q_total": 10
    },
    "listening": {
     "set": "2023-06-1",
     "mod": "listening",
+    "q_total": 25,
     "round": 1,
     "sentences": 5
    },
@@ -73,11 +75,13 @@
    "weekday": "周二",
    "reading": {
     "set": "2023-06-2",
-    "mod": "cloze"
+    "mod": "cloze",
+    "q_total": 10
    },
    "listening": {
     "set": "2023-06-2",
     "mod": "listening",
+    "q_total": 25,
     "round": 1,
     "sentences": 5
    },
@@ -97,11 +101,13 @@
    "weekday": "周三",
    "reading": {
     "set": "2023-06-3",
-    "mod": "cloze"
+    "mod": "cloze",
+    "q_total": 10
    },
    "listening": {
     "set": "2023-12-1",
     "mod": "listening",
+    "q_total": 25,
     "round": 1,
     "sentences": 5
    },
@@ -121,11 +127,13 @@
    "weekday": "周四",
    "reading": {
     "set": "2023-12-1",
-    "mod": "cloze"
+    "mod": "cloze",
+    "q_total": 10
    },
    "listening": {
     "set": "2023-12-2",
     "mod": "listening",
+    "q_total": 25,
     "round": 1,
     "sentences": 5
    },
@@ -146,11 +154,13 @@
    "weekday": "周五",
    "reading": {
     "set": "2023-12-2",
-    "mod": "cloze"
+    "mod": "cloze",
+    "q_total": 10
    },
    "listening": {
     "set": "2024-06-1",
     "mod": "listening",
+    "q_total": 25,
     "round": 1,
     "sentences": 5
    },
@@ -170,11 +180,13 @@
    "weekday": "周六",
    "reading": {
     "set": "2023-12-3",
-    "mod": "cloze"
+    "mod": "cloze",
+    "q_total": 10
    },
    "listening": {
     "set": "2024-06-2",
     "mod": "listening",
+    "q_total": 25,
     "round": 1,
     "sentences": 5
    },
@@ -194,11 +206,13 @@
    "weekday": "周日",
    "reading": {
     "set": "2024-06-1",
-    "mod": "cloze"
+    "mod": "cloze",
+    "q_total": 10
    },
    "listening": {
     "set": "2024-12-1",
     "mod": "listening",
+    "q_total": 25,
     "round": 1,
     "sentences": 5
    },
@@ -219,11 +233,13 @@
    "weekday": "周一",
    "reading": {
     "set": "2024-06-2",
-    "mod": "cloze"
+    "mod": "cloze",
+    "q_total": 10
    },
    "listening": {
     "set": "2024-12-2",
     "mod": "listening",
+    "q_total": 25,
     "round": 1,
     "sentences": 5
    },
@@ -243,11 +259,13 @@
    "weekday": "周二",
    "reading": {
     "set": "2024-06-3",
-    "mod": "cloze"
+    "mod": "cloze",
+    "q_total": 10
    },
    "listening": {
     "set": "2025-06-1",
     "mod": "listening",
+    "q_total": 25,
     "round": 1,
     "sentences": 5
    },
@@ -267,11 +285,13 @@
    "weekday": "周三",
    "reading": {
     "set": "2024-12-1",
-    "mod": "cloze"
+    "mod": "cloze",
+    "q_total": 10
    },
    "listening": {
     "set": "2025-06-2",
     "mod": "listening",
+    "q_total": 25,
     "round": 1,
     "sentences": 5
    },
@@ -292,11 +312,13 @@
    "weekday": "周四",
    "reading": {
     "set": "2024-12-2",
-    "mod": "cloze"
+    "mod": "cloze",
+    "q_total": 10
    },
    "listening": {
     "set": "2023-06-1",
     "mod": "listening",
+    "q_total": 25,
     "round": 2,
     "sentences": 10
    },
@@ -316,11 +338,13 @@
    "weekday": "周五",
    "reading": {
     "set": "2024-12-3",
-    "mod": "cloze"
+    "mod": "cloze",
+    "q_total": 10
    },
    "listening": {
     "set": "2023-06-2",
     "mod": "listening",
+    "q_total": 25,
     "round": 2,
     "sentences": 10
    },
@@ -340,11 +364,13 @@
    "weekday": "周六",
    "reading": {
     "set": "2025-06-1",
-    "mod": "cloze"
+    "mod": "cloze",
+    "q_total": 10
    },
    "listening": {
     "set": "2023-12-1",
     "mod": "listening",
+    "q_total": 25,
     "round": 2,
     "sentences": 10
    },
@@ -365,11 +391,13 @@
    "weekday": "周日",
    "reading": {
     "set": "2025-06-2",
-    "mod": "cloze"
+    "mod": "cloze",
+    "q_total": 10
    },
    "listening": {
     "set": "2023-12-2",
     "mod": "listening",
+    "q_total": 25,
     "round": 2,
     "sentences": 10
    },
@@ -389,11 +417,13 @@
    "weekday": "周一",
    "reading": {
     "set": "2025-06-3",
-    "mod": "cloze"
+    "mod": "cloze",
+    "q_total": 10
    },
    "listening": {
     "set": "2024-06-1",
     "mod": "listening",
+    "q_total": 25,
     "round": 2,
     "sentences": 10
    },
@@ -413,11 +443,13 @@
    "weekday": "周二",
    "reading": {
     "set": "2023-06-1",
-    "mod": "reading1"
+    "mod": "reading1",
+    "q_total": 5
    },
    "listening": {
     "set": "2024-06-2",
     "mod": "listening",
+    "q_total": 25,
     "round": 2,
     "sentences": 10
    },
@@ -438,11 +470,13 @@
    "weekday": "周三",
    "reading": {
     "set": "2023-06-2",
-    "mod": "reading1"
+    "mod": "reading1",
+    "q_total": 5
    },
    "listening": {
     "set": "2024-12-1",
     "mod": "listening",
+    "q_total": 25,
     "round": 2,
     "sentences": 10
    },
@@ -462,11 +496,13 @@
    "weekday": "周四",
    "reading": {
     "set": "2023-06-3",
-    "mod": "reading1"
+    "mod": "reading1",
+    "q_total": 5
    },
    "listening": {
     "set": "2024-12-2",
     "mod": "listening",
+    "q_total": 25,
     "round": 2,
     "sentences": 10
    },
@@ -486,11 +522,13 @@
    "weekday": "周五",
    "reading": {
     "set": "2023-12-1",
-    "mod": "reading1"
+    "mod": "reading1",
+    "q_total": 5
    },
    "listening": {
     "set": "2025-06-1",
     "mod": "listening",
+    "q_total": 25,
     "round": 2,
     "sentences": 10
    },
@@ -511,11 +549,13 @@
    "weekday": "周六",
    "reading": {
     "set": "2023-12-2",
-    "mod": "reading1"
+    "mod": "reading1",
+    "q_total": 5
    },
    "listening": {
     "set": "2025-06-2",
     "mod": "listening",
+    "q_total": 25,
     "round": 2,
     "sentences": 10
    },
@@ -535,11 +575,13 @@
    "weekday": "周日",
    "reading": {
     "set": "2023-12-3",
-    "mod": "reading1"
+    "mod": "reading1",
+    "q_total": 5
    },
    "listening": {
     "set": "2023-06-1",
     "mod": "listening",
+    "q_total": 25,
     "round": 3,
     "sentences": 15
    },
@@ -559,11 +601,13 @@
    "weekday": "周一",
    "reading": {
     "set": "2024-06-1",
-    "mod": "reading1"
+    "mod": "reading1",
+    "q_total": 5
    },
    "listening": {
     "set": "2023-06-2",
     "mod": "listening",
+    "q_total": 25,
     "round": 3,
     "sentences": 15
    },
@@ -584,11 +628,13 @@
    "weekday": "周二",
    "reading": {
     "set": "2024-06-2",
-    "mod": "reading1"
+    "mod": "reading1",
+    "q_total": 5
    },
    "listening": {
     "set": "2023-12-1",
     "mod": "listening",
+    "q_total": 25,
     "round": 3,
     "sentences": 15
    },
@@ -608,11 +654,13 @@
    "weekday": "周三",
    "reading": {
     "set": "2024-06-3",
-    "mod": "reading1"
+    "mod": "reading1",
+    "q_total": 5
    },
    "listening": {
     "set": "2023-12-2",
     "mod": "listening",
+    "q_total": 25,
     "round": 3,
     "sentences": 15
    },
@@ -632,11 +680,13 @@
    "weekday": "周四",
    "reading": {
     "set": "2024-12-1",
-    "mod": "reading1"
+    "mod": "reading1",
+    "q_total": 5
    },
    "listening": {
     "set": "2024-06-1",
     "mod": "listening",
+    "q_total": 25,
     "round": 3,
     "sentences": 15
    },
@@ -657,11 +707,13 @@
    "weekday": "周五",
    "reading": {
     "set": "2024-12-2",
-    "mod": "reading1"
+    "mod": "reading1",
+    "q_total": 5
    },
    "listening": {
     "set": "2024-06-2",
     "mod": "listening",
+    "q_total": 25,
     "round": 3,
     "sentences": 15
    },
@@ -681,11 +733,13 @@
    "weekday": "周六",
    "reading": {
     "set": "2024-12-3",
-    "mod": "reading1"
+    "mod": "reading1",
+    "q_total": 5
    },
    "listening": {
     "set": "2024-12-1",
     "mod": "listening",
+    "q_total": 25,
     "round": 3,
     "sentences": 15
    },
@@ -705,11 +759,13 @@
    "weekday": "周日",
    "reading": {
     "set": "2025-06-1",
-    "mod": "reading1"
+    "mod": "reading1",
+    "q_total": 5
    },
    "listening": {
     "set": "2024-12-2",
     "mod": "listening",
+    "q_total": 25,
     "round": 3,
     "sentences": 15
    },
@@ -730,11 +786,13 @@
    "weekday": "周一",
    "reading": {
     "set": "2023-06-1",
-    "mod": "longreading"
+    "mod": "longreading",
+    "q_total": 10
    },
    "listening": {
     "set": "2025-06-1",
     "mod": "listening",
+    "q_total": 25,
     "round": 6,
     "sentences": 15
    },
@@ -759,6 +817,7 @@
    "listening": {
     "set": "2025-06-2",
     "mod": "listening",
+    "q_total": 25,
     "round": 6,
     "sentences": 15
    },
@@ -776,11 +835,13 @@
    "weekday": "周三",
    "reading": {
     "set": "2023-06-2",
-    "mod": "longreading"
+    "mod": "longreading",
+    "q_total": 10
    },
    "listening": {
     "set": "2023-06-1",
     "mod": "listening",
+    "q_total": 25,
     "round": 7,
     "sentences": 15
    },
@@ -805,6 +866,7 @@
    "listening": {
     "set": "2023-06-2",
     "mod": "listening",
+    "q_total": 25,
     "round": 7,
     "sentences": 15
    },
@@ -822,11 +884,13 @@
    "weekday": "周五",
    "reading": {
     "set": "2023-06-3",
-    "mod": "longreading"
+    "mod": "longreading",
+    "q_total": 10
    },
    "listening": {
     "set": "2023-12-1",
     "mod": "listening",
+    "q_total": 25,
     "round": 7,
     "sentences": 15
    },
@@ -851,6 +915,7 @@
    "listening": {
     "set": "2023-12-2",
     "mod": "listening",
+    "q_total": 25,
     "round": 7,
     "sentences": 15
    },
@@ -868,11 +933,13 @@
    "weekday": "周日",
    "reading": {
     "set": "2023-12-1",
-    "mod": "longreading"
+    "mod": "longreading",
+    "q_total": 10
    },
    "listening": {
     "set": "2024-06-1",
     "mod": "listening",
+    "q_total": 25,
     "round": 7,
     "sentences": 15
    },
@@ -897,6 +964,7 @@
    "listening": {
     "set": "2024-06-2",
     "mod": "listening",
+    "q_total": 25,
     "round": 7,
     "sentences": 15
    },
@@ -914,11 +982,13 @@
    "weekday": "周二",
    "reading": {
     "set": "2023-12-2",
-    "mod": "longreading"
+    "mod": "longreading",
+    "q_total": 10
    },
    "listening": {
     "set": "2024-12-1",
     "mod": "listening",
+    "q_total": 25,
     "round": 7,
     "sentences": 15
    },
@@ -943,6 +1013,7 @@
    "listening": {
     "set": "2024-12-2",
     "mod": "listening",
+    "q_total": 25,
     "round": 7,
     "sentences": 15
    },
@@ -960,11 +1031,13 @@
    "weekday": "周四",
    "reading": {
     "set": "2023-12-3",
-    "mod": "longreading"
+    "mod": "longreading",
+    "q_total": 10
    },
    "listening": {
     "set": "2025-06-1",
     "mod": "listening",
+    "q_total": 25,
     "round": 7,
     "sentences": 15
    },
@@ -989,6 +1062,7 @@
    "listening": {
     "set": "2025-06-2",
     "mod": "listening",
+    "q_total": 25,
     "round": 7,
     "sentences": 15
    },
@@ -1006,11 +1080,13 @@
    "weekday": "周六",
    "reading": {
     "set": "2024-06-1",
-    "mod": "longreading"
+    "mod": "longreading",
+    "q_total": 10
    },
    "listening": {
     "set": "2023-06-1",
     "mod": "listening",
+    "q_total": 25,
     "round": 8,
     "sentences": 15
    },
@@ -1035,6 +1111,7 @@
    "listening": {
     "set": "2023-06-2",
     "mod": "listening",
+    "q_total": 25,
     "round": 8,
     "sentences": 15
    },
@@ -1052,11 +1129,13 @@
    "weekday": "周一",
    "reading": {
     "set": "2024-06-2",
-    "mod": "longreading"
+    "mod": "longreading",
+    "q_total": 10
    },
    "listening": {
     "set": "2023-12-1",
     "mod": "listening",
+    "q_total": 25,
     "round": 8,
     "sentences": 15
    },
@@ -1081,6 +1160,7 @@
    "listening": {
     "set": "2023-12-2",
     "mod": "listening",
+    "q_total": 25,
     "round": 8,
     "sentences": 15
    },
@@ -1098,11 +1178,13 @@
    "weekday": "周三",
    "reading": {
     "set": "2024-06-3",
-    "mod": "longreading"
+    "mod": "longreading",
+    "q_total": 10
    },
    "listening": {
     "set": "2024-06-1",
     "mod": "listening",
+    "q_total": 25,
     "round": 8,
     "sentences": 15
    },
@@ -1127,6 +1209,7 @@
    "listening": {
     "set": "2024-06-2",
     "mod": "listening",
+    "q_total": 25,
     "round": 8,
     "sentences": 15
    },
@@ -1144,11 +1227,13 @@
    "weekday": "周五",
    "reading": {
     "set": "2024-12-1",
-    "mod": "longreading"
+    "mod": "longreading",
+    "q_total": 10
    },
    "listening": {
     "set": "2024-12-1",
     "mod": "listening",
+    "q_total": 25,
     "round": 8,
     "sentences": 15
    },
@@ -1173,6 +1258,7 @@
    "listening": {
     "set": "2024-12-2",
     "mod": "listening",
+    "q_total": 25,
     "round": 8,
     "sentences": 15
    },
@@ -1190,11 +1276,13 @@
    "weekday": "周日",
    "reading": {
     "set": "2024-12-2",
-    "mod": "longreading"
+    "mod": "longreading",
+    "q_total": 10
    },
    "listening": {
     "set": "2025-06-1",
     "mod": "listening",
+    "q_total": 25,
     "round": 8,
     "sentences": 15
    },
@@ -1219,6 +1307,7 @@
    "listening": {
     "set": "2025-06-2",
     "mod": "listening",
+    "q_total": 25,
     "round": 8,
     "sentences": 15
    },
