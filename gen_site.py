@@ -209,7 +209,7 @@ def build_index(meta):
 </div>
 
 <div class="qcard" data-quote="daily">
-  <div class="qhead"><span class="qtag">每日一句</span><button class="qbtn" type="button">换一句</button></div>
+  <div class="qhead"><button class="qbtn" type="button">换一句</button></div>
 </div>
 
 

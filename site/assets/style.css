@@ -1303,16 +1303,9 @@ details[open] > summary .hfw-caret { transform: rotate(180deg); }
 .qhead {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;   /* 右上角只剩「换一句」 */
   gap: 8px;
   margin-bottom: 8px;
-}
-
-.qtag {
-  font-size: 11.5px;
-  font-weight: 600;
-  letter-spacing: .1em;
-  color: var(--accent-text);
 }
 
 .qbtn {
