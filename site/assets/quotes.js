@@ -111,7 +111,12 @@
     });
   }
 
-  window.CET6Quotes = { load: load, pick: pick, random: random, fill: fill };
+  // 说话人头像的路径（没有该说话人的图就返回空串）
+  function avatar(a) {
+    return AVATAR[a] ? BASE + AVATAR[a] : '';
+  }
+
+  window.CET6Quotes = { load: load, pick: pick, random: random, fill: fill, avatar: avatar };
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', fill);

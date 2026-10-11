@@ -26,6 +26,30 @@
   background:linear-gradient(90deg,var(--accent),var(--accent-hover));transition:width .4s ease}
 .pmeta{font-size:12.5px;color:var(--fg-faint)}
 
+/* 顶上那句话：小、灰、不抢眼，只在标题下面轻轻待着 */
+.bless{font-family:var(--font-quote);font-size:13.5px;color:var(--fg-faint);
+  letter-spacing:.14em;margin:0 0 14px}
+.bless::before,.bless::after{content:'·';margin:0 8px;opacity:.5}
+
+/* 做完一天的彩蛋弹层 */
+.qm{position:fixed;inset:0;z-index:400;display:none;align-items:center;justify-content:center;
+  background:rgba(20,18,16,.45);padding:22px;backdrop-filter:blur(2px)}
+.qm.on{display:flex;animation:qmFade .18s ease}
+@keyframes qmFade{from{opacity:0}to{opacity:1}}
+.qm .box{background:var(--bg-card);border:1px solid var(--line);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-lg);padding:24px 22px 18px;max-width:340px;width:100%;text-align:center;
+  animation:qmPop .22s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes qmPop{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
+.qm-tag{font-size:11.5px;font-weight:600;letter-spacing:.08em;color:var(--accent-text);
+  background:var(--accent-soft);display:inline-block;padding:3px 11px;border-radius:999px;margin-bottom:14px}
+.qm-text{font-family:var(--font-quote);font-size:17px;line-height:1.95;white-space:pre-line;
+  color:var(--fg);text-align:left}
+.qm-foot{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:12px}
+.qm-foot img{width:26px;height:26px;border-radius:50%;object-fit:cover;
+  box-shadow:0 0 0 2px var(--bg-card),0 0 0 3px var(--line)}
+.qm-foot span{font-size:12.5px;color:var(--fg-faint)}
+.qm-close{margin-top:16px}
+
 /* 今日卡片：柔和的强调圈，不用硬边框 */
 .today{border:1px solid var(--accent-line);box-shadow:0 0 0 3px var(--accent-soft)}
 .today .th{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -99,6 +123,7 @@
 
 <div class="hero plan-hero">
   <h1>六级 61 天备考计划</h1>
+  <p class="bless">天使与你同在</p>
   <p class="sub" id="examLine"></p>
   <div class="countdown" id="cd">—<small>天后考试</small></div>
   <div class="pbar"><i id="pbar" style="width:0"></i></div>
@@ -148,6 +173,10 @@
 <footer class="site">
   <p>计划依据《建议.txt》（两个月备考讲座）编排，仅供个人学习使用。</p>
 </footer>
+</div>
+
+<div class="qm" id="qm" role="dialog" aria-modal="true" aria-label="今天完成啦">
+  <div class="box" id="qmBox"></div>
 </div>
 
 <script>
@@ -405,8 +434,45 @@ function bindSteps(d, prog){
       saveProg(p);
       updateStepsUI(d.d, p);
       updateStats(p);
+      /* 这一天刚好被勾完 → 弹一句台词（只在「刚做完」那一下弹，读页面不弹） */
+      if(d.steps.every(function(x){ return p[d.d][x]; })) quoteModal(d);
     };
   });
+}
+
+/* ------------------------------------------------------------------ 做完一天后的彩蛋
+   弹一句 美工/*.md 里的台词（读 assets/quotes.json，由 quotes.js 提供数据与头像） */
+var celebrated = {};
+function quoteModal(d){
+  if(celebrated[d.d]) return;
+  celebrated[d.d] = 1;
+  var overlay = document.getElementById('qm');
+  if(!overlay) return;
+  var box = document.getElementById('qmBox');
+  var close = function(){ overlay.classList.remove('on'); };
+  overlay.classList.add('on');
+  overlay.onclick = function(e){ if(e.target === overlay) close(); };
+  var todayQuote = document.querySelector('.qcard.qsmall .qtext');
+  var todays = todayQuote ? todayQuote.textContent : '';
+  var paint = function(q){
+    var av = (window.CET6Quotes && window.CET6Quotes.avatar) ? window.CET6Quotes.avatar(q.a) : '';
+    var src = q.s ? ('《'+q.s+'》') : '';
+    box.innerHTML =
+      '<div class="qm-tag">第 '+d.day+' 天 · 完成</div>' +
+      '<div class="qm-text">'+esc(q.t)+'</div>' +
+      '<div class="qm-foot">'+(av ? '<img src="'+av+'" alt="">' : '')+
+      '<span>——'+esc(q.a)+(src ? ' · '+src : '')+'</span></div>'+
+      '<button class="ghost qm-close" type="button">收下</button>';
+    box.querySelector('.qm-close').onclick = close;
+  };
+  if(window.CET6Quotes){
+    window.CET6Quotes.load().then(function(list){
+      if(!list || !list.length) return;
+      var q = window.CET6Quotes.random();
+      if(q && q.t === todays) q = window.CET6Quotes.random();   // 别和今天卡片上那句重复
+      if(q) paint(q);
+    });
+  }
 }
 
 function jump(date){
