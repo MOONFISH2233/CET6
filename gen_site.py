@@ -916,6 +916,26 @@ def build_hfw(meta):
 
 # ================================================================ 我的学习页
 
+def gallery_card():
+    """收藏墙：图都由 build_img.py 生成，清单读 assets/img/gallery/index.json。"""
+    p = os.path.join(SITE, "assets", "img", "gallery", "index.json")
+    if not os.path.exists(p):
+        return ""
+    with open(p, encoding="utf-8") as f:
+        items = json.load(f)
+    if not items:
+        return ""
+    figs = "".join(
+        f'<figure><img src="assets/img/gallery/{esc(it["f"])}" alt="{esc(it.get("cap", ""))}" '
+        f'loading="lazy"><figcaption>{esc(it.get("cap", ""))}</figcaption></figure>'
+        for it in items
+    )
+    return (f'<div class="card"><h2><span class="tag">收藏</span>素材</h2>'
+            f'<p class="gal-note">平时攒的图和台词都收在这儿，随手翻翻。'
+            f'（图版权归原作者／版权方，仅个人学习用）</p>'
+            f'<div class="gal">{figs}</div></div>')
+
+
 def build_me(meta):
     """生词本 / 错题本 / 句子收藏。数据在 localStorage，这里只出骨架，word.js 渲染。"""
     labels = {
@@ -945,6 +965,7 @@ def build_me(meta):
 <div class="card" id="meRoot">
   <div id="meList"></div>
 </div>
+{gallery_card()}
 """
     return page("我的学习 · 六级真题精读", body, 0,
                 "生词本、错题本、句子收藏，只存在本机浏览器", extra_js=extra_js)
