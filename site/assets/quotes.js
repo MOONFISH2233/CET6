@@ -116,7 +116,72 @@
     return AVATAR[a] ? BASE + AVATAR[a] : '';
   }
 
-  window.CET6Quotes = { load: load, pick: pick, random: random, fill: fill, avatar: avatar };
+  // ------------------------------------------------------------ 彩蛋弹层
+  // 做完一篇阅读 / 完成一天时弹一张卡：对错统计 + 一句台词。
+  // 弹层是按需创建的，页面不用预先放容器。
+
+  var modal = null;
+
+  function ensureModal() {
+    if (modal) return modal;
+    modal = document.createElement('div');
+    modal.className = 'qm';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.innerHTML = '<div class="box"></div>';
+    document.body.appendChild(modal);
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) closeModal();
+    });
+    return modal;
+  }
+
+  function closeModal() {
+    if (modal) modal.classList.remove('on');
+  }
+
+  function statsHTML(o) {
+    var h = '';
+    if (o.ok) h += '<span class="qm-ok">对 ' + o.ok + ' 题</span>';
+    if (o.bad) h += '<span class="qm-bad">错 ' + o.bad + ' 题</span>';
+    if (o.empty) h += '<span class="qm-empty">' + o.empty + ' 题未作答</span>';
+    return h ? '<div class="qm-stats">' + h + '</div>' : '';
+  }
+
+  function celebrate(opts) {
+    opts = opts || {};
+    var m = ensureModal();
+    var box = m.querySelector('.box');
+    var head = (opts.title ? '<div class="qm-tag">' + esc(opts.title) + '</div>' : '') +
+               statsHTML(opts);
+
+    function paint(q) {
+      var av = avatar(q.a);
+      var src = q.s ? '《' + q.s + '》' : '';
+      box.innerHTML = head +
+        '<div class="qm-text">' + esc(q.t) + '</div>' +
+        '<div class="qm-foot">' + (av ? '<img src="' + esc(av) + '" alt="">' : '') +
+        '<span>——' + esc(q.a) + (src ? ' · ' + esc(src) : '') + '</span></div>' +
+        '<button class="qm-close" type="button">收下</button>';
+      var btn = box.querySelector('.qm-close');
+      if (btn) btn.onclick = closeModal;
+      m.classList.add('on');
+    }
+
+    load().then(function (list) {
+      if (!list || !list.length) {          // 没有台词数据也要给出对错反馈
+        box.innerHTML = head + '<button class="qm-close" type="button">好</button>';
+        var b2 = box.querySelector('.qm-close');
+        if (b2) b2.onclick = closeModal;
+        m.classList.add('on');
+        return;
+      }
+      paint(opts.quote || random());
+    });
+  }
+
+  window.CET6Quotes = { load: load, pick: pick, random: random, fill: fill,
+                        avatar: avatar, celebrate: celebrate };
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', fill);

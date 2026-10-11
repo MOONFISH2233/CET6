@@ -14,6 +14,7 @@
   1. 按方法做题  2. 核实对错  3. 精读全文  4. 在句子中背单词
 页面因此提供：折叠答案（先自己做）、中英对照开关、逐题解析、逐段翻译。
 """
+import datetime as dt
 import html
 import json
 import os
@@ -23,6 +24,9 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, "data")
 SITE = os.path.join(HERE, "site")
+
+# 每次构建给 css/js 换个版本号，免得浏览器拿旧缓存（改完看不到新版的那种迷惑）
+ASSET_VER = dt.datetime.now().strftime("%Y%m%d%H%M")
 
 MODULE_ORDER = ["writing", "listening", "cloze", "longreading",
                 "reading1", "reading2", "translation"]
@@ -90,7 +94,7 @@ def page(title, body, depth=0, subtitle="", extra_head="", body_class="",
 <meta name="color-scheme" content="light dark">
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(subtitle or title)}">
-<link rel="stylesheet" href="{r}assets/style.css">
+<link rel="stylesheet" href="{r}assets/style.css?v={ASSET_VER}">
 <link rel="icon" href="{r}assets/img/favicon.png">
 <link rel="apple-touch-icon" href="{r}assets/img/logo.png">
 {extra_head}
@@ -112,10 +116,10 @@ def page(title, body, depth=0, subtitle="", extra_head="", body_class="",
   <p>共 {TOTAL_SETS} 套 · {TOTAL_MODULES} 个题型模块 · 覆盖 2022 年 6 月 — 2026 年 6 月</p>
 </footer>
 </div>
-<script src="{r}assets/app.js"></script>
-<script src="{r}assets/word.js"></script>
-<script src="{r}assets/quotes.js"></script>
-<script src="{r}assets/quiz.js"></script>
+<script src="{r}assets/app.js?v={ASSET_VER}"></script>
+<script src="{r}assets/word.js?v={ASSET_VER}"></script>
+<script src="{r}assets/quotes.js?v={ASSET_VER}"></script>
+<script src="{r}assets/quiz.js?v={ASSET_VER}"></script>
 {extra_js}
 </body>
 </html>

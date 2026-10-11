@@ -190,7 +190,9 @@ def build_schedule(meta):
 def build_html(plan):
     """渲染打卡站单页。数据由 plan.json 内联注入，避免 fetch 的 file:// 限制。"""
     data = json.dumps(plan, ensure_ascii=False, separators=(",", ":"))
-    return PAGE_TPL.replace("__DATA__", data)
+    # 资源版本号：跟精读站同一个写法，免得浏览器拿旧缓存
+    ver = dt.datetime.now().strftime("%Y%m%d%H%M")
+    return PAGE_TPL.replace("__DATA__", data).replace("__VER__", ver)
 
 
 def main():

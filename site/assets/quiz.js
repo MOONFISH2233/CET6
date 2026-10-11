@@ -411,7 +411,12 @@
     if (ok) m.push("对 " + ok + " 题");
     if (bad) m.push("错 " + bad + " 题（已记入错题本）");
     if (empty) m.push(empty + " 题未作答");
-    alert(m.length ? m.join("，") : "没有可提交的题");
+    // 做完一篇弹一张卡：对错统计 + 一句台词（quotes.js 没加载时退回原来的提示）
+    if (window.CET6Quotes && window.CET6Quotes.celebrate) {
+      window.CET6Quotes.celebrate({ title: "本篇完成", ok: ok, bad: bad, empty: empty });
+    } else {
+      alert(m.length ? m.join("，") : "没有可提交的题");
+    }
   }
 
   function resetAll() {
