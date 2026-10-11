@@ -314,19 +314,26 @@
     p.innerHTML = h.join("");
     p.hidden = false;
 
-    /* 绝对定位（跟着文档走）：贴在空位下方，下面放不下就翻到空位上方 */
+    /* 定位：先显示才能量高度。⚠️ 绝对定位的包含块只有「文档原点起一屏大」，
+       所以上下都用 top（文档坐标）算；用 bottom 的话，空位在页面深处时会算到屏幕外去。 */
     var r = slot.getBoundingClientRect();
     var pw = Math.min(280, window.innerWidth - 24);
+    var ph = p.offsetHeight;
     p.style.width = pw + "px";
-    p.style.left = Math.min(Math.max(8, r.left - 6 + window.scrollX), window.scrollX + window.innerWidth - pw - 8) + "px";
-    var below = window.innerHeight - r.bottom;
-    if (below < 300 && r.top > 320) {
-      p.style.top = "auto";
-      p.style.bottom = (document.documentElement.scrollHeight - r.top - window.scrollY + 8) + "px";
-    } else {
-      p.style.bottom = "auto";
-      p.style.top = (r.bottom + 8 + window.scrollY) + "px";
+    p.style.left = Math.min(Math.max(8 + window.scrollX, r.left - 6 + window.scrollX),
+                            window.scrollX + window.innerWidth - pw - 8) + "px";
+
+    var docTop = r.top + window.scrollY;
+    var top;
+    if (r.bottom + 8 + ph <= window.innerHeight) {          // 下面放得下
+      top = docTop + r.height + 8;
+    } else if (r.top - 8 - ph >= 0) {                       // 翻到上面
+      top = docTop - ph - 8;
+    } else {                                                // 上下都挤 → 夹进视口里
+      top = Math.max(window.scrollY + 8,
+            Math.min(docTop + r.height + 8, window.scrollY + window.innerHeight - ph - 8));
     }
+    p.style.top = top + "px";
 
     Array.prototype.forEach.call(p.querySelectorAll(".cpick-list li"), function (li) {
       li.onclick = function () {
