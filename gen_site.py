@@ -917,7 +917,10 @@ def build_hfw(meta):
 # ================================================================ 我的学习页
 
 def gallery_card():
-    """收藏墙：图都由 build_img.py 生成，清单读 assets/img/gallery/index.json。"""
+    """收藏墙：只有图，不带标题/说明/图注（版权声明在页脚）。
+
+    图都由 build_img.py 生成，清单读 assets/img/gallery/index.json。
+    """
     p = os.path.join(SITE, "assets", "img", "gallery", "index.json")
     if not os.path.exists(p):
         return ""
@@ -925,15 +928,11 @@ def gallery_card():
         items = json.load(f)
     if not items:
         return ""
-    figs = "".join(
-        f'<figure><img src="assets/img/gallery/{esc(it["f"])}" alt="{esc(it.get("cap", ""))}" '
-        f'loading="lazy"><figcaption>{esc(it.get("cap", ""))}</figcaption></figure>'
+    imgs = "".join(
+        f'<img src="assets/img/gallery/{esc(it["f"])}" alt="" loading="lazy">'
         for it in items
     )
-    return (f'<div class="card"><h2><span class="tag">收藏</span>素材</h2>'
-            f'<p class="gal-note">平时攒的图和台词都收在这儿，随手翻翻。'
-            f'（图版权归原作者／版权方，仅个人学习用）</p>'
-            f'<div class="gal">{figs}</div></div>')
+    return f'<div class="card"><div class="gal">{imgs}</div></div>'
 
 
 def build_me(meta):
