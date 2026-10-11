@@ -577,8 +577,9 @@ def render_cloze(d):
     if passages:
         out.append('<div class="card"><h2><span class="tag">原文</span>带空短文</h2>')
         out.append('<p style="font-size:13px;color:var(--fg-faint);margin:-4px 0 14px">'
-                   '先读全文把握大意，再回到空格处：点一个空，再从下面词库点一个词填进去。'
-                   '填完点底部「提交答案」判分。</p>')
+                   '先读全文把握大意，再回到空格处：<b>点一下空位，就地弹出词库选一个词</b>'
+                   '（不用滚到下面再滚回来）。点已填的空可以换词或清空，'
+                   '每个词只能用一次。填完点底部「提交答案」判分。</p>')
         out.append('<div class="cloze-text">')
         for p_ in passages:
             out.append('<div class="para">')
@@ -595,8 +596,9 @@ def render_cloze(d):
         out.append('<div class="card"><h2><span class="tag">词库</span>'
                    f'{len(bank)} 词选 10</h2>')
         out.append('<p style="font-size:13px;color:var(--fg-faint);margin:-4px 0 14px">'
-                   '点一个词选中它，再点文中空格填入；点已填入的空可退回词库。每词最多用一次。'
-                   '（跟真题一样，这里只给裸单词 —— 词性和释义默认藏起来，'
+                   '这一栏是备查的完整词库（<b>点空位弹窗里也能选</b>，不必滚下来）。'
+                   '也可以在这里点一个词选中，再点文中空格填入；点已填入的空可退回词库。'
+                   '每词最多用一次。（跟真题一样，这里只给裸单词 —— 词性和释义默认藏起来，'
                    '点上方「显示答案」才出现。）</p>')
         out.append('<ul class="wordbank">')
         for w in bank:

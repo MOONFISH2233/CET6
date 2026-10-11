@@ -227,23 +227,125 @@
     if (clozeSel) clozeSel.classList.add("picked");
   }
 
-  function onSlot(slot) {
-    if (slot.classList.contains("locked")) return;
-    /* 点已填的空 = 清空 */
-    if (slot.dataset.letter) { clearSlot(slot); return; }
-    if (!clozeSel) { flash(slot); return; }
-    var L = norm(clozeSel.dataset.letter);
-    var W = clozeSel.dataset.word || "";
+  /* 把词填进空 */
+  function fillSlot(slot, L, W) {
     slot.dataset.letter = L;
     slot.dataset.word = W;
     var val = slot.querySelector(".cval");
     if (val) val.textContent = W;
     slot.classList.add("filled");
-    clozeSel.classList.remove("picked");
-    clozeSel.classList.add("used");
-    clozeSel.dataset.onQno = slot.dataset.qno;
-    clozeSel = null;
+    var wEl = document.querySelector('.wb-item[data-letter="' + L + '"]');
+    if (wEl) { wEl.classList.add("used"); wEl.dataset.onQno = slot.dataset.qno; }
     updateBar();
+  }
+
+  function onSlot(slot) {
+    if (slot.classList.contains("locked")) return;
+    /* 已从词库选了词 → 直接填进去（老操作方式仍然好使） */
+    if (clozeSel) {
+      var L = norm(clozeSel.dataset.letter);
+      var W = clozeSel.dataset.word || "";
+      var on = clozeSel.dataset.onQno || "";
+      clozeSel.classList.remove("picked");
+      clozeSel = null;
+      if (on && on !== slot.dataset.qno) return;      // 这个词已用在别的空
+      if (slot.dataset.letter) clearSlot(slot);        // 换词：先腾空
+      fillSlot(slot, L, W);
+      return;
+    }
+    /* 没选词 → 就地弹出词库选择窗口（省得上下滚） */
+    showPicker(slot);
+  }
+
+  /* ---------------------------------------------------------- 空位选择弹窗 */
+
+  var cPicker = null;
+
+  function hidePicker() { if (cPicker) cPicker.hidden = true; }
+
+  function ensurePicker() {
+    if (cPicker) return cPicker;
+    cPicker = document.createElement("div");
+    cPicker.className = "cpick";
+    cPicker.hidden = true;
+    document.body.appendChild(cPicker);
+    /* ⚠️ 这个监听必须等本轮点击派发结束再挂：否则「打开弹窗的那一次点击」会顺着
+       冒泡走到 document，把刚打开的弹窗立刻关掉。 */
+    setTimeout(function () {
+      document.addEventListener("click", function (e) {
+        if (cPicker.hidden) return;
+        if (cPicker.contains(e.target)) return;
+        if (e.target && e.target.closest && e.target.closest(".cslot")) return;
+        hidePicker();
+      });
+    }, 0);
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") hidePicker();
+    });
+    /* 刻意不监听 scroll：弹窗是「贴着这个空」的，页面滚动时它跟着走；
+       一滚就关会让人没法边滚边看。关它只有三种途径：点外面、Esc、选了词。 */
+    return cPicker;
+  }
+
+  function bankOf(letter) {
+    for (var i = 0; i < clozeBank.length; i++) {
+      if (clozeBank[i].letter === letter) return clozeBank[i];
+    }
+    return null;
+  }
+
+  function showPicker(slot) {
+    var p = ensurePicker();
+    var cur = norm(slot.dataset.letter || "");
+    var h = ['<div class="cpick-head">第 ' + slot.dataset.qno + ' 空 · 选一个词</div>',
+             '<ul class="cpick-list">'];
+    clozeBank.forEach(function (b) {
+      var usedOn = b.el.dataset.onQno || "";
+      var isCur = cur && b.letter === cur;
+      var cls = isCur ? "cur" : (usedOn ? "off" : "");
+      h.push('<li class="' + cls + '" data-letter="' + b.letter + '">' +
+             '<span class="cp-l">' + b.letter + '</span>' +
+             '<span class="cp-w">' + escHTML(b.word) + '</span>' +
+             (usedOn && !isCur ? '<span class="cp-note">第 ' + usedOn + ' 空</span>' : '') +
+             '</li>');
+    });
+    h.push('</ul>');
+    if (cur) h.push('<button type="button" class="cpick-clear">清空这一空</button>');
+    p.innerHTML = h.join("");
+    p.hidden = false;
+
+    /* 绝对定位（跟着文档走）：贴在空位下方，下面放不下就翻到空位上方 */
+    var r = slot.getBoundingClientRect();
+    var pw = Math.min(280, window.innerWidth - 24);
+    p.style.width = pw + "px";
+    p.style.left = Math.min(Math.max(8, r.left - 6 + window.scrollX), window.scrollX + window.innerWidth - pw - 8) + "px";
+    var below = window.innerHeight - r.bottom;
+    if (below < 300 && r.top > 320) {
+      p.style.top = "auto";
+      p.style.bottom = (document.documentElement.scrollHeight - r.top - window.scrollY + 8) + "px";
+    } else {
+      p.style.bottom = "auto";
+      p.style.top = (r.bottom + 8 + window.scrollY) + "px";
+    }
+
+    Array.prototype.forEach.call(p.querySelectorAll(".cpick-list li"), function (li) {
+      li.onclick = function () {
+        var b = bankOf(li.dataset.letter);
+        if (!b) return;
+        var on = b.el.dataset.onQno || "";
+        if (on && on !== slot.dataset.qno) return;     // 已被别的空占用
+        if (slot.dataset.letter && slot.dataset.letter !== b.letter) clearSlot(slot);
+        fillSlot(slot, b.letter, b.word);
+        hidePicker();
+      };
+    });
+    var cl = p.querySelector(".cpick-clear");
+    if (cl) cl.onclick = function () { clearSlot(slot); hidePicker(); };
+  }
+
+  function escHTML(s) {
+    return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
 
   function clearSlot(slot) {
@@ -261,11 +363,6 @@
       }
     }
     updateBar();
-  }
-
-  function flash(el) {
-    el.classList.add("flash");
-    setTimeout(function () { el.classList.remove("flash"); }, 500);
   }
 
   function clozePick(q) {
