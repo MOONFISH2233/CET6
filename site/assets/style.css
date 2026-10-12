@@ -833,6 +833,38 @@ footer.site a { color: var(--fg-faint); }
 
 .w:hover { background: var(--accent-soft); }
 
+/* 段落下的生词批注（收了词就自动留一行，像旁边写的笔记） */
+.wnotes {
+  margin-top: 9px;
+  padding: 7px 12px;
+  border-left: 3px solid var(--accent-line);
+  background: var(--accent-soft);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 12.5px;
+  color: var(--fg-soft);
+  line-height: 1.75;
+}
+
+.wnotes b {
+  font-family: var(--font-en);
+  font-weight: 600;
+  color: var(--accent-text);
+  margin-right: 3px;
+}
+
+.wnotes-h {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  color: var(--accent-text);
+  background: var(--bg-card);
+  border-radius: var(--radius-pill);
+  padding: 1px 8px;
+  margin-right: 8px;
+}
+
+.wnotes .sep { margin: 0 8px; color: var(--fg-faint); }
+
 /* 已收进生词本：浅青底 + 下划线（跟新色板一致） */
 .w.marked {
   background: var(--accent-soft);

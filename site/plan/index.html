@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
 <title>六级 61 天备考计划</title>
-<link rel="stylesheet" href="../assets/style.css?v=202610120124">
+<link rel="stylesheet" href="../assets/style.css?v=202610121328">
 <link rel="icon" href="../assets/img/favicon.png">
 <link rel="apple-touch-icon" href="../assets/img/logo.png">
 <style>
@@ -522,7 +522,9 @@ function toggleTheme(){
 
 migratePlan();
 render();
+/* 从精读站按「后退」回来时，页面是浏览器缓存里的旧 DOM（进度是老的）→ 重画一次 */
+window.addEventListener('pageshow', function(e){ if(e.persisted){ render(); } });
 </script>
-<script src="../assets/quotes.js?v=202610120124"></script>
+<script src="../assets/quotes.js?v=202610121328"></script>
 </body>
 </html>

@@ -33,6 +33,57 @@ WORD_RE = re.compile(r"[A-Za-z][A-Za-z'-]*")
 KEEP_TAGS = ("zk", "gk", "cet4", "cet6", "ky", "toefl", "ielts", "gre")
 FORM_CODES = ("p", "d", "i", "3", "r", "t", "s")   # 过去式/过去分词/现在分词/三单/比较级/最高级/复数
 
+# ECDICT 的 pos 字段形如 "n:64/v:36"；释义里没写词性时按占比最高的补上
+POS_LABEL = {"n": "n.", "v": "v.", "adj": "adj.", "adv": "adv.", "prep": "prep.",
+             "conj": "conj.", "pron": "pron.", "num": "num.", "art": "art.",
+             "int": "int.", "aux": "aux.", "abbr": "abbr.", "u": "n.", "j": "adj.",
+             "r": "adv.", "vt": "vt.", "vi": "vi."}
+# ⚠️ 长标记要排在前面：ECDICT 里形容词写成 "a."、副词 "ad."，不认出来会叠成 "adj. a. …"
+HAS_POS = re.compile(r"^(adj|adv|abbr|aux|art|interj|prep|conj|pron|num|int|pl|na|vt|vi|n|v|ad|a)\s*\.",
+                     re.I)
+# 词形变化的类型（弹窗里要说明白「是过去式还是过去分词」）
+FORM_LABEL = {"p": "过去式", "d": "过去分词", "i": "现在分词", "3": "第三人称单数",
+              "s": "复数", "r": "比较级", "t": "最高级"}
+
+
+def guess_pos(w, ex):
+    """ECDICT 的 pos 字段大多是空的；用词形变化和词尾再猜一层。
+    只在释义完全没写词性时才用，所以宁可保守。"""
+    codes = set(p.split(":")[0] for p in (ex or "").split("/") if ":" in p)
+    if codes & {"p", "d", "i", "3"}:
+        return "v."                      # 有时态变化 → 动词
+    if codes & {"r", "t"}:
+        return "adj."                    # 有比较级/最高级 → 形容词
+    if "s" in codes:
+        return "n."                      # 有复数 → 名词
+    if w.endswith("ly"):
+        return "adv."
+    if w.endswith(("tion", "sion", "ness", "ity", "ment", "ance", "ence",
+                   "ship", "hood", "ism", "ology")):
+        return "n."
+    if w.endswith(("ous", "ful", "less", "able", "ible", "ive", "ical", "ish", "ary")):
+        return "adj."
+    if w.endswith(("ize", "ise", "ify")):
+        return "v."
+    return ""
+
+
+def top_pos(row):
+    """从 ECDICT 的 pos 字段（"n:64/v:36"）取占比最高的词性标记。"""
+    s = (row.get("pos") or "").strip()
+    if not s:
+        return ""
+    best, bestn = "", -1
+    for part in s.split("/"):
+        k, _, n = part.partition(":")
+        try:
+            n = int(n)
+        except ValueError:
+            n = 0
+        if n > bestn:
+            best, bestn = k.strip(), n
+    return POS_LABEL.get(best, "")
+
 # 手工覆盖表：ECDICT 收得不好（罐头 can、art. 那 the）或干脆没有的高频词。
 # 在 ECDICT 之后应用，**覆盖**它的释义。
 ABBREV = {
@@ -160,14 +211,18 @@ def main():
             g = clean_gloss(row.get("translation") or "")
             if not g:
                 continue
+            if not HAS_POS.match(g):          # 释义没写词性 → 先看 pos 字段，再按词形/词尾猜
+                p = top_pos(row) or guess_pos(w, row.get("exchange") or "")
+                if p:
+                    g = p + " " + g
             lemmas[w] = g
             keep = [t for t in tag.split() if t in KEEP_TAGS]
             if keep:
                 tags[w] = " ".join(keep)
             raw_forms[w] = row.get("exchange") or ""
 
-    # 词形 -> 原形（别把真词条盖掉）
-    forms = {}
+    # 词形 -> 原形（别把真词条盖掉）；顺带记下「这是什么形式」
+    forms, ftypes = {}, {}
     for w, ex in raw_forms.items():
         for part in ex.split("/"):
             if ":" not in part:
@@ -176,6 +231,7 @@ def main():
             v = v.strip().lower()
             if k in FORM_CODES and v and v != w and v not in lemmas:
                 forms[v] = w
+                ftypes[v] = FORM_LABEL.get(k, "")
     # 缩写/所有格
     for tok in corpus:
         if tok in lemmas or tok in forms:
@@ -217,6 +273,7 @@ def main():
         },
         "lemmas": lemmas,
         "forms": forms,
+        "ftypes": ftypes,
         "tags": tags,
     }
     dst = os.path.join(DATA, "dict_all.json")

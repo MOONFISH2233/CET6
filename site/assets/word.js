@@ -273,11 +273,12 @@
     var w = String(word).toLowerCase().replace(/[^a-z'-]/g, '');
     if (!w) return null;
     var L = dictAll.lemmas || {}, F = dictAll.forms || {}, T = dictAll.tags || {};
+    var FT = dictAll.ftypes || {};
     if (L[w]) return { key: w, gloss: L[w], tag: bestTag(T[w]) };
     var f = F[w];
-    if (f && L[f]) return { key: f, gloss: L[f], tag: bestTag(T[f]), inflected: true };
+    if (f && L[f]) return { key: f, gloss: L[f], tag: bestTag(T[f]), inflected: true, ftype: FT[w] || "" };
     var f2 = f ? F[f] : null;            // 两跳：children's -> children -> child
-    if (f2 && L[f2]) return { key: f2, gloss: L[f2], tag: bestTag(T[f2]), inflected: true };
+    if (f2 && L[f2]) return { key: f2, gloss: L[f2], tag: bestTag(T[f2]), inflected: true, ftype: FT[f] || "" };
     return null;
   }
 
@@ -297,7 +298,8 @@
       loadDictAll().then(function (d) {
         var ext = d ? lookupAll(word) : null;
         renderPop(el, word, ext
-          ? { key: ext.key, gloss: ext.gloss, cefr: ext.tag, inflected: ext.inflected, ext: true }
+          ? { key: ext.key, gloss: ext.gloss, cefr: ext.tag, inflected: ext.inflected,
+              ftype: ext.ftype, ext: true }
           : { key: String(word).toLowerCase() });
       });
     });
@@ -315,7 +317,10 @@
     if (res.gloss) {
       h.push('<div class="wpop-gloss">' + esc(res.gloss) + '</div>');
       if (res.inflected && res.key !== String(word).toLowerCase()) {
-        h.push('<div class="wpop-note">原形：<b>' + esc(res.key) + '</b></div>');
+        // 说清是什么形式：made → make 的过去式/过去分词
+        h.push('<div class="wpop-note">' +
+               (res.ftype ? esc(res.ftype) + ' → ' : '原形：') +
+               '<b>' + esc(res.key) + '</b></div>');
       }
       if (res.exam) {
         h.push('<div class="wpop-note">真题出现 ' + res.exam + ' 句 · 收录于 ' +
@@ -387,7 +392,33 @@
       b.classList.toggle('on', on);
       b.textContent = on ? '✓ 已在生词本' : '＋ 生词本';
     });
+    renderNotes();
     updateCounts();
+  }
+
+  // 收进生词本的词，在它所在的段落下面留一行小注（像在旁边做笔记）
+  function renderNotes() {
+    if (!pageId()) return;
+    var gloss = {};
+    vocab.forEach(function (v) { gloss[v.w] = v.gloss || ''; });
+    document.querySelectorAll('.para, .tr-line, .sent, .q').forEach(function (blk) {
+      var seen = {}, words = [];
+      blk.querySelectorAll('.w.marked').forEach(function (el) {
+        var w = el.dataset.w;
+        if (!w || seen[w]) return;
+        seen[w] = 1;
+        words.push('<b>' + esc(w) + '</b>' + (gloss[w] ? ' ' + esc(gloss[w]) : ''));
+      });
+      var box = blk.querySelector(':scope > .wnotes');
+      if (!words.length) { if (box) box.remove(); return; }
+      if (!box) {
+        box = document.createElement('div');
+        box.className = 'wnotes';
+        blk.appendChild(box);
+      }
+      box.innerHTML = '<span class="wnotes-h">生词</span>' +
+                      words.join('<span class="sep">·</span>');
+    });
   }
 
   // ------------------------------------------------------------ 分词包装

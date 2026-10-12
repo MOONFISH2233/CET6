@@ -525,6 +525,8 @@ function toggleTheme(){
 
 migratePlan();
 render();
+/* 从精读站按「后退」回来时，页面是浏览器缓存里的旧 DOM（进度是老的）→ 重画一次 */
+window.addEventListener('pageshow', function(e){ if(e.persisted){ render(); } });
 </script>
 <script src="../assets/quotes.js?v=__VER__"></script>
 </body>

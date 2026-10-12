@@ -35,6 +35,26 @@
   if (!Array.isArray(wrong)) wrong = [];
   if (!answers || typeof answers !== "object" || Array.isArray(answers)) answers = {};
 
+  /* ---------- 未提交的作答也存着（点了几个空没提交就跑掉，回来不该白做） ---------- */
+  var DRAFT_KEY = "cet6:draft";
+  function loadDraft() {
+    try { return JSON.parse(localStorage.getItem(DRAFT_KEY)) || {}; } catch (e) { return {}; }
+  }
+  function draftSet(no, val) {
+    var pid = pageId();
+    if (!pid || !no) return;
+    var d = loadDraft();
+    if (!d[pid]) d[pid] = {};
+    if (val) d[pid][no] = val; else delete d[pid][no];
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify(d)); } catch (e) {}
+  }
+  function draftClear() {
+    var pid = pageId(), d = loadDraft();
+    if (!pid || !d[pid]) return;
+    delete d[pid];
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify(d)); } catch (e) {}
+  }
+
   function pageId() {
     var m = location.pathname.match(/\/p\/([^/]+)\/([^/.]+)\.html/);
     return m ? m[1] + "/" + m[2] : "";
@@ -131,6 +151,7 @@
         if (q.dataset.done) return;
         list.querySelectorAll("li").forEach(function (x) { x.classList.remove("sel"); });
         li.classList.add("sel");
+        draftSet(no, li.dataset.letter);
         updateBar();
       });
     });
@@ -155,7 +176,7 @@
     var head = q.querySelector(".q-head");
     if (head) head.appendChild(sel);
     else q.appendChild(sel);
-    sel.addEventListener("change", updateBar);
+    sel.addEventListener("change", function () { draftSet(no, sel.value); updateBar(); });
     q.dataset.answer = info.answer;
     q.dataset.qtype = "match";
     q.dataset.qno = no;
@@ -236,6 +257,7 @@
     slot.classList.add("filled");
     var wEl = document.querySelector('.wb-item[data-letter="' + L + '"]');
     if (wEl) { wEl.classList.add("used"); wEl.dataset.onQno = slot.dataset.qno; }
+    draftSet(slot.dataset.qno, L);
     updateBar();
   }
 
@@ -359,6 +381,7 @@
     var L = slot.dataset.letter;
     slot.dataset.letter = "";
     slot.dataset.word = "";
+    draftSet(slot.dataset.qno, "");
     var val = slot.querySelector(".cval");
     if (val) val.textContent = "";
     slot.classList.remove("filled", "q-ok", "q-bad");
@@ -416,7 +439,14 @@
         slot.classList.add("locked", ok ? "q-ok" : "q-bad");
         var tip = document.createElement("i");
         tip.className = "cslot-tip";
-        tip.textContent = ok ? "✓" : "✗ " + ans;
+        if (ok) {
+          tip.textContent = "✓";
+        } else {
+          /* 错的旁边也把对的写出来（只给字母还得自己回去对词库） */
+          var right = document.querySelector('.wb-item[data-letter="' + ans + '"]');
+          var rw = right ? (right.dataset.word || "") : "";
+          tip.textContent = "✗ 应为 " + ans + (rw ? " " + rw : "");
+        }
         slot.appendChild(tip);
       }
       var bb = q.querySelector(".ansbadge");
@@ -504,12 +534,41 @@
     if (btn) btn.disabled = (picked === 0);
   }
 
+  /* 回到本页时把没提交的作答放回来（判过的那些由 restore() 负责） */
+  function applyDraft() {
+    var d = loadDraft()[pageId()] || {};
+    Object.keys(d).forEach(function (no) {
+      var q = null;
+      for (var i = 0; i < items.length; i++) {
+        if (String(items[i].dataset.qno) === String(no)) { q = items[i]; break; }
+      }
+      if (!q || q.dataset.done) return;
+      var v = d[no];
+      if (q.dataset.qtype === "choice") {
+        q.querySelectorAll("ul.opts li").forEach(function (li) {
+          if (norm(li.dataset.letter) === norm(v)) li.classList.add("sel");
+        });
+      } else if (q.dataset.qtype === "cloze") {
+        var slot = document.querySelector('.cslot[data-qno="' + no + '"]');
+        var b = bankOf(norm(v));
+        if (slot && b && !slot.dataset.letter) fillSlot(slot, b.letter, b.word);
+      } else {
+        var sel = q.querySelector("select");
+        if (sel && v) sel.value = v;
+      }
+    });
+  }
+
+  /* 浏览器「后退」回来时（bfcache）页面是旧的 DOM，刷新一下统计 */
+  window.addEventListener("pageshow", function (e) { if (e.persisted) updateBar(); });
+
   function submitAll() {
     var ok = 0, bad = 0, empty = 0;
     items.forEach(function (q) {
       var r = submitOne(q);
       if (r === "ok") ok++; else if (r === "bad") bad++; else if (r === "empty") empty++;
     });
+    draftClear();          // 提交过就不用留草稿了
     updateBar();
     var m = [];
     if (ok) m.push("对 " + ok + " 题");
@@ -570,6 +629,7 @@
 
     buildBar();
     items.forEach(restore);
+    applyDraft();
     updateBar();
     if (items.some(function (q) { return q.dataset.done; })) {
       document.body.classList.remove("hide-ans");
