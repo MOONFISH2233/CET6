@@ -396,17 +396,20 @@
     updateCounts();
   }
 
-  // 收进生词本的词，在它所在的段落下面留一行小注（像在旁边做笔记）
+  // 收进生词本的词，在段落下面留一行小注（像在旁边做笔记）
+  // 词在每个出现的地方都会高亮，但注释只留一处：它第一次出现的那段，免得每段都重复列一遍
   function renderNotes() {
     if (!pageId()) return;
     var gloss = {};
     vocab.forEach(function (v) { gloss[v.w] = v.gloss || ''; });
+    var noted = {};                       // 已经写过注释的词
     document.querySelectorAll('.para, .tr-line, .sent, .q').forEach(function (blk) {
       var seen = {}, words = [];
       blk.querySelectorAll('.w.marked').forEach(function (el) {
         var w = el.dataset.w;
-        if (!w || seen[w]) return;
+        if (!w || seen[w] || noted[w]) return;   // 前面段落注过了就不再重复
         seen[w] = 1;
+        noted[w] = 1;
         words.push('<b>' + esc(w) + '</b>' + (gloss[w] ? ' ' + esc(gloss[w]) : ''));
       });
       var box = blk.querySelector(':scope > .wnotes');
