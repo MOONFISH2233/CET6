@@ -570,6 +570,7 @@
     });
     draftClear();          // 提交过就不用留草稿了
     updateBar();
+    if (window.CET6RefreshNotes) window.CET6RefreshNotes();   // 判完了才把生词批注显出来
     var m = [];
     if (ok) m.push("对 " + ok + " 题");
     if (bad) m.push("错 " + bad + " 题（已记入错题本）");

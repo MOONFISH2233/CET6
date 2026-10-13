@@ -400,6 +400,14 @@
   // 词在每个出现的地方都会高亮，但注释只留一处：它第一次出现的那段，免得每段都重复列一遍
   function renderNotes() {
     if (!pageId()) return;
+    // 还有没做完的题就先别标 —— 不然还没做就看到生词释义了
+    var qs = document.querySelectorAll('.q[data-answer]');
+    for (var qi = 0; qi < qs.length; qi++) {
+      if (!qs[qi].dataset.done) {
+        document.querySelectorAll('.wnotes').forEach(function (n) { n.remove(); });
+        return;
+      }
+    }
     var gloss = {};
     vocab.forEach(function (v) { gloss[v.w] = v.gloss || ''; });
     var noted = {};                       // 已经写过注释的词
@@ -721,7 +729,20 @@
           return !qq || String(v.w).toLowerCase().indexOf(qq) >= 0 ||
                  String(v.gloss || '').toLowerCase().indexOf(qq) >= 0;
         });
-        vs.forEach(function (v) { h.push(vocabRow(v)); });
+        // 按「哪一套卷」分组，免得几百个词一路往下划
+        var labels = (window.CET6_LABELS || {}).sets || {};
+        var groups = {}, order = [];
+        vs.forEach(function (v) {
+          var set = String(v.src || '').split('/')[0] || '_';
+          if (!groups[set]) { groups[set] = []; order.push(set); }
+          groups[set].push(v);
+        });
+        order.forEach(function (set) {
+          h.push('<div class="vgroup"><span>' +
+                 esc(set === '_' ? '重点词页收录' : (labels[set] || set)) +
+                 '</span><i class="vcount">' + groups[set].length + '</i></div>');
+          groups[set].forEach(function (v) { h.push(vocabRow(v)); });
+        });
       } else if (cur === 'wrong') {
         var ws = wrong.filter(function (v) {
           return !qq || (String(v.set || '') + '/' + String(v.mod || '') + '/' + String(v.no || ''))
@@ -825,6 +846,8 @@
     addWrongButtons();
     updateCounts();
   }
+
+  window.CET6RefreshNotes = renderNotes;   // 判完分后由 quiz.js 叫一声，把生词批注显示出来
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

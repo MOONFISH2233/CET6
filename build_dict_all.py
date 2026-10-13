@@ -122,7 +122,14 @@ ABBREV = {
     "st": "abbr. 圣（Saint）；街（street）",
     "id": "n. 身份证（ID）；本我（心理学术语）",
     "hr": "abbr. 人力资源（Human Resources）；小时（hour）",
+    # ECDICT 释义有错的高频词（用户反馈 + 常见误译）
+    "regulatory": "adj. 监管的，管理的（regulatory body 监管机构）",
 }
+
+# ECDICT 有些「词形条目」的释义只写「（某词的复数）」这种——留着会挡住原形的完整释义
+# （attributes 就只有 n. 属性，看不到 attribute 的 vt. 把…归于）。
+INFLECTION_ONLY = re.compile(r"（[A-Za-z][A-Za-z\-']*的(复数|过去式|过去分词|现在分词|"
+                             r"第三人称单数|比较级|最高级)）|^[a-z]+\.\s*$")
 
 
 def corpus_tokens():
@@ -211,6 +218,8 @@ def main():
             g = clean_gloss(row.get("translation") or "")
             if not g:
                 continue
+            if INFLECTION_ONLY.search(g) and w not in ABBREV:
+                continue                      # 只写「（某词的复数）」的词条不要，让词形表指向原形
             if not HAS_POS.match(g):          # 释义没写词性 → 先看 pos 字段，再按词形/词尾猜
                 p = top_pos(row) or guess_pos(w, row.get("exchange") or "")
                 if p:
