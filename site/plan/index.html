@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
 <title>六级 61 天备考计划</title>
-<link rel="stylesheet" href="../assets/style.css?v=202610131908">
+<link rel="stylesheet" href="../assets/style.css?v=202610131916">
 <link rel="icon" href="../assets/img/favicon.png">
 <link rel="apple-touch-icon" href="../assets/img/logo.png">
 <style>
@@ -38,43 +38,61 @@
 .note.auto{color:var(--fg-faint)}
 .today.done .note.auto{color:var(--ok)}
 .today .th{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.today .th b{font-size:16.5px;letter-spacing:-.2px}
-.big{font-size:18px;font-weight:700;margin:12px 0 4px;letter-spacing:-.2px}
+.today .th b{font-size:14.5px;letter-spacing:-.2px}
+/* 今日卡片里的任务行：和逐日清单同一套（列表页没有 .big 了，留着兼容） */
+.big{font-size:14.5px;margin:12px 0 6px;letter-spacing:-.2px}
 .big a{text-decoration:none;border-bottom:1px dashed var(--accent-line);color:inherit}
 .big a:hover{color:var(--accent-text)}
 
 /* 注：原来每天下面有四个「四步走」手动勾选胶囊（.dsteps/.dstep），
    2026-10-13 用户嫌乱去掉了 —— 进度改成只看「判完分」这一个客观信号。 */
 
-/* 天数一览：格子数字用等宽数字，阶段靠浅底色区分，今天/完成各有状态 */
-.wk{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:12px}
-.wk div{aspect-ratio:1;border:1px solid var(--line);border-radius:10px;
+/* ---------------------------------------------------------------- 天数一览
+   2026-10-13 重做：格子不再按阶段铺三种底色（用户：「有点花」），
+   平时只有浅灰，做过的变青绿实心、今天加青绿圈 —— 一屏色块从 61 个降到 0~3 个。
+   阶段色只留在下面「三个阶段」说明卡里。 */
+.wk{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:10px}
+.wk div{aspect-ratio:1;border:1px solid transparent;border-radius:9px;
   display:flex;align-items:center;justify-content:center;
   font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;
-  color:var(--fg-soft);background:var(--bg-card);cursor:pointer;
-  transition:transform .12s,border-color .12s,background .12s,color .12s}
-.wk div:hover{transform:translateY(-1px);border-color:var(--accent-line)}
-.wk div.p1{background:var(--accent-soft);border-color:var(--accent-line);color:var(--accent-ink)}
-.wk div.p2{background:var(--warn-bg);border-color:var(--warn-line);color:var(--warn)}
-.wk div.p3{background:var(--bad-bg);border-color:var(--bad-line);color:var(--bad)}
-.wk div.done{background:var(--accent);border-color:var(--accent);color:#fff}
-.wk div.today{box-shadow:0 0 0 2px var(--accent);font-weight:800}
-.wk div.future{opacity:.5}
+  color:var(--fg-soft);background:var(--bg-soft);cursor:pointer;
+  transition:background .12s,box-shadow .12s,color .12s}
+.wk div:hover{background:var(--bg-hover)}
+.wk div.future{opacity:.62}
+.wk div.done{background:var(--accent);color:#fff}
+.wk div.today{box-shadow:inset 0 0 0 2px var(--accent);color:var(--accent-text);font-weight:800}
+.wk div.today.done{box-shadow:inset 0 0 0 2px var(--accent);color:#fff}
+/* 图例：说清格子颜色，替代原来那句「青=…黄=…红=…」 */
+.wklegend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--fg-faint);
+  margin:10px 0 0}
+.wklegend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;
+  vertical-align:-1px;background:var(--bg-soft)}
+.wklegend .d{background:var(--accent)}
+.wklegend .t{background:var(--bg-soft);box-shadow:inset 0 0 0 2px var(--accent)}
 
-/* 逐日清单 */
-.daylist{margin-top:14px}
-.dayrow{border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;margin-bottom:8px;
-  background:var(--bg-card);transition:border-color .15s,box-shadow .15s}
-.dayrow:hover{border-color:var(--accent-line);box-shadow:var(--shadow-sm)}
-.dayrow .dh{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
-.dayrow .dh b{font-size:14.5px;letter-spacing:-.1px}
-.dayrow .dt{font-size:12px;color:var(--fg-faint);font-variant-numeric:tabular-nums}
-.dayrow .body{margin-top:8px;font-size:13.5px;line-height:1.75}
-.dayrow .body a{text-decoration:none;border-bottom:1px dashed var(--accent-line);color:inherit}
-.dayrow .body a:hover{color:var(--accent-text)}
-.tagx{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;
-  border:1px solid var(--line);background:var(--bg-soft);color:var(--fg-soft);margin-right:6px}
-.note{font-size:12.5px;color:var(--fg-faint);margin-top:7px}
+/* ---------------------------------------------------------------- 逐日清单
+   每一行就是一天要做的事：任务名当行首正文，日期/句数/进度都退成小字，
+   链接用虚线下划线 —— 不再用一排青色小胶囊把字挤到 11px。 */
+.daylist{margin-top:12px}
+.dayrow{padding:11px 2px 12px;border-top:1px solid var(--line)}
+.dayrow:first-child{border-top:none;padding-top:2px}
+.dayrow .dh{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.dayrow .dh b{font-size:13.5px;font-weight:600}
+.dayrow.today .dh b{color:var(--accent-text)}
+.dayrow .dt{font-size:12px;color:var(--fg-faint);font-variant-numeric:tabular-nums;flex:none}
+.dayrow .body{margin-top:5px;font-size:14.5px;line-height:1.7}
+.dayrow .body .ln{display:block}
+/* 任务名（题型）当行首，后面接考期 · 链接 */
+.tname{font-weight:600;margin-right:7px}
+.dayrow .body a,.big a{text-decoration:none;color:inherit;
+  border-bottom:1px dashed var(--accent-line)}
+.dayrow .body a:hover,.big a:hover{color:var(--accent-text)}
+.tnum{font-size:13px;color:var(--fg-faint)}
+/* ⚠️ style.css 里全局的 .note 是「黄色警示框」（有 padding/bg），
+   打卡站这里只想要一行灰字 —— 那些属性必须显式清掉，不然每条提示都顶个黄框 */
+.note{font-size:12.5px;color:var(--fg-faint);margin:5px 0 0;
+  background:none;padding:0;border-radius:0}
+.note.auto{font-size:12.5px}
 .ghost{background:var(--bg-card);border:1px solid var(--line);color:var(--fg-soft);
   border-radius:999px;padding:6px 13px;font-size:12.5px;cursor:pointer;
   transition:background .15s,border-color .15s,color .15s}
@@ -114,9 +132,12 @@
 
 <div class="card">
   <h2><span class="tag">进度</span>61 天一览</h2>
-  <p style="font-size:13px;color:var(--fg-faint);margin:-4px 0 4px">
-    青=阶段一（阅读+听力）· 黄=阶段二（加写作翻译）· 红=阶段三（模考复盘）。点格子跳转。</p>
   <div class="wk" id="grid"></div>
+  <div class="wklegend">
+    <span><i class="t"></i>今天</span>
+    <span><i class="d"></i>已完成</span>
+    <span><i></i>还没做（点格子跳到那天）</span>
+  </div>
 </div>
 
 <div class="card">
@@ -140,8 +161,8 @@
     <p style="font-size:13.5px;line-height:1.8;margin:6px 0 0">
       <strong>整套模考</strong>（按考试时间一次做完）+ 复盘错题本和生词本。不再做新题。</p></div>
   <p style="font-size:13px;color:var(--fg-faint);margin-top:14px">
-    勾选状态存在本机浏览器（<code>cet6:plan</code>）。「本篇收词 N」读的是精读站的生词本，
-    跨页自动同步。换设备请用下方导出/导入。</p>
+    进度看的是精读站的判分记录：那天的阅读（或整套模考）判满题，这一天就自动记上。
+    「收词 N」读的是精读站的生词本，跨页自动同步。换设备请用下方导出/导入。</p>
   <div class="tools" style="margin-top:8px">
     <button class="ghost" onclick="exportPlan()">导出进度</button>
     <button class="ghost" onclick="document.getElementById('impf').click()">导入进度</button>
@@ -286,14 +307,14 @@ function autoOf(r){
            done: judged >= r.q_total };
 }
 
-/* 「这篇判了多少题」那一行。判超了（同一题重复提交等）按总数封顶，别显示 60/55 这种 */
+/* 「这篇判了多少题」：一句短的（长了会折行，61 行叠起来就是好几屏）。
+   判超了（同一题重复提交等）按总数封顶，别显示 60/55 这种 */
 function autoNote(a){
-  var j = Math.min(a.judged, a.total), who = a.whole ? '套' : '篇';
-  return '<div class="note auto">' + (a.done ? '✓ ' : '') +
-    (a.done ? '本' + who + '已判完 ' + a.total + ' 题'
-            : '本' + who + '已判 ' + j + '/' + a.total + ' 题') +
-    (a.judged ? '（对 ' + a.ok + ' 错 ' + a.bad + '）' : '') +
-    (a.done ? ' · 本日进度已自动记上' : ' · 做完点提交，进度自动记') + '</div>';
+  var j = Math.min(a.judged, a.total), t = a.whole ? '套' : '篇';
+  var score = a.judged ? '（对 ' + a.ok + ' 错 ' + a.bad + '）' : '';
+  var txt = a.done ? '✓ 本' + t + '判完' + score + ' · 已记进度'
+                   : '本' + t + ' ' + j + '/' + a.total + score;
+  return '<div class="note auto">' + txt + '</div>';
 }
 
 /* 这一天算不算完成：只有一个信号 —— 那天的阅读（或整套模考）判满了。
@@ -335,13 +356,13 @@ function render(){
     if(window.CET6Quotes) window.CET6Quotes.fill();
   }
 
-  /* 日历格子 */
+  /* 日历格子：平时浅灰，做过的青绿实心，今天加圈（不再按阶段铺三色） */
   var g = PLAN.days.map(function(d){
-    var cls = 'p'+d.phase;
-    if(dayDone(d,prog)) cls += ' done';
-    if(d.d===td) cls += ' today';
-    if(d.d>td) cls += ' future';
-    return '<div class="'+cls+'" title="'+d.d+' 第'+d.day+'天" onclick="jump(\''+d.d+'\')">'+
+    var cls = [];
+    if(dayDone(d,prog)) cls.push('done');
+    if(d.d===td) cls.push('today');
+    if(d.d>td) cls.push('future');
+    return '<div class="'+cls.join(' ')+'" title="'+d.d+' 第'+d.day+'天" onclick="jump(\''+d.d+'\')">'+
            '<span>'+d.day+'</span></div>';
   }).join('');
   $('grid').innerHTML = g;
@@ -352,39 +373,53 @@ function render(){
   }).join('');
 }
 
+/* 收词数只是参考信息，不用「完成」的绿色 —— 绿色只留给「已完成」 */
+function vocabTag(n, whole){
+  return n ? '<span class="tnum">· 收词 '+n+(whole?'（本套）':'')+'</span>' : '';
+}
+
 function readingLine(r){
-  if(!r) return '<span style="color:var(--fg-faint)">今日无新阅读</span>';
-  var label = MN[r.mod] || '整套';
-  var href = modLink(r.set, r.mod);
-  var vt = vocabCount(r.set, r.mod);
-  var vtag = vt ? ' <span class="vok">本篇收词 '+vt+'</span>' : '';
+  if(!r) return '<span class="tname" style="color:var(--fg-faint)">今日无新阅读</span>';
   if(r.whole){
-    /* 收词数不是「完成」状态，别用 .vok 那个绿色 —— 不然跟完成标记混在一起 */
-    return '<span class="tagx">整套模考</span><a href="'+modLink(r.set,null)+'">'+r.set+'</a>'+
-           ' <span style="font-size:12.5px;color:var(--fg-faint)">本套累计收词 '+
-           vocabCountSet(r.set)+'</span>';
+    return '<span class="tname">整套模考</span>'+
+           '<a href="'+modLink(r.set,null)+'">'+r.set+'</a> '+
+           vocabTag(vocabCountSet(r.set), true);
   }
-  return '<span class="tagx">'+label+'</span><a href="'+href+'">'+r.set+' · '+label+'</a>'+vtag;
+  var label = MN[r.mod] || r.mod;
+  return '<span class="tname">'+label+'</span>'+
+         '<a href="'+modLink(r.set,r.mod)+'">'+r.set+'</a> '+
+         vocabTag(vocabCount(r.set, r.mod), false);
 }
 
 function listenLine(l){
   if(!l) return '';
-  var href = modLink(l.set, l.mod);
   var n = l.sentences || l.imitate_sentences || 10;
-  return '<span class="tagx">听力</span><a href="'+href+'">'+l.set+'</a> '+
-         '<span style="color:var(--fg-soft)">模仿 '+n+' 句</span>';
+  return '<span class="tname">听力</span>'+
+         '<a href="'+modLink(l.set,l.mod)+'">'+l.set+'</a> '+
+         '<span class="tnum">模仿 '+n+' 句</span>';
+}
+
+/* 一天要做的事：阅读 / 听力 / 写作翻译 / 模考，一行一件 */
+function taskLines(d){
+  var h = '';
+  if(d.reading) h += '<span class="ln">'+readingLine(d.reading)+'</span>';
+  if(d.listening) h += '<span class="ln">'+listenLine(d.listening)+'</span>';
+  if(d.extra){
+    var lab = MN[d.extra.mod] || d.extra.mod;
+    h += '<span class="ln"><span class="tname">'+lab+'</span>'+
+         '<a href="'+modLink(d.extra.set,d.extra.mod)+'">'+d.extra.set+'</a></span>';
+  }
+  if(!d.reading && !d.listening && !d.extra){
+    h += '<span class="ln" style="color:var(--fg-faint)">今天只复盘，不做新题</span>';
+  }
+  return h;
 }
 
 function todayHTML(d, prog){
-  var h = '<div class="th"><span class="tag">今天</span><b>第 '+d.day+' 天 · '+d.d+' '+d.weekday+'</b>'+
-          '<span style="font-size:12.5px;color:var(--fg-faint)">阶段'+d.phase+'</span></div>';
-  h += '<div class="big">'+readingLine(d.reading)+'</div>';
-  if(d.listening) h += '<div style="margin-top:6px">'+listenLine(d.listening)+'</div>';
-  if(d.extra){
-    var lab = MN[d.extra.mod]||d.extra.mod;
-    h += '<div style="margin-top:6px"><span class="tagx">'+lab+'</span>'+
-         '<a href="'+modLink(d.extra.set,d.extra.mod)+'">'+d.extra.set+' · '+lab+'</a></div>';
-  }
+  /* 阶段不在这里重复（卡片和清单都说了），日期也省 —— 就是「今天」 */
+  var h = '<div class="th"><span class="tag">今天</span><b>第 '+d.day+' 天 · '+d.weekday+
+          ' · '+monthDay(d.d)+'</b></div>';
+  h += '<div class="big">'+taskLines(d)+'</div>';
   if(d.note) h += '<div class="note">'+esc(d.note)+'</div>';
   /* 自动进度：这一篇判了多少题、对几个（不用自己勾四个步骤） */
   var a = autoOf(d.reading);
@@ -403,29 +438,30 @@ function todayHTML(d, prog){
 function rowHTML(d, prog, td){
   var done = dayDone(d,prog);
   var cls = 'dayrow'+(d.d===td?' today':'');
-  var h = '<div class="'+cls+'"><div class="dh"><b>第 '+d.day+' 天 · '+d.d+' '+d.weekday+
-          '</b><span class="dt">阶段'+d.phase+(done?' · <span class="vok">已完成</span>':'')+'</span></div>';
-  h += '<div class="body">'+readingLine(d.reading);
-  if(d.listening) h += '<br>'+listenLine(d.listening);
-  if(d.extra){
-    var lab = MN[d.extra.mod]||d.extra.mod;
-    h += '<br><span class="tagx">'+lab+'</span><a href="'+modLink(d.extra.set,d.extra.mod)+'">'+
-         d.extra.set+' · '+lab+'</a>';
-  }
-  h += '</div>';
+  /* 阶段不写在这行（卡片和阶段说明都说过了）；日期只留「10/12 周一」，年份省掉 */
+  var h = '<div class="'+cls+'" data-date="'+d.d+'"><div class="dh">'+
+          '<b>第 '+d.day+' 天 · '+monthDay(d.d)+' '+d.weekday+'</b>'+
+          '<span class="dt">'+(done?'<span class="vok">✓ 已完成</span>':
+                                     '阶段'+d.phase)+'</span></div>';
+  h += '<div class="body">'+taskLines(d)+'</div>';
   if(d.note) h += '<div class="note">'+esc(d.note)+'</div>';
-  /* 自动进度：这一篇判了多少题、对几个（不用自己勾四个步骤） */
+  /* 自动进度：这一篇判了多少题、对几个 */
   var a = autoOf(d.reading);
   if(a) h += autoNote(a);
   h += '</div>';
   return h;
 }
 
+/* "2026-10-12" → "10/12" */
+function monthDay(s){
+  var p = String(s||'').split('-');
+  return p.length === 3 ? (parseInt(p[1],10) + '/' + parseInt(p[2],10)) : s;
+}
+
 function jump(date){
-  var el = document.querySelector('.dayrow .dh b');
   var rows = document.querySelectorAll('.dayrow');
   for(var i=0;i<rows.length;i++){
-    if(rows[i].querySelector('.dh b').textContent.indexOf(date)>=0){
+    if(rows[i].dataset.date === date){
       rows[i].scrollIntoView({behavior:'smooth', block:'center'});
       return;
     }
@@ -486,6 +522,6 @@ render();
 /* 从精读站按「后退」回来时，页面是浏览器缓存里的旧 DOM（进度是老的）→ 重画一次 */
 window.addEventListener('pageshow', function(e){ if(e.persisted){ render(); } });
 </script>
-<script src="../assets/quotes.js?v=202610131908"></script>
+<script src="../assets/quotes.js?v=202610131916"></script>
 </body>
 </html>

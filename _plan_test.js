@@ -62,12 +62,9 @@ const ck = (n, c, e) => { console.log((c ? '  OK   ' : '  FAIL ') + n + (c ? '' 
   console.log('  模考日: ' + mock.d + ' · 整套 ' + mock.set + ' · ' + mock.tot + ' 题');
   ck('模考日有整套题数', mock.tot > 0, String(mock.tot));
 
-  // ⚠️ 按「第 N 天 · 日期」里的日期精确取行 —— 用 indexOf 会匹配到别人（踩过）
+  // 行上有 data-date，直接按它取（清单行现在只显示 10/12 这种短日期了）
   const mockRow = md => p.evaluate(md => {
-    const el = [].slice.call(document.querySelectorAll('.dayrow')).filter(r => {
-      const m = r.querySelector('.dh b').textContent.match(/(\d{4}-\d{2}-\d{2})/);
-      return m && m[1] === md;
-    })[0];
+    const el = document.querySelector('.dayrow[data-date="' + md + '"]');
     // ⚠️ 「完成」只认日期那行的 .dt 里的 .vok —— body 里的 .vok 是收词统计，不是状态
     return el ? { done: !!el.querySelector('.dt .vok'),
                   note: ((el.querySelector('.note.auto') || {}).textContent || '').trim() } : null;
