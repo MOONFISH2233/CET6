@@ -41,7 +41,9 @@ const ck = (n, c, e) => { console.log((c ? '  OK   ' : '  FAIL ') + n + (c ? '' 
   ck('原文默认收起', first.textOpen === false, String(first.textOpen));
   ck('原文内容不可见', first.textBodyVisible === false, String(first.textBodyVisible));
   ck('播放器在顶部、题目紧随其后', first.cardTop < first.firstQTop, JSON.stringify(first));
-  ck('题目在首屏内（不用滚很远）', first.firstQTop < 900, String(first.firstQTop));
+  // 导航 + 开关都回来了，第 1 题会比上一版低一点；和其他题型页一样，
+  // 一屏半之内能滚到就算合格（不再要求首屏内）
+  ck('题目不用滚太远（<1200px）', first.firstQTop < 1200, String(first.firstQTop));
   ck('有「看原文与翻译」按钮', first.btn);
   await p.screenshot({ path: 'D:/学习/六级/build/_shots/layout-01-top.png' });
 
@@ -96,6 +98,21 @@ const ck = (n, c, e) => { console.log((c ? '  OK   ' : '  FAIL ') + n + (c ? '' 
   console.log('  ' + JSON.stringify(tools));
   ck('工具栏在（且在视口内）', tools.hasTools && tools.top > 0 && tools.top < 780, JSON.stringify(tools));
   ck('工具栏在题目之上', tools.top < tools.qTop, tools.top + ' vs ' + tools.qTop);
+  // 排法要和其他题型页一致：导航 → 开关 → 内容
+  const order = await p.evaluate(() => {
+    const nav = document.querySelector('.modnav');
+    const tl = document.querySelector('.wrap .tools');
+    const card = document.getElementById('audCard');
+    // 「其它题型」这种小标题不该有（别把重点词卡里的 h2 算进来）
+    const noHead = ![].slice.call(document.querySelectorAll('.wrap h2'))
+      .some(h => /其它题型|本篇重点词/.test(h.textContent));
+    const r = e => e ? Math.round(e.getBoundingClientRect().top) : -1;
+    return { navTop: r(nav), toolsTop: r(tl), cardTop: r(card), noHead };
+  });
+  console.log('  ' + JSON.stringify(order));
+  ck('题型导航在最前', order.navTop > 0 && order.navTop < order.toolsTop, JSON.stringify(order));
+  ck('开关在播放器之前', order.toolsTop < order.cardTop, JSON.stringify(order));
+  ck('没有多余的小标题（其它题型）', order.noHead, JSON.stringify(order));
   // 工具栏一共三个：显示答案 / 中文对照 / 深色
   ck('工具栏三个按钮都在', tools.btnCount === 3, String(tools.btnCount));
   ck('「显示答案」按钮在', /答案/.test(tools.ansBtn), tools.ansBtn);

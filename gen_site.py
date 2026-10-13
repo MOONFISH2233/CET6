@@ -404,19 +404,18 @@ def build_module(p, m):
                    f'<span class="n">{MODULE_PARTS[mm]}</span></a>')
     nav.append("</div>")
 
-    # 听力页（有音频时）：标题 → 两个开关 → 播放器 + 题目 → 其它题型 → 重点词。
-    # 开关放最上面（用户要求：做题时一进来就要能点到「显示答案 / 中文对照」），
-    # 播放器和题目紧随其后（用户要求：点听力进去就显示题目）。
+    # 听力页（有音频时）就按其他题型页的排法：
+    #   面包屑 → 标题 → 题型导航 → 三个开关 → 录音音频 + 题目 → 重点词
+    # 只是导航后面不再插「其它题型」这种小标题（用户嫌多余），
+    # 播放器和题目紧跟在开关后面（用户要求：点听力进去就显示题目）。
     if player_first:
         body = f"""
 {crumb([("首页", "index.html"), (p["label"], f"p/{s}.html"), (name, None)], 2)}
 <h1 class="page">{esc(part)} · {esc(name)}</h1>
+{"".join(nav)}
 {tools_bar(with_ans)}
 {ANSHINT if with_ans else ""}
 {inner}
-<h2 style="font-size:15px;margin:24px 0 8px">其它题型</h2>
-{"".join(nav)}
-<h2 style="font-size:15px;margin:24px 0 8px">本篇重点词</h2>
 {hfw_card(m, s)}
 {float_nav([mm for mm in MODULE_ORDER if mm in mods], m)}
 """
