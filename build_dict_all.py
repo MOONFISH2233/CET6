@@ -206,7 +206,7 @@ def main():
     corpus = corpus_tokens()
     print("语料词形: %d（含重复共 %d 次）" % (len(corpus), sum(corpus.values())))
 
-    lemmas, tags, raw_forms = {}, {}, {}
+    lemmas, tags, raw_forms, phon = {}, {}, {}, {}
     with open(CACHE, encoding="utf-8", newline="") as f:
         for row in csv.DictReader(f):
             w = (row.get("word") or "").strip().lower()
@@ -225,6 +225,9 @@ def main():
                 if p:
                     g = p + " " + g
             lemmas[w] = g
+            ph = (row.get("phonetic") or "").strip()
+            if ph:
+                phon[w] = ph
             keep = [t for t in tag.split() if t in KEEP_TAGS]
             if keep:
                 tags[w] = " ".join(keep)
@@ -296,6 +299,21 @@ def main():
         if len(gs) >= 2 and all(g for _, g in gs):
             lemmas[tok] = "复合词： " + " + ".join("%s（%s）" % (p, g[:18]) for p, g in gs)
 
+    # 顺手给核心词库（懒笔记那份，本来没音标）补上 ECDICT 的音标
+    corep = os.path.join(DATA, "dict.json")
+    if os.path.exists(corep):
+        with open(corep, encoding="utf-8") as f:
+            core = json.load(f)
+        cn = 0
+        for w, v in (core.get("words") or {}).items():
+            p = phon.get(w)
+            if p and not v.get("phon"):
+                v["phon"] = p
+                cn += 1
+        with open(corep, "w", encoding="utf-8") as f:
+            json.dump(core, f, ensure_ascii=False, separators=(",", ":"))
+        print("  核心词库补音标 %d 条" % cn)
+
     out = {
         "meta": {
             "source": "ECDICT (MIT License, Copyright (c) Linwei) "
@@ -308,6 +326,7 @@ def main():
         "forms": forms,
         "ftypes": ftypes,
         "tags": tags,
+        "phon": {k: v for k, v in phon.items() if k in lemmas},
     }
     dst = os.path.join(DATA, "dict_all.json")
     with open(dst, "w", encoding="utf-8") as f:

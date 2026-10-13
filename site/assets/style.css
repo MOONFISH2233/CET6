@@ -833,6 +833,30 @@ footer.site a { color: var(--fg-faint); }
 
 .w:hover { background: var(--accent-soft); }
 
+/* 朗读按钮：点词释义、生词本、背单词页通用 */
+.spk {
+  font: inherit;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0 6px 0 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: inline-grid;
+  place-items: center;
+  color: var(--fg-faint);
+  cursor: pointer;
+  vertical-align: middle;
+  transition: background .15s, color .15s;
+}
+
+.spk svg { width: 15px; height: 15px; }
+.spk:hover { color: var(--accent-text); background: var(--accent-soft); }
+.spk:active { transform: scale(.92); }
+.wpop-head .spk { width: 26px; height: 26px; margin: 0 0 0 2px; }
+.wpop-head .spk svg { width: 17px; height: 17px; }
+
 /* 段落下的生词批注（收了词就自动留一行，像旁边写的笔记） */
 .wnotes {
   margin-top: 9px;
@@ -916,6 +940,14 @@ footer.site a { color: var(--fg-faint); }
   border-radius: var(--radius-pill);
   padding: 2px 8px;
   flex: none;
+}
+
+.wpop-phon {
+  font-family: var(--font-en);
+  font-size: 12.5px;
+  color: var(--fg-faint);
+  flex: none;
+  letter-spacing: .01em;
 }
 
 .wpop-close {

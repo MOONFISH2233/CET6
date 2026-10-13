@@ -191,6 +191,53 @@
     return vocabHas(word);
   }
 
+  // ------------------------------------------------------------ 发音
+  // 用浏览器内置语音合成，不下载音频文件（离线也能读）；点一下读一遍
+  var voice = null;
+  function pickVoice() {
+    if (voice || !window.speechSynthesis) return voice;
+    var vs = window.speechSynthesis.getVoices() || [];
+    for (var i = 0; i < vs.length; i++) {
+      if (/^en[-_]US/i.test(vs[i].lang)) { voice = vs[i]; break; }
+    }
+    if (!voice) {
+      for (var j = 0; j < vs.length; j++) {
+        if (/^en/i.test(vs[j].lang)) { voice = vs[j]; break; }
+      }
+    }
+    return voice;
+  }
+  function speak(word) {
+    var w = String(word || '').trim();
+    if (!w || !window.speechSynthesis) return;
+    try {
+      var ss = window.speechSynthesis;
+      // ⚠️ 只在真的还在读的时候才 cancel：手机上 cancel 紧跟 speak 会把新的一句也掐掉（点了没声）
+      if (ss.speaking || ss.pending) ss.cancel();
+      var u = new SpeechSynthesisUtterance(w);
+      u.lang = 'en-US';
+      u.rate = 0.9;
+      u.volume = 1;
+      var v = pickVoice();
+      if (v) u.voice = v;
+      ss.speak(u);          // 必须在用户手势里同步调用，手机上才不会静音
+    } catch (e) {}
+  }
+  if (window.speechSynthesis) {
+    window.speechSynthesis.onvoiceschanged = function () { voice = null; pickVoice(); };
+  }
+  // 有些手机要等 voices 加载完；页面一进来先预热一下
+  if (window.speechSynthesis) { try { pickVoice(); } catch (e) {} }
+
+  function spkBtn(word, cls) {
+    return '<button type="button" class="spk ' + (cls || '') + '" data-say="' +
+           esc(word) + '" aria-label="朗读 ' + esc(word) + '" title="读一遍">' +
+           '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
+           'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+           '<path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="M16 9a4 4 0 0 1 0 6"/>' +
+           '<path d="M19 6.5a8 8 0 0 1 0 11"/></svg></button>';
+  }
+
   function esc(s) {
     return String(s == null ? '' : s)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -274,9 +321,11 @@
     if (!w) return null;
     var L = dictAll.lemmas || {}, F = dictAll.forms || {}, T = dictAll.tags || {};
     var FT = dictAll.ftypes || {};
-    if (L[w]) return { key: w, gloss: L[w], tag: bestTag(T[w]) };
+    var PH = dictAll.phon || {};
+    if (L[w]) return { key: w, gloss: L[w], tag: bestTag(T[w]), phon: PH[w] || "" };
     var f = F[w];
-    if (f && L[f]) return { key: f, gloss: L[f], tag: bestTag(T[f]), inflected: true, ftype: FT[w] || "" };
+    if (f && L[f]) return { key: f, gloss: L[f], tag: bestTag(T[f]), phon: PH[f] || "",
+                            inflected: true, ftype: FT[w] || "" };
     var f2 = f ? F[f] : null;            // 两跳：children's -> children -> child
     if (f2 && L[f2]) return { key: f2, gloss: L[f2], tag: bestTag(T[f2]), inflected: true, ftype: FT[f] || "" };
     return null;
@@ -290,6 +339,7 @@
       if (hit) {
         renderPop(el, word, {
           key: hit.key, gloss: hit.data.gloss, cefr: hit.data.cefr,
+          phon: hit.data.phon || '', from: hit.data,
           exam: hit.data.exam, papers: (hit.data.papers || []).length,
           inflected: hit.inflected
         });
@@ -298,8 +348,8 @@
       loadDictAll().then(function (d) {
         var ext = d ? lookupAll(word) : null;
         renderPop(el, word, ext
-          ? { key: ext.key, gloss: ext.gloss, cefr: ext.tag, inflected: ext.inflected,
-              ftype: ext.ftype, ext: true }
+          ? { key: ext.key, gloss: ext.gloss, cefr: ext.tag, phon: ext.phon || "",
+              inflected: ext.inflected, ftype: ext.ftype, ext: true }
           : { key: String(word).toLowerCase() });
       });
     });
@@ -310,6 +360,8 @@
     var inVocab = vocabHas(key);
     var h = [];
     h.push('<div class="wpop-head"><span class="wpop-word">' + esc(word) + '</span>');
+    h.push(spkBtn(word));
+    if (res.phon) h.push('<span class="wpop-phon">/' + esc(res.phon) + '/</span>');
     if (res.cefr) h.push('<span class="wpop-cefr">' + esc(res.cefr) + '</span>');
     if (res.ext) h.push('<span class="wpop-ext">扩展词库</span>');
     h.push('<button class="wpop-close" aria-label="关闭">×</button></div>');
@@ -673,6 +725,7 @@
     function vocabRow(v) {
       return '<div class="vitem">' +
         '<div class="vitem-main">' +
+          spkBtn(v.w) +
           '<b class="vw" data-w="' + esc(v.w) + '">' + esc(v.w) + '</b>' +
           (v.cefr ? '<span class="vcefr">' + esc(v.cefr) + '</span>' : '') +
           '<span class="vgloss">' + esc(v.gloss || '—') + '</span>' +
@@ -777,6 +830,7 @@
 
     root.onclick = function (e) {
       var t = e.target;
+      if (t.closest && t.closest('.spk')) return;      // 点喇叭只发音，别弹词条
       if (t.classList && t.classList.contains('vdel')) {
         var kind = t.dataset.del, i = +t.dataset.i;
         if (kind === 'vocab') delVocab(t.dataset.w);
@@ -837,6 +891,14 @@
     if (document.getElementById('hfwPage')) { initHfwPage(); return; }
 
     document.addEventListener('click', onClick);
+    // 喇叭按钮：任何页面、任何位置都能用
+    document.addEventListener('click', function (e) {
+      var b = e.target.closest && e.target.closest('.spk');
+      if (!b) return;
+      e.preventDefault();
+      e.stopPropagation();
+      speak(b.dataset.say || '');
+    }, true);
 
     // 只包正文区域，避免把按钮/导航也切开
     document.querySelectorAll('.card, .zhblock, .enblock').forEach(wrapWords);
