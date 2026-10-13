@@ -939,7 +939,7 @@ def build_review(meta):
 
     body = f"""
 {crumb([("首页", "index.html"), ("背单词", None)], 0)}
-<div class="hero hero-art hero-splash">
+<div class="hero hero-art hero-splash rv-hero">
   <h1>百词斩</h1>
 </div>
 

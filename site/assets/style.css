@@ -2169,3 +2169,9 @@ body.has-quiz-bar{padding-bottom:70px}
 @keyframes rvPop { 0% { transform: scale(1); } 45% { transform: scale(1.015); } 100% { transform: scale(1); } }
 .rv-opt.ok, .rv-opt.bad { animation: rvPop .26s ease-out; }
 @media (prefers-reduced-motion: reduce) { .rv-opt.ok, .rv-opt.bad { animation: none; } }
+
+/* 百词斩 hero：标题下加短青线，和站内其它标题的强调语言一致 */
+.rv-hero h1 { display:inline-block; position:relative; padding-bottom:11px; letter-spacing:-.3px; }
+.rv-hero h1::after { content:''; position:absolute; left:0; bottom:0; width:40px; height:3px; border-radius:2px; background:linear-gradient(90deg, var(--accent), var(--accent-line)); }
+.rv-mini.on { background:var(--accent-soft); border-color:var(--accent); color:var(--accent-text); font-weight:600; }
+

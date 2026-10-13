@@ -326,8 +326,7 @@
       ? '<a href="' + esc(l.href) + '">出自 ' + esc(l.text) + ' · 去原句看</a>'
       : '从重点词页收录') + '</div>');
     h.push('<div class="rv-acts">' +
-      '<button type="button" class="rv-mini" data-act="say">🔊 再听一遍</button>' +
-      '<button type="button" class="rv-mini" data-act="easy">太简单</button>' +
+      '<button type="button" class="rv-mini" data-act="star">☆ 重点标记</button>' +
       '<button type="button" class="rv-mini" data-act="learned">已学会</button>' +
       '</div>');
     h.push('<button type="button" class="rv-next" data-act="next">' +
@@ -355,6 +354,22 @@
   }
 
   // 「已学会」：移出轮转（due 推很远，数据留着，me 页能看见）
+  /* 重点标记：标了就让它更常出现（下次复习提前到今天），再点一次取消 */
+  function star() {
+    var s = session;
+    if (!s || !s.cur) return;
+    var S = srs(), w = s.cur.w;
+    S[w] = S[w] || { EF: 2.5, I: 0, n: 0, seen: 0, ok: 0, bad: 0, t: Date.now() };
+    S[w].star = S[w].star ? 0 : 1;
+    if (S[w].star) S[w].due = dayStart();
+    save(SRS_KEY, S);
+    var b = document.querySelector('.rv-mini[data-act="star"]');
+    if (b) {
+      b.classList.toggle('on', !!S[w].star);
+      b.textContent = S[w].star ? '★ 已标重点' : '☆ 重点标记';
+    }
+  }
+
   function learned() {
     var s = session;
     if (!s || !s.cur) return;
@@ -526,6 +541,7 @@
     if (act === 'next') return next();
     if (act === 'say') return speak(session && session.cur ? session.cur.shown : '');
     if (act === 'easy') return easy();
+    if (act === 'star') return star();
     if (act === 'learned') return learned();
     if (act === 'submit') return submit();
   }
