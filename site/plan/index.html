@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
 <title>六级 61 天备考计划</title>
-<link rel="stylesheet" href="../assets/style.css?v=202610131808">
+<link rel="stylesheet" href="../assets/style.css?v=202610131908">
 <link rel="icon" href="../assets/img/favicon.png">
 <link rel="apple-touch-icon" href="../assets/img/logo.png">
 <style>
@@ -43,13 +43,8 @@
 .big a{text-decoration:none;border-bottom:1px dashed var(--accent-line);color:inherit}
 .big a:hover{color:var(--accent-text)}
 
-/* 四步：胶囊按钮 */
-.dsteps{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0 4px}
-.dstep{font-size:12.5px;padding:6px 13px;border:1px solid var(--line);border-radius:999px;
-  cursor:pointer;user-select:none;background:var(--bg-card);color:var(--fg-soft);
-  transition:background .15s,border-color .15s,color .15s}
-.dstep:hover{border-color:var(--accent-line);color:var(--accent-text)}
-.dstep.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+/* 注：原来每天下面有四个「四步走」手动勾选胶囊（.dsteps/.dstep），
+   2026-10-13 用户嫌乱去掉了 —— 进度改成只看「判完分」这一个客观信号。 */
 
 /* 天数一览：格子数字用等宽数字，阶段靠浅底色区分，今天/完成各有状态 */
 .wk{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:12px}
@@ -161,7 +156,7 @@
 </div>
 
 <script>
-var PLAN = {"generated":"2026-10-13","exam_date":"2026-12-12","start_date":"2026-10-12","phase_bounds":{"1":["2026-10-12","2026-11-08"],"2":["2026-11-09","2026-11-30"],"3":["2026-12-01","2026-12-11"]},"module_names":{"writing":"写作","listening":"听力","cloze":"选词填空","longreading":"长篇阅读","reading1":"仔细阅读①","reading2":"仔细阅读②","translation":"翻译"},"steps":["按方法做题","核实对错","精读全文","句子里背单词"],"stats":{"total_days":61,"phase1":28,"phase2":22,"phase3":11,"reading_planned":39,"reading_pool_p1":45,"reading_pool_p2":15,"listen_sets":10},"days":[{"d":"2026-10-12","day":1,"phase":1,"weekday":"周一","reading":{"set":"2023-06-1","mod":"cloze","q_total":10},"listening":{"set":"2023-06-1","mod":"listening","q_total":25,"round":1,"sentences":5},"extra":null,"review":false,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-10-13","day":2,"phase":1,"weekday":"周二","reading":{"set":"2023-06-2","mod":"cloze","q_total":10},"listening":{"set":"2023-06-2","mod":"listening","q_total":25,"round":1,"sentences":5},"extra":null,"review":false,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-10-14","day":3,"phase":1,"weekday":"周三","reading":{"set":"2023-06-3","mod":"cloze","q_total":10},"listening":{"set":"2023-12-1","mod":"listening","q_total":25,"round":1,"sentences":5},"extra":null,"review":false,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-10-15","day":4,"phase":1,"weekday":"周四","reading":{"set":"2023-12-1","mod":"cloze","q_total":10},"listening":{"set":"2023-12-2","mod":"listening","q_total":25,"round":1,"sentences":5},"extra":null,"review":true,"steps":["按方法做题","核实对错","精读全文","句子里背单词"],"note":"复盘日：今天不做新阅读，把前 3 篇的单词和错题过一遍。"},{"d":"2026-10-16","day":5,"phase":1,"weekday":"周五","reading":{"set":"2023-12-2","mod":"cloze","q_total":10},"listening":{"set":"2024-06-1","mod":"listening","q_total":25,"round":1,"sentences":5},"extra":null,"review":false,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-10-17","day":6,"phase":1,"weekday":"周六","reading":{"set":"2023-12-3","mod":"cloze","q_total":10},"listening":{"set":"2024-06-2","mod":"listening","q_total":25,"round":1,"sentences":5},"extra":null,"review":false,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-10-18","day":7,"phase":1,"weekday":"周日","reading":{"set":"2024-06-1","mod":"cloze","q_total":10},"listening":{"set":"2024-12-1","mod":"listening","q_total":25,"round":1,"sentences":5},"extra":null,"review":true,"steps":["按方法做题","核实对错","精读全文","句子里背单词"],"note":"复盘日：今天不做新阅读，把前 3 篇的单词和错题过一遍。"},{"d":"2026-10-19","day":8,"phase":1,"weekday":"周一","reading":{"set":"2024-06-2","mod":"cloze","q_total":10},"listening":{"set":"2024-12-2","mod":"listening","q_total":25,"round":1,"sentences":5},"extra":null,"review":false,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-10-20","day":9,"phase":1,"weekday":"周二","reading":{"set":"2024-06-3","mod":"cloze","q_total":10},"listening":{"set":"2025-06-1","mod":"listening","q_total":25,"round":1,"sentences":5},"extra":null,"review":false,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-10-21","day":10,"phase":1,"weekday":"周三","reading":{"set":"2024-12-1","mod":"cloze","q_total":10},"listening":{"set":"2025-06-2","mod":"listening","q_total":25,"round":1,"sentences":5},"extra":null,"review":true,"steps":["按方法做题","核实对错","精读全文","句子里背单词"],"note":"复盘日：今天不做新阅读，把前 3 篇的单词和错题过一遍。"},{"d":"2026-10-22","day":11,"phase":1,"weekday":"周四","reading":{"set":"2024-12-2","mod":"cloze","q_total":10},"listening":{"set":"2023-06-1","mod":"listening","q_total":25,"round":2,"sentences":10},"extra":null,"review":false,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-10-23","day":12,"phase":1,"weekday":"周五","reading":{"set":"2024-12-3","mod":"cloze","q_total":10},"listening":{"set":"2023-06-2","mod":"listening","q_total":25,"round":2,"sentences":10},"extra":null,"review":false,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-10-24","day":13,"phase":1,"weekday":"周六","reading":{"set":"2025-06-1","mod":"cloze","q_total":10},"listening":{"set":"2023-12-1","mod":"listening","q_total":25,"round":2,"sentences":10},"extra":null,"review":true,"steps":["按方法做题","核实对错","精读全文","句子里背单词"],"note":"复盘日：今天不做新阅读，把前 3 篇的单词和错题过一遍。"},{"d":"2026-10-25","day":14,"phase":1,"weekday":"周日","reading":{"set":"2025-06-2","mod":"cloze","q_total":10},"listening":{"set":"2023-12-2","mod":"listening","q_total":25,"round":2,"sentences":10},"extra":null,"review":false,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-10-26","day":15,"phase":1,"weekday":"周一","reading":{"set":"2025-06-3","mod":"cloze","q_total":10},"listening":{"set":"2024-06-1","mod":"listening","q_total":25,"round":2,"sentences":10},"extra":null,"review":false,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-10-27","day":16,"phase":1,"weekday":"周二","reading":{"set":"2023-06-1","mod":"reading1","q_total":5},"listening":{"set":"2024-06-2","mod":"listening","q_total":25,"round":2,"sentences":10},"extra":null,"review":true,"steps":["按方法做题","核实对错","精读全文","句子里背单词"],"note":"复盘日：今天不做新阅读，把前 3 篇的单词和错题过一遍。"},{"d":"2026-10-28","day":17,"phase":1,"weekday":"周三","reading":{"set":"2023-06-2","mod":"reading1","q_total":5},"listening":{"set":"2024-12-1","mod":"listening","q_total":25,"round":2,"sentences":10},"extra":null,"review":false,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-10-29","day":18,"phase":1,"weekday":"周四","reading":{"set":"2023-06-3","mod":"reading1","q_total":5},"listening":{"set":"2024-12-2","mod":"listening","q_total":25,"round":2,"sentences":10},"extra":null,"review":false,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-10-30","day":19,"phase":1,"weekday":"周五","reading":{"set":"2023-12-1","mod":"reading1","q_total":5},"listening":{"set":"2025-06-1","mod":"listening","q_total":25,"round":2,"sentences":10},"extra":null,"review":true,"steps":["按方法做题","核实对错","精读全文","句子里背单词"],"note":"复盘日：今天不做新阅读，把前 3 篇的单词和错题过一遍。"},{"d":"2026-10-31","day":20,"phase":1,"weekday":"周六","reading":{"set":"2023-12-2","mod":"reading1","q_total":5},"listening":{"set":"2025-06-2","mod":"listening","q_total":25,"round":2,"sentences":10},"extra":null,"review":false,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-11-01","day":21,"phase":1,"weekday":"周日","reading":{"set":"2023-12-3","mod":"reading1","q_total":5},"listening":{"set":"2023-06-1","mod":"listening","q_total":25,"round":3,"sentences":15},"extra":null,"review":false,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-11-02","day":22,"phase":1,"weekday":"周一","reading":{"set":"2024-06-1","mod":"reading1","q_total":5},"listening":{"set":"2023-06-2","mod":"listening","q_total":25,"round":3,"sentences":15},"extra":null,"review":true,"steps":["按方法做题","核实对错","精读全文","句子里背单词"],"note":"复盘日：今天不做新阅读，把前 3 篇的单词和错题过一遍。"},{"d":"2026-11-03","day":23,"phase":1,"weekday":"周二","reading":{"set":"2024-06-2","mod":"reading1","q_total":5},"listening":{"set":"2023-12-1","mod":"listening","q_total":25,"round":3,"sentences":15},"extra":null,"review":false,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-11-04","day":24,"phase":1,"weekday":"周三","reading":{"set":"2024-06-3","mod":"reading1","q_total":5},"listening":{"set":"2023-12-2","mod":"listening","q_total":25,"round":3,"sentences":15},"extra":null,"review":false,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-11-05","day":25,"phase":1,"weekday":"周四","reading":{"set":"2024-12-1","mod":"reading1","q_total":5},"listening":{"set":"2024-06-1","mod":"listening","q_total":25,"round":3,"sentences":15},"extra":null,"review":true,"steps":["按方法做题","核实对错","精读全文","句子里背单词"],"note":"复盘日：今天不做新阅读，把前 3 篇的单词和错题过一遍。"},{"d":"2026-11-06","day":26,"phase":1,"weekday":"周五","reading":{"set":"2024-12-2","mod":"reading1","q_total":5},"listening":{"set":"2024-06-2","mod":"listening","q_total":25,"round":3,"sentences":15},"extra":null,"review":false,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-11-07","day":27,"phase":1,"weekday":"周六","reading":{"set":"2024-12-3","mod":"reading1","q_total":5},"listening":{"set":"2024-12-1","mod":"listening","q_total":25,"round":3,"sentences":15},"extra":null,"review":false,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-11-08","day":28,"phase":1,"weekday":"周日","reading":{"set":"2025-06-1","mod":"reading1","q_total":5},"listening":{"set":"2024-12-2","mod":"listening","q_total":25,"round":3,"sentences":15},"extra":null,"review":true,"steps":["按方法做题","核实对错","精读全文","句子里背单词"],"note":"复盘日：今天不做新阅读，把前 3 篇的单词和错题过一遍。"},{"d":"2026-11-09","day":29,"phase":2,"weekday":"周一","reading":{"set":"2023-06-1","mod":"longreading","q_total":10},"listening":{"set":"2025-06-1","mod":"listening","q_total":25,"round":6,"sentences":15},"extra":{"mod":"translation","set":"2025-06-3"},"review":false,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-11-10","day":30,"phase":2,"weekday":"周二","reading":null,"listening":{"set":"2025-06-2","mod":"listening","q_total":25,"round":6,"sentences":15},"extra":{"mod":"writing","set":"2023-06-1"},"review":true,"steps":[]},{"d":"2026-11-11","day":31,"phase":2,"weekday":"周三","reading":{"set":"2023-06-2","mod":"longreading","q_total":10},"listening":{"set":"2023-06-1","mod":"listening","q_total":25,"round":7,"sentences":15},"extra":{"mod":"translation","set":"2023-06-1"},"review":false,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-11-12","day":32,"phase":2,"weekday":"周四","reading":null,"listening":{"set":"2023-06-2","mod":"listening","q_total":25,"round":7,"sentences":15},"extra":{"mod":"writing","set":"2023-06-2"},"review":false,"steps":[]},{"d":"2026-11-13","day":33,"phase":2,"weekday":"周五","reading":{"set":"2023-06-3","mod":"longreading","q_total":10},"listening":{"set":"2023-12-1","mod":"listening","q_total":25,"round":7,"sentences":15},"extra":{"mod":"translation","set":"2023-06-2"},"review":true,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-11-14","day":34,"phase":2,"weekday":"周六","reading":null,"listening":{"set":"2023-12-2","mod":"listening","q_total":25,"round":7,"sentences":15},"extra":{"mod":"writing","set":"2023-06-3"},"review":false,"steps":[]},{"d":"2026-11-15","day":35,"phase":2,"weekday":"周日","reading":{"set":"2023-12-1","mod":"longreading","q_total":10},"listening":{"set":"2024-06-1","mod":"listening","q_total":25,"round":7,"sentences":15},"extra":{"mod":"translation","set":"2023-06-3"},"review":false,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-11-16","day":36,"phase":2,"weekday":"周一","reading":null,"listening":{"set":"2024-06-2","mod":"listening","q_total":25,"round":7,"sentences":15},"extra":{"mod":"writing","set":"2023-12-1"},"review":true,"steps":[]},{"d":"2026-11-17","day":37,"phase":2,"weekday":"周二","reading":{"set":"2023-12-2","mod":"longreading","q_total":10},"listening":{"set":"2024-12-1","mod":"listening","q_total":25,"round":7,"sentences":15},"extra":{"mod":"translation","set":"2023-12-1"},"review":false,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-11-18","day":38,"phase":2,"weekday":"周三","reading":null,"listening":{"set":"2024-12-2","mod":"listening","q_total":25,"round":7,"sentences":15},"extra":{"mod":"writing","set":"2023-12-2"},"review":false,"steps":[]},{"d":"2026-11-19","day":39,"phase":2,"weekday":"周四","reading":{"set":"2023-12-3","mod":"longreading","q_total":10},"listening":{"set":"2025-06-1","mod":"listening","q_total":25,"round":7,"sentences":15},"extra":{"mod":"translation","set":"2023-12-2"},"review":true,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-11-20","day":40,"phase":2,"weekday":"周五","reading":null,"listening":{"set":"2025-06-2","mod":"listening","q_total":25,"round":7,"sentences":15},"extra":{"mod":"writing","set":"2023-12-3"},"review":false,"steps":[]},{"d":"2026-11-21","day":41,"phase":2,"weekday":"周六","reading":{"set":"2024-06-1","mod":"longreading","q_total":10},"listening":{"set":"2023-06-1","mod":"listening","q_total":25,"round":8,"sentences":15},"extra":{"mod":"translation","set":"2023-12-3"},"review":false,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-11-22","day":42,"phase":2,"weekday":"周日","reading":null,"listening":{"set":"2023-06-2","mod":"listening","q_total":25,"round":8,"sentences":15},"extra":{"mod":"writing","set":"2024-06-1"},"review":true,"steps":[]},{"d":"2026-11-23","day":43,"phase":2,"weekday":"周一","reading":{"set":"2024-06-2","mod":"longreading","q_total":10},"listening":{"set":"2023-12-1","mod":"listening","q_total":25,"round":8,"sentences":15},"extra":{"mod":"translation","set":"2024-06-1"},"review":false,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-11-24","day":44,"phase":2,"weekday":"周二","reading":null,"listening":{"set":"2023-12-2","mod":"listening","q_total":25,"round":8,"sentences":15},"extra":{"mod":"writing","set":"2024-06-2"},"review":false,"steps":[]},{"d":"2026-11-25","day":45,"phase":2,"weekday":"周三","reading":{"set":"2024-06-3","mod":"longreading","q_total":10},"listening":{"set":"2024-06-1","mod":"listening","q_total":25,"round":8,"sentences":15},"extra":{"mod":"translation","set":"2024-06-2"},"review":true,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-11-26","day":46,"phase":2,"weekday":"周四","reading":null,"listening":{"set":"2024-06-2","mod":"listening","q_total":25,"round":8,"sentences":15},"extra":{"mod":"writing","set":"2024-06-3"},"review":false,"steps":[]},{"d":"2026-11-27","day":47,"phase":2,"weekday":"周五","reading":{"set":"2024-12-1","mod":"longreading","q_total":10},"listening":{"set":"2024-12-1","mod":"listening","q_total":25,"round":8,"sentences":15},"extra":{"mod":"translation","set":"2024-06-3"},"review":false,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-11-28","day":48,"phase":2,"weekday":"周六","reading":null,"listening":{"set":"2024-12-2","mod":"listening","q_total":25,"round":8,"sentences":15},"extra":{"mod":"writing","set":"2024-12-1"},"review":true,"steps":[]},{"d":"2026-11-29","day":49,"phase":2,"weekday":"周日","reading":{"set":"2024-12-2","mod":"longreading","q_total":10},"listening":{"set":"2025-06-1","mod":"listening","q_total":25,"round":8,"sentences":15},"extra":{"mod":"translation","set":"2024-12-1"},"review":false,"steps":["按方法做题","核实对错","精读全文","句子里背单词"]},{"d":"2026-11-30","day":50,"phase":2,"weekday":"周一","reading":null,"listening":{"set":"2025-06-2","mod":"listening","q_total":25,"round":8,"sentences":15},"extra":{"mod":"writing","set":"2024-12-2"},"review":false,"steps":[]},{"d":"2026-12-01","day":51,"phase":3,"weekday":"周二","reading":{"set":"2024-12-1","mod":null,"whole":true},"listening":null,"extra":null,"review":false,"steps":[],"note":"整套模考：按考试时间一次做完，中途不停。"},{"d":"2026-12-02","day":52,"phase":3,"weekday":"周三","reading":null,"listening":null,"extra":null,"review":true,"steps":[],"note":"对答案 + 看错题本，逐个写清错因。"},{"d":"2026-12-03","day":53,"phase":3,"weekday":"周四","reading":null,"listening":null,"extra":null,"review":true,"steps":[],"note":"重读生词本里的词，回到原句里再读一遍。"},{"d":"2026-12-04","day":54,"phase":3,"weekday":"周五","reading":{"set":"2025-06-3","mod":null,"whole":true},"listening":null,"extra":null,"review":false,"steps":[],"note":"整套模考：按考试时间一次做完，中途不停。"},{"d":"2026-12-05","day":55,"phase":3,"weekday":"周六","reading":null,"listening":null,"extra":null,"review":true,"steps":[],"note":"对答案 + 看错题本，逐个写清错因。"},{"d":"2026-12-06","day":56,"phase":3,"weekday":"周日","reading":null,"listening":null,"extra":null,"review":true,"steps":[],"note":"重读生词本里的词，回到原句里再读一遍。"},{"d":"2026-12-07","day":57,"phase":3,"weekday":"周一","reading":{"set":"2025-06-2","mod":null,"whole":true},"listening":null,"extra":null,"review":false,"steps":[],"note":"整套模考：按考试时间一次做完，中途不停。"},{"d":"2026-12-08","day":58,"phase":3,"weekday":"周二","reading":null,"listening":null,"extra":null,"review":true,"steps":[],"note":"对答案 + 看错题本，逐个写清错因。"},{"d":"2026-12-09","day":59,"phase":3,"weekday":"周三","reading":null,"listening":null,"extra":null,"review":true,"steps":[],"note":"重读生词本里的词，回到原句里再读一遍。"},{"d":"2026-12-10","day":60,"phase":3,"weekday":"周四","reading":null,"listening":null,"extra":null,"review":true,"steps":[],"note":"考前 2 天：只看错题本和生词本，不做新题，调好作息。"},{"d":"2026-12-11","day":61,"phase":3,"weekday":"周五","reading":null,"listening":null,"extra":null,"review":true,"steps":[],"note":"考前 1 天：只看错题本和生词本，不做新题，调好作息。"}]};
+var PLAN = {"generated":"2026-10-13","exam_date":"2026-12-12","start_date":"2026-10-12","phase_bounds":{"1":["2026-10-12","2026-11-08"],"2":["2026-11-09","2026-11-30"],"3":["2026-12-01","2026-12-11"]},"module_names":{"writing":"写作","listening":"听力","cloze":"选词填空","longreading":"长篇阅读","reading1":"仔细阅读①","reading2":"仔细阅读②","translation":"翻译"},"set_q_total":{"2023-06-1":55,"2023-06-2":55,"2023-06-3":30,"2023-12-1":55,"2023-12-2":55,"2023-12-3":30,"2024-06-1":55,"2024-06-2":55,"2024-06-3":30,"2024-12-1":55,"2024-12-2":55,"2024-12-3":30,"2025-06-1":55,"2025-06-2":55,"2025-06-3":30},"stats":{"total_days":61,"phase1":28,"phase2":22,"phase3":11,"reading_planned":39,"reading_pool_p1":45,"reading_pool_p2":15,"listen_sets":10},"days":[{"d":"2026-10-12","day":1,"phase":1,"weekday":"周一","reading":{"set":"2023-06-1","mod":"cloze","q_total":10},"listening":{"set":"2023-06-1","mod":"listening","q_total":25,"round":1,"sentences":5},"extra":null,"review":false},{"d":"2026-10-13","day":2,"phase":1,"weekday":"周二","reading":{"set":"2023-06-2","mod":"cloze","q_total":10},"listening":{"set":"2023-06-2","mod":"listening","q_total":25,"round":1,"sentences":5},"extra":null,"review":false},{"d":"2026-10-14","day":3,"phase":1,"weekday":"周三","reading":{"set":"2023-06-3","mod":"cloze","q_total":10},"listening":{"set":"2023-12-1","mod":"listening","q_total":25,"round":1,"sentences":5},"extra":null,"review":false},{"d":"2026-10-15","day":4,"phase":1,"weekday":"周四","reading":{"set":"2023-12-1","mod":"cloze","q_total":10},"listening":{"set":"2023-12-2","mod":"listening","q_total":25,"round":1,"sentences":5},"extra":null,"review":true,"note":"复盘日：今天不做新阅读，把前 3 篇的单词和错题过一遍。"},{"d":"2026-10-16","day":5,"phase":1,"weekday":"周五","reading":{"set":"2023-12-2","mod":"cloze","q_total":10},"listening":{"set":"2024-06-1","mod":"listening","q_total":25,"round":1,"sentences":5},"extra":null,"review":false},{"d":"2026-10-17","day":6,"phase":1,"weekday":"周六","reading":{"set":"2023-12-3","mod":"cloze","q_total":10},"listening":{"set":"2024-06-2","mod":"listening","q_total":25,"round":1,"sentences":5},"extra":null,"review":false},{"d":"2026-10-18","day":7,"phase":1,"weekday":"周日","reading":{"set":"2024-06-1","mod":"cloze","q_total":10},"listening":{"set":"2024-12-1","mod":"listening","q_total":25,"round":1,"sentences":5},"extra":null,"review":true,"note":"复盘日：今天不做新阅读，把前 3 篇的单词和错题过一遍。"},{"d":"2026-10-19","day":8,"phase":1,"weekday":"周一","reading":{"set":"2024-06-2","mod":"cloze","q_total":10},"listening":{"set":"2024-12-2","mod":"listening","q_total":25,"round":1,"sentences":5},"extra":null,"review":false},{"d":"2026-10-20","day":9,"phase":1,"weekday":"周二","reading":{"set":"2024-06-3","mod":"cloze","q_total":10},"listening":{"set":"2025-06-1","mod":"listening","q_total":25,"round":1,"sentences":5},"extra":null,"review":false},{"d":"2026-10-21","day":10,"phase":1,"weekday":"周三","reading":{"set":"2024-12-1","mod":"cloze","q_total":10},"listening":{"set":"2025-06-2","mod":"listening","q_total":25,"round":1,"sentences":5},"extra":null,"review":true,"note":"复盘日：今天不做新阅读，把前 3 篇的单词和错题过一遍。"},{"d":"2026-10-22","day":11,"phase":1,"weekday":"周四","reading":{"set":"2024-12-2","mod":"cloze","q_total":10},"listening":{"set":"2023-06-1","mod":"listening","q_total":25,"round":2,"sentences":10},"extra":null,"review":false},{"d":"2026-10-23","day":12,"phase":1,"weekday":"周五","reading":{"set":"2024-12-3","mod":"cloze","q_total":10},"listening":{"set":"2023-06-2","mod":"listening","q_total":25,"round":2,"sentences":10},"extra":null,"review":false},{"d":"2026-10-24","day":13,"phase":1,"weekday":"周六","reading":{"set":"2025-06-1","mod":"cloze","q_total":10},"listening":{"set":"2023-12-1","mod":"listening","q_total":25,"round":2,"sentences":10},"extra":null,"review":true,"note":"复盘日：今天不做新阅读，把前 3 篇的单词和错题过一遍。"},{"d":"2026-10-25","day":14,"phase":1,"weekday":"周日","reading":{"set":"2025-06-2","mod":"cloze","q_total":10},"listening":{"set":"2023-12-2","mod":"listening","q_total":25,"round":2,"sentences":10},"extra":null,"review":false},{"d":"2026-10-26","day":15,"phase":1,"weekday":"周一","reading":{"set":"2025-06-3","mod":"cloze","q_total":10},"listening":{"set":"2024-06-1","mod":"listening","q_total":25,"round":2,"sentences":10},"extra":null,"review":false},{"d":"2026-10-27","day":16,"phase":1,"weekday":"周二","reading":{"set":"2023-06-1","mod":"reading1","q_total":5},"listening":{"set":"2024-06-2","mod":"listening","q_total":25,"round":2,"sentences":10},"extra":null,"review":true,"note":"复盘日：今天不做新阅读，把前 3 篇的单词和错题过一遍。"},{"d":"2026-10-28","day":17,"phase":1,"weekday":"周三","reading":{"set":"2023-06-2","mod":"reading1","q_total":5},"listening":{"set":"2024-12-1","mod":"listening","q_total":25,"round":2,"sentences":10},"extra":null,"review":false},{"d":"2026-10-29","day":18,"phase":1,"weekday":"周四","reading":{"set":"2023-06-3","mod":"reading1","q_total":5},"listening":{"set":"2024-12-2","mod":"listening","q_total":25,"round":2,"sentences":10},"extra":null,"review":false},{"d":"2026-10-30","day":19,"phase":1,"weekday":"周五","reading":{"set":"2023-12-1","mod":"reading1","q_total":5},"listening":{"set":"2025-06-1","mod":"listening","q_total":25,"round":2,"sentences":10},"extra":null,"review":true,"note":"复盘日：今天不做新阅读，把前 3 篇的单词和错题过一遍。"},{"d":"2026-10-31","day":20,"phase":1,"weekday":"周六","reading":{"set":"2023-12-2","mod":"reading1","q_total":5},"listening":{"set":"2025-06-2","mod":"listening","q_total":25,"round":2,"sentences":10},"extra":null,"review":false},{"d":"2026-11-01","day":21,"phase":1,"weekday":"周日","reading":{"set":"2023-12-3","mod":"reading1","q_total":5},"listening":{"set":"2023-06-1","mod":"listening","q_total":25,"round":3,"sentences":15},"extra":null,"review":false},{"d":"2026-11-02","day":22,"phase":1,"weekday":"周一","reading":{"set":"2024-06-1","mod":"reading1","q_total":5},"listening":{"set":"2023-06-2","mod":"listening","q_total":25,"round":3,"sentences":15},"extra":null,"review":true,"note":"复盘日：今天不做新阅读，把前 3 篇的单词和错题过一遍。"},{"d":"2026-11-03","day":23,"phase":1,"weekday":"周二","reading":{"set":"2024-06-2","mod":"reading1","q_total":5},"listening":{"set":"2023-12-1","mod":"listening","q_total":25,"round":3,"sentences":15},"extra":null,"review":false},{"d":"2026-11-04","day":24,"phase":1,"weekday":"周三","reading":{"set":"2024-06-3","mod":"reading1","q_total":5},"listening":{"set":"2023-12-2","mod":"listening","q_total":25,"round":3,"sentences":15},"extra":null,"review":false},{"d":"2026-11-05","day":25,"phase":1,"weekday":"周四","reading":{"set":"2024-12-1","mod":"reading1","q_total":5},"listening":{"set":"2024-06-1","mod":"listening","q_total":25,"round":3,"sentences":15},"extra":null,"review":true,"note":"复盘日：今天不做新阅读，把前 3 篇的单词和错题过一遍。"},{"d":"2026-11-06","day":26,"phase":1,"weekday":"周五","reading":{"set":"2024-12-2","mod":"reading1","q_total":5},"listening":{"set":"2024-06-2","mod":"listening","q_total":25,"round":3,"sentences":15},"extra":null,"review":false},{"d":"2026-11-07","day":27,"phase":1,"weekday":"周六","reading":{"set":"2024-12-3","mod":"reading1","q_total":5},"listening":{"set":"2024-12-1","mod":"listening","q_total":25,"round":3,"sentences":15},"extra":null,"review":false},{"d":"2026-11-08","day":28,"phase":1,"weekday":"周日","reading":{"set":"2025-06-1","mod":"reading1","q_total":5},"listening":{"set":"2024-12-2","mod":"listening","q_total":25,"round":3,"sentences":15},"extra":null,"review":true,"note":"复盘日：今天不做新阅读，把前 3 篇的单词和错题过一遍。"},{"d":"2026-11-09","day":29,"phase":2,"weekday":"周一","reading":{"set":"2023-06-1","mod":"longreading","q_total":10},"listening":{"set":"2025-06-1","mod":"listening","q_total":25,"round":6,"sentences":15},"extra":{"mod":"translation","set":"2025-06-3"},"review":false},{"d":"2026-11-10","day":30,"phase":2,"weekday":"周二","reading":null,"listening":{"set":"2025-06-2","mod":"listening","q_total":25,"round":6,"sentences":15},"extra":{"mod":"writing","set":"2023-06-1"},"review":true},{"d":"2026-11-11","day":31,"phase":2,"weekday":"周三","reading":{"set":"2023-06-2","mod":"longreading","q_total":10},"listening":{"set":"2023-06-1","mod":"listening","q_total":25,"round":7,"sentences":15},"extra":{"mod":"translation","set":"2023-06-1"},"review":false},{"d":"2026-11-12","day":32,"phase":2,"weekday":"周四","reading":null,"listening":{"set":"2023-06-2","mod":"listening","q_total":25,"round":7,"sentences":15},"extra":{"mod":"writing","set":"2023-06-2"},"review":false},{"d":"2026-11-13","day":33,"phase":2,"weekday":"周五","reading":{"set":"2023-06-3","mod":"longreading","q_total":10},"listening":{"set":"2023-12-1","mod":"listening","q_total":25,"round":7,"sentences":15},"extra":{"mod":"translation","set":"2023-06-2"},"review":true},{"d":"2026-11-14","day":34,"phase":2,"weekday":"周六","reading":null,"listening":{"set":"2023-12-2","mod":"listening","q_total":25,"round":7,"sentences":15},"extra":{"mod":"writing","set":"2023-06-3"},"review":false},{"d":"2026-11-15","day":35,"phase":2,"weekday":"周日","reading":{"set":"2023-12-1","mod":"longreading","q_total":10},"listening":{"set":"2024-06-1","mod":"listening","q_total":25,"round":7,"sentences":15},"extra":{"mod":"translation","set":"2023-06-3"},"review":false},{"d":"2026-11-16","day":36,"phase":2,"weekday":"周一","reading":null,"listening":{"set":"2024-06-2","mod":"listening","q_total":25,"round":7,"sentences":15},"extra":{"mod":"writing","set":"2023-12-1"},"review":true},{"d":"2026-11-17","day":37,"phase":2,"weekday":"周二","reading":{"set":"2023-12-2","mod":"longreading","q_total":10},"listening":{"set":"2024-12-1","mod":"listening","q_total":25,"round":7,"sentences":15},"extra":{"mod":"translation","set":"2023-12-1"},"review":false},{"d":"2026-11-18","day":38,"phase":2,"weekday":"周三","reading":null,"listening":{"set":"2024-12-2","mod":"listening","q_total":25,"round":7,"sentences":15},"extra":{"mod":"writing","set":"2023-12-2"},"review":false},{"d":"2026-11-19","day":39,"phase":2,"weekday":"周四","reading":{"set":"2023-12-3","mod":"longreading","q_total":10},"listening":{"set":"2025-06-1","mod":"listening","q_total":25,"round":7,"sentences":15},"extra":{"mod":"translation","set":"2023-12-2"},"review":true},{"d":"2026-11-20","day":40,"phase":2,"weekday":"周五","reading":null,"listening":{"set":"2025-06-2","mod":"listening","q_total":25,"round":7,"sentences":15},"extra":{"mod":"writing","set":"2023-12-3"},"review":false},{"d":"2026-11-21","day":41,"phase":2,"weekday":"周六","reading":{"set":"2024-06-1","mod":"longreading","q_total":10},"listening":{"set":"2023-06-1","mod":"listening","q_total":25,"round":8,"sentences":15},"extra":{"mod":"translation","set":"2023-12-3"},"review":false},{"d":"2026-11-22","day":42,"phase":2,"weekday":"周日","reading":null,"listening":{"set":"2023-06-2","mod":"listening","q_total":25,"round":8,"sentences":15},"extra":{"mod":"writing","set":"2024-06-1"},"review":true},{"d":"2026-11-23","day":43,"phase":2,"weekday":"周一","reading":{"set":"2024-06-2","mod":"longreading","q_total":10},"listening":{"set":"2023-12-1","mod":"listening","q_total":25,"round":8,"sentences":15},"extra":{"mod":"translation","set":"2024-06-1"},"review":false},{"d":"2026-11-24","day":44,"phase":2,"weekday":"周二","reading":null,"listening":{"set":"2023-12-2","mod":"listening","q_total":25,"round":8,"sentences":15},"extra":{"mod":"writing","set":"2024-06-2"},"review":false},{"d":"2026-11-25","day":45,"phase":2,"weekday":"周三","reading":{"set":"2024-06-3","mod":"longreading","q_total":10},"listening":{"set":"2024-06-1","mod":"listening","q_total":25,"round":8,"sentences":15},"extra":{"mod":"translation","set":"2024-06-2"},"review":true},{"d":"2026-11-26","day":46,"phase":2,"weekday":"周四","reading":null,"listening":{"set":"2024-06-2","mod":"listening","q_total":25,"round":8,"sentences":15},"extra":{"mod":"writing","set":"2024-06-3"},"review":false},{"d":"2026-11-27","day":47,"phase":2,"weekday":"周五","reading":{"set":"2024-12-1","mod":"longreading","q_total":10},"listening":{"set":"2024-12-1","mod":"listening","q_total":25,"round":8,"sentences":15},"extra":{"mod":"translation","set":"2024-06-3"},"review":false},{"d":"2026-11-28","day":48,"phase":2,"weekday":"周六","reading":null,"listening":{"set":"2024-12-2","mod":"listening","q_total":25,"round":8,"sentences":15},"extra":{"mod":"writing","set":"2024-12-1"},"review":true},{"d":"2026-11-29","day":49,"phase":2,"weekday":"周日","reading":{"set":"2024-12-2","mod":"longreading","q_total":10},"listening":{"set":"2025-06-1","mod":"listening","q_total":25,"round":8,"sentences":15},"extra":{"mod":"translation","set":"2024-12-1"},"review":false},{"d":"2026-11-30","day":50,"phase":2,"weekday":"周一","reading":null,"listening":{"set":"2025-06-2","mod":"listening","q_total":25,"round":8,"sentences":15},"extra":{"mod":"writing","set":"2024-12-2"},"review":false},{"d":"2026-12-01","day":51,"phase":3,"weekday":"周二","reading":{"set":"2024-12-1","mod":null,"whole":true},"listening":null,"extra":null,"review":false,"note":"整套模考：按考试时间一次做完，中途不停。"},{"d":"2026-12-02","day":52,"phase":3,"weekday":"周三","reading":null,"listening":null,"extra":null,"review":true,"note":"对答案 + 看错题本，逐个写清错因。"},{"d":"2026-12-03","day":53,"phase":3,"weekday":"周四","reading":null,"listening":null,"extra":null,"review":true,"note":"重读生词本里的词，回到原句里再读一遍。"},{"d":"2026-12-04","day":54,"phase":3,"weekday":"周五","reading":{"set":"2025-06-3","mod":null,"whole":true},"listening":null,"extra":null,"review":false,"note":"整套模考：按考试时间一次做完，中途不停。"},{"d":"2026-12-05","day":55,"phase":3,"weekday":"周六","reading":null,"listening":null,"extra":null,"review":true,"note":"对答案 + 看错题本，逐个写清错因。"},{"d":"2026-12-06","day":56,"phase":3,"weekday":"周日","reading":null,"listening":null,"extra":null,"review":true,"note":"重读生词本里的词，回到原句里再读一遍。"},{"d":"2026-12-07","day":57,"phase":3,"weekday":"周一","reading":{"set":"2025-06-2","mod":null,"whole":true},"listening":null,"extra":null,"review":false,"note":"整套模考：按考试时间一次做完，中途不停。"},{"d":"2026-12-08","day":58,"phase":3,"weekday":"周二","reading":null,"listening":null,"extra":null,"review":true,"note":"对答案 + 看错题本，逐个写清错因。"},{"d":"2026-12-09","day":59,"phase":3,"weekday":"周三","reading":null,"listening":null,"extra":null,"review":true,"note":"重读生词本里的词，回到原句里再读一遍。"},{"d":"2026-12-10","day":60,"phase":3,"weekday":"周四","reading":null,"listening":null,"extra":null,"review":true,"note":"考前 2 天：只看错题本和生词本，不做新题，调好作息。"},{"d":"2026-12-11","day":61,"phase":3,"weekday":"周五","reading":null,"listening":null,"extra":null,"review":true,"note":"考前 1 天：只看错题本和生词本，不做新题，调好作息。"}]};
 var LS_KEY = 'cet6:plan';
 var VOCAB_KEY = 'cet6:vocab';
 var MN = PLAN.module_names;
@@ -260,8 +255,27 @@ var ANS = {};
 function refreshAns(){
   try{ ANS = JSON.parse(localStorage.getItem(ANS_KEY)) || {}; }catch(e){ ANS = {}; }
 }
+/* 模考日：整套的题数 = 这一套六个模块的题数之和（gen_plan 从 data/paper 里算好的） */
+function setTotal(set){
+  var t = PLAN.set_q_total || {};
+  return t[set] || 0;
+}
+
 function autoOf(r){
-  if(!r || !r.set || !r.mod || !r.q_total) return null;
+  if(!r || !r.set) return null;
+  /* 整套模考：把这一套里所有模块的作答加起来算 */
+  if(r.whole){
+    var tot = setTotal(r.set), pre = r.set + '/', judged = 0, ok = 0;
+    Object.keys(ANS).forEach(function(k){
+      if(k.indexOf(pre) !== 0) return;
+      judged++;
+      if(ANS[k] && ANS[k].ok) ok++;
+    });
+    if(!tot) return null;
+    return { judged: judged, total: tot, ok: ok, bad: judged - ok,
+             done: judged >= tot, whole: true };   // whole 要带出来，autoNote 靠它说「本套」
+  }
+  if(!r.mod || !r.q_total) return null;
   var pre = r.set + '/' + r.mod + '/', judged = 0, ok = 0;
   Object.keys(ANS).forEach(function(k){
     if(k.indexOf(pre) !== 0) return;
@@ -272,15 +286,21 @@ function autoOf(r){
            done: judged >= r.q_total };
 }
 
+/* 「这篇判了多少题」那一行。判超了（同一题重复提交等）按总数封顶，别显示 60/55 这种 */
+function autoNote(a){
+  var j = Math.min(a.judged, a.total), who = a.whole ? '套' : '篇';
+  return '<div class="note auto">' + (a.done ? '✓ ' : '') +
+    (a.done ? '本' + who + '已判完 ' + a.total + ' 题'
+            : '本' + who + '已判 ' + j + '/' + a.total + ' 题') +
+    (a.judged ? '（对 ' + a.ok + ' 错 ' + a.bad + '）' : '') +
+    (a.done ? ' · 本日进度已自动记上' : ' · 做完点提交，进度自动记') + '</div>';
+}
+
+/* 这一天算不算完成：只有一个信号 —— 那天的阅读（或整套模考）判满了。
+   手动勾选的四个步骤按钮 2026-10-13 去掉了，prog 只用来存导入导出的旧数据。 */
 function dayDone(dayObj, prog){
   var a = autoOf(dayObj.reading);
-  if(a && a.done) return true;
-  var p = prog[dayObj.d];
-  if(!p) return false;
-  if(dayObj.steps && dayObj.steps.length){
-    return dayObj.steps.every(function(s){ return p[s]; });
-  }
-  return !!p.__done;
+  return !!(a && a.done);
 }
 
 function render(){
@@ -296,7 +316,9 @@ function render(){
 
   var doneN = PLAN.days.filter(function(d){ return dayDone(d,prog); }).length;
   $('pbar').style.width = Math.round(doneN/PLAN.days.length*100)+'%';
-  $('pmeta').textContent = '已完成 '+doneN+' / '+PLAN.days.length+' 天 · 阅读计划 '+PLAN.stats.reading_planned+' 篇 · 听力 '+PLAN.stats.listen_sets+' 套循环';
+  $('pmeta').textContent = '已完成 '+doneN+' / '+PLAN.days.length+
+    ' 天（那天的阅读或模考判满就自动记上） · 阅读计划 '+PLAN.stats.reading_planned+
+    ' 篇 · 听力 '+PLAN.stats.listen_sets+' 套循环';
 
   /* 今日卡片 */
   var t = PLAN.days.filter(function(x){ return x.d===td; })[0];
@@ -309,7 +331,6 @@ function render(){
   } else {
     $('todayCard').innerHTML = todayHTML(t, prog);
     $('todayCard').classList.toggle('done', dayDone(t, prog));   // 做完了给个绿圈
-    bindSteps(t, prog);
     /* 今日卡片被整体重建了，重新填一下「今天的鼓励」（quotes.js 只填没填过的卡片） */
     if(window.CET6Quotes) window.CET6Quotes.fill();
   }
@@ -329,7 +350,6 @@ function render(){
   $('daylist').innerHTML = PLAN.days.map(function(d){
     return rowHTML(d, prog, td);
   }).join('');
-  PLAN.days.forEach(function(d){ bindSteps(d, prog); });
 }
 
 function readingLine(r){
@@ -339,8 +359,10 @@ function readingLine(r){
   var vt = vocabCount(r.set, r.mod);
   var vtag = vt ? ' <span class="vok">本篇收词 '+vt+'</span>' : '';
   if(r.whole){
+    /* 收词数不是「完成」状态，别用 .vok 那个绿色 —— 不然跟完成标记混在一起 */
     return '<span class="tagx">整套模考</span><a href="'+modLink(r.set,null)+'">'+r.set+'</a>'+
-           ' <span class="vok">本套累计收词 '+vocabCountSet(r.set)+'</span>';
+           ' <span style="font-size:12.5px;color:var(--fg-faint)">本套累计收词 '+
+           vocabCountSet(r.set)+'</span>';
   }
   return '<span class="tagx">'+label+'</span><a href="'+href+'">'+r.set+' · '+label+'</a>'+vtag;
 }
@@ -366,13 +388,7 @@ function todayHTML(d, prog){
   if(d.note) h += '<div class="note">'+esc(d.note)+'</div>';
   /* 自动进度：这一篇判了多少题、对几个（不用自己勾四个步骤） */
   var a = autoOf(d.reading);
-  if(a){
-    h += '<div class="note auto">' + (a.done ? '✓ ' : '') +
-         '本篇已判 ' + a.judged + '/' + a.total + ' 题' +
-         (a.judged ? '（对 ' + a.ok + ' 错 ' + a.bad + '）' : '') +
-         (a.done ? ' · 本日进度已自动记上' : ' · 做完点提交，进度自动记') + '</div>';
-  }
-  h += stepsHTML(d, prog);
+  if(a) h += autoNote(a);
   /* 百词斩：生词本攒的词，这里一键过一遍（数量口径与精读站 review.js 一致） */
   var dn = reviewDue();
   h += '<a class="rv-entry" href="../review.html" style="margin-top:10px">'+
@@ -382,16 +398,6 @@ function todayHTML(d, prog){
   /* 今天的鼓励：按第几天取一句温柔台词（quotes.js 填内容） */
   h += '<div class="qcard qsmall" data-quote="day" data-day="'+d.day+'"></div>';
   return h;
-}
-
-function stepsHTML(d, prog){
-  if(!d.steps || !d.steps.length) return '';
-  var p = prog[d.d] || {};
-  var s = d.steps.map(function(st){
-    return '<span class="dstep'+(p[st]?' on':'')+'" data-day="'+d.d+'" data-step="'+esc(st)+'">'+
-           (p[st]?'✓ ':'')+esc(st)+'</span>';
-  }).join('');
-  return '<div class="dsteps">'+s+'</div>';
 }
 
 function rowHTML(d, prog, td){
@@ -410,80 +416,9 @@ function rowHTML(d, prog, td){
   if(d.note) h += '<div class="note">'+esc(d.note)+'</div>';
   /* 自动进度：这一篇判了多少题、对几个（不用自己勾四个步骤） */
   var a = autoOf(d.reading);
-  if(a){
-    h += '<div class="note auto">' + (a.done ? '✓ ' : '') +
-         '本篇已判 ' + a.judged + '/' + a.total + ' 题' +
-         (a.judged ? '（对 ' + a.ok + ' 错 ' + a.bad + '）' : '') +
-         (a.done ? ' · 本日进度已自动记上' : ' · 做完点提交，进度自动记') + '</div>';
-  }
-  h += stepsHTML(d, prog);
+  if(a) h += autoNote(a);
   h += '</div>';
   return h;
-}
-
-/* 只刷新某一天的步骤按钮与相关 UI，避免重建整页 DOM */
-function updateStepsUI(dayId, prog){
-  var p = prog[dayId] || {};
-  var list = document.querySelectorAll('.dstep[data-day="'+dayId+'"]');
-  for(var i=0;i<list.length;i++){
-    var el = list[i];
-    var st = el.dataset.step;
-    var on = !!p[st];
-    if(on) el.classList.add('on'); else el.classList.remove('on');
-    el.textContent = (on ? '✓ ' : '') + st;
-  }
-  var d = null;
-  for(var k=0;k<PLAN.days.length;k++){
-    if(PLAN.days[k].d === dayId){ d = PLAN.days[k]; break; }
-  }
-  if(!d) return;
-  var done = dayDone(d, prog);
-  var cells = document.querySelectorAll('#grid div');
-  for(var m=0;m<cells.length;m++){
-    if((cells[m].title||'').indexOf(dayId)===0){
-      if(done) cells[m].classList.add('done'); else cells[m].classList.remove('done');
-    }
-  }
-  var rows = document.querySelectorAll('.dayrow');
-  for(var n=0;n<rows.length;n++){
-    var b = rows[n].querySelector('.dh b');
-    if(b && b.textContent.indexOf(dayId)>=0){
-      var t = rows[n].querySelector('.dt');
-      if(t) t.innerHTML = '阶段' + d.phase +
-        (done ? ' · <span class="vok">已完成</span>' : '');
-    }
-  }
-}
-
-/* 只刷新顶部进度统计 */
-function updateStats(prog){
-  refreshAns();
-  var doneN = 0;
-  for(var i=0;i<PLAN.days.length;i++){
-    if(dayDone(PLAN.days[i], prog)) doneN++;
-  }
-  var pb = document.getElementById('pbar');
-  if(pb) pb.style.width = Math.round(doneN/PLAN.days.length*100)+'%';
-  var pm = document.getElementById('pmeta');
-  if(pm) pm.textContent = '已完成 ' + doneN + ' / ' + PLAN.days.length +
-    ' 天（做完一篇判完分就自动记上） · 阅读计划 ' + PLAN.stats.reading_planned +
-    ' 篇 · 听力 ' + PLAN.stats.listen_sets + ' 套循环';
-}
-
-function bindSteps(d, prog){
-  document.querySelectorAll('.dstep[data-day="'+d.d+'"]').forEach(function(el){
-    el.onclick = function(){
-      var p = loadProg();
-      if(!p[d.d]) p[d.d] = {};
-      var st = el.dataset.step;
-      p[d.d][st] = !p[d.d][st];
-      if(d.steps.every(function(x){ return p[d.d][x]; })) p[d.d].__done = true;
-      else delete p[d.d].__done;
-      saveProg(p);
-      updateStepsUI(d.d, p);
-      updateStats(p);
-    };
-  });
 }
 
 function jump(date){
@@ -551,6 +486,6 @@ render();
 /* 从精读站按「后退」回来时，页面是浏览器缓存里的旧 DOM（进度是老的）→ 重画一次 */
 window.addEventListener('pageshow', function(e){ if(e.persisted){ render(); } });
 </script>
-<script src="../assets/quotes.js?v=202610131808"></script>
+<script src="../assets/quotes.js?v=202610131908"></script>
 </body>
 </html>

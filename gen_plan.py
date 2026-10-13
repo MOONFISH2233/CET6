@@ -47,7 +47,8 @@ MODULE_NAMES = {
 READING_MODS = ["cloze", "reading1", "reading2"]   # 阶段一：由易到难，跳过长篇阅读
 PHASE2_MODS = ["longreading"]                       # 长篇阅读最难，留到阶段二
 
-STEPS = ["按方法做题", "核实对错", "精读全文", "句子里背单词"]
+# 「四步走」的说明文案在阶段一的卡片里（plan_tpl 的静态 HTML）。
+# 原来每天还有四个手动勾选胶囊，2026-10-13 用户嫌乱去掉了 —— 进度只看判分。
 
 
 def esc(s):
@@ -87,7 +88,7 @@ def question_counts():
 
 
 def build_schedule(meta):
-    """排日程（10/12 起，到考前 12/11，共 61 天）。返回 (days, stats)"""
+    """排日程（10/12 起，到考前 12/11，共 61 天）。返回 (days, stats, 每套每模块的题数)"""
     papers = {p["set"]: p for p in meta["papers"]}
     qn = question_counts()
 
@@ -129,7 +130,7 @@ def build_schedule(meta):
                 "weekday": ["周一", "周二", "周三", "周四", "周五",
                             "周六", "周日"][d.weekday()],
                 "reading": None, "listening": None,
-                "extra": None, "review": False, "steps": []}
+                "extra": None, "review": False}
 
         if phase == 1:
             # 一天一篇阅读
@@ -137,7 +138,6 @@ def build_schedule(meta):
                 s, mod = queue[qi]
                 qi += 1
                 item["reading"] = {"set": s, "mod": mod, "q_total": qn.get((s, mod), 0)}
-                item["steps"] = list(STEPS)
             # 听力：10 套整齐循环（第 3 套缺听力，已从 listen_sets 剔除）
             rnd = (day_no - 1) // len(listen_sets) + 1   # 第几轮：1,2,3
             item["listening"] = {
@@ -159,7 +159,6 @@ def build_schedule(meta):
                 s, mod = queue2[q2i]
                 q2i += 1
                 item["reading"] = {"set": s, "mod": mod, "q_total": qn.get((s, mod), 0)}
-                item["steps"] = list(STEPS)
             item["listening"] = {
                 "set": listen_sets[(day_no - 1) % len(listen_sets)],
                 "mod": "listening",
@@ -214,7 +213,7 @@ def build_schedule(meta):
         "reading_pool_p2": len(queue2),
         "listen_sets": len(listen_sets),
     }
-    return days, stats
+    return days, stats, qn
 
 
 def build_html(plan):
@@ -227,7 +226,7 @@ def build_html(plan):
 
 def main():
     meta = load_meta()
-    days, stats = build_schedule(meta)
+    days, stats, qn = build_schedule(meta)
     os.makedirs(OUT, exist_ok=True)
 
     plan = {
@@ -241,7 +240,8 @@ def main():
                   (EXAM - dt.timedelta(days=1)).isoformat()],
         },
         "module_names": MODULE_NAMES,
-        "steps": STEPS,
+        # 每套卷的总题数：模考日按它判断「整套判完了没」（精读站判完一道题就写 cet6:answers）
+        "set_q_total": {s: sum(n for (st, _m), n in qn.items() if st == s) for s in SETS},
         "stats": stats,
         "days": days,
     }

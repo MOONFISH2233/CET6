@@ -25,12 +25,23 @@
   "reading2": "仔细阅读②",
   "translation": "翻译"
  },
- "steps": [
-  "按方法做题",
-  "核实对错",
-  "精读全文",
-  "句子里背单词"
- ],
+ "set_q_total": {
+  "2023-06-1": 55,
+  "2023-06-2": 55,
+  "2023-06-3": 30,
+  "2023-12-1": 55,
+  "2023-12-2": 55,
+  "2023-12-3": 30,
+  "2024-06-1": 55,
+  "2024-06-2": 55,
+  "2024-06-3": 30,
+  "2024-12-1": 55,
+  "2024-12-2": 55,
+  "2024-12-3": 30,
+  "2025-06-1": 55,
+  "2025-06-2": 55,
+  "2025-06-3": 30
+ },
  "stats": {
   "total_days": 61,
   "phase1": 28,
@@ -60,13 +71,7 @@
     "sentences": 5
    },
    "extra": null,
-   "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": false
   },
   {
    "d": "2026-10-13",
@@ -86,13 +91,7 @@
     "sentences": 5
    },
    "extra": null,
-   "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": false
   },
   {
    "d": "2026-10-14",
@@ -112,13 +111,7 @@
     "sentences": 5
    },
    "extra": null,
-   "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": false
   },
   {
    "d": "2026-10-15",
@@ -139,12 +132,6 @@
    },
    "extra": null,
    "review": true,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ],
    "note": "复盘日：今天不做新阅读，把前 3 篇的单词和错题过一遍。"
   },
   {
@@ -165,13 +152,7 @@
     "sentences": 5
    },
    "extra": null,
-   "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": false
   },
   {
    "d": "2026-10-17",
@@ -191,13 +172,7 @@
     "sentences": 5
    },
    "extra": null,
-   "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": false
   },
   {
    "d": "2026-10-18",
@@ -218,12 +193,6 @@
    },
    "extra": null,
    "review": true,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ],
    "note": "复盘日：今天不做新阅读，把前 3 篇的单词和错题过一遍。"
   },
   {
@@ -244,13 +213,7 @@
     "sentences": 5
    },
    "extra": null,
-   "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": false
   },
   {
    "d": "2026-10-20",
@@ -270,13 +233,7 @@
     "sentences": 5
    },
    "extra": null,
-   "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": false
   },
   {
    "d": "2026-10-21",
@@ -297,12 +254,6 @@
    },
    "extra": null,
    "review": true,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ],
    "note": "复盘日：今天不做新阅读，把前 3 篇的单词和错题过一遍。"
   },
   {
@@ -323,13 +274,7 @@
     "sentences": 10
    },
    "extra": null,
-   "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": false
   },
   {
    "d": "2026-10-23",
@@ -349,13 +294,7 @@
     "sentences": 10
    },
    "extra": null,
-   "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": false
   },
   {
    "d": "2026-10-24",
@@ -376,12 +315,6 @@
    },
    "extra": null,
    "review": true,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ],
    "note": "复盘日：今天不做新阅读，把前 3 篇的单词和错题过一遍。"
   },
   {
@@ -402,13 +335,7 @@
     "sentences": 10
    },
    "extra": null,
-   "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": false
   },
   {
    "d": "2026-10-26",
@@ -428,13 +355,7 @@
     "sentences": 10
    },
    "extra": null,
-   "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": false
   },
   {
    "d": "2026-10-27",
@@ -455,12 +376,6 @@
    },
    "extra": null,
    "review": true,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ],
    "note": "复盘日：今天不做新阅读，把前 3 篇的单词和错题过一遍。"
   },
   {
@@ -481,13 +396,7 @@
     "sentences": 10
    },
    "extra": null,
-   "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": false
   },
   {
    "d": "2026-10-29",
@@ -507,13 +416,7 @@
     "sentences": 10
    },
    "extra": null,
-   "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": false
   },
   {
    "d": "2026-10-30",
@@ -534,12 +437,6 @@
    },
    "extra": null,
    "review": true,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ],
    "note": "复盘日：今天不做新阅读，把前 3 篇的单词和错题过一遍。"
   },
   {
@@ -560,13 +457,7 @@
     "sentences": 10
    },
    "extra": null,
-   "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": false
   },
   {
    "d": "2026-11-01",
@@ -586,13 +477,7 @@
     "sentences": 15
    },
    "extra": null,
-   "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": false
   },
   {
    "d": "2026-11-02",
@@ -613,12 +498,6 @@
    },
    "extra": null,
    "review": true,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ],
    "note": "复盘日：今天不做新阅读，把前 3 篇的单词和错题过一遍。"
   },
   {
@@ -639,13 +518,7 @@
     "sentences": 15
    },
    "extra": null,
-   "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": false
   },
   {
    "d": "2026-11-04",
@@ -665,13 +538,7 @@
     "sentences": 15
    },
    "extra": null,
-   "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": false
   },
   {
    "d": "2026-11-05",
@@ -692,12 +559,6 @@
    },
    "extra": null,
    "review": true,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ],
    "note": "复盘日：今天不做新阅读，把前 3 篇的单词和错题过一遍。"
   },
   {
@@ -718,13 +579,7 @@
     "sentences": 15
    },
    "extra": null,
-   "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": false
   },
   {
    "d": "2026-11-07",
@@ -744,13 +599,7 @@
     "sentences": 15
    },
    "extra": null,
-   "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": false
   },
   {
    "d": "2026-11-08",
@@ -771,12 +620,6 @@
    },
    "extra": null,
    "review": true,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ],
    "note": "复盘日：今天不做新阅读，把前 3 篇的单词和错题过一遍。"
   },
   {
@@ -800,13 +643,7 @@
     "mod": "translation",
     "set": "2025-06-3"
    },
-   "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": false
   },
   {
    "d": "2026-11-10",
@@ -825,8 +662,7 @@
     "mod": "writing",
     "set": "2023-06-1"
    },
-   "review": true,
-   "steps": []
+   "review": true
   },
   {
    "d": "2026-11-11",
@@ -849,13 +685,7 @@
     "mod": "translation",
     "set": "2023-06-1"
    },
-   "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": false
   },
   {
    "d": "2026-11-12",
@@ -874,8 +704,7 @@
     "mod": "writing",
     "set": "2023-06-2"
    },
-   "review": false,
-   "steps": []
+   "review": false
   },
   {
    "d": "2026-11-13",
@@ -898,13 +727,7 @@
     "mod": "translation",
     "set": "2023-06-2"
    },
-   "review": true,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": true
   },
   {
    "d": "2026-11-14",
@@ -923,8 +746,7 @@
     "mod": "writing",
     "set": "2023-06-3"
    },
-   "review": false,
-   "steps": []
+   "review": false
   },
   {
    "d": "2026-11-15",
@@ -947,13 +769,7 @@
     "mod": "translation",
     "set": "2023-06-3"
    },
-   "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": false
   },
   {
    "d": "2026-11-16",
@@ -972,8 +788,7 @@
     "mod": "writing",
     "set": "2023-12-1"
    },
-   "review": true,
-   "steps": []
+   "review": true
   },
   {
    "d": "2026-11-17",
@@ -996,13 +811,7 @@
     "mod": "translation",
     "set": "2023-12-1"
    },
-   "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": false
   },
   {
    "d": "2026-11-18",
@@ -1021,8 +830,7 @@
     "mod": "writing",
     "set": "2023-12-2"
    },
-   "review": false,
-   "steps": []
+   "review": false
   },
   {
    "d": "2026-11-19",
@@ -1045,13 +853,7 @@
     "mod": "translation",
     "set": "2023-12-2"
    },
-   "review": true,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": true
   },
   {
    "d": "2026-11-20",
@@ -1070,8 +872,7 @@
     "mod": "writing",
     "set": "2023-12-3"
    },
-   "review": false,
-   "steps": []
+   "review": false
   },
   {
    "d": "2026-11-21",
@@ -1094,13 +895,7 @@
     "mod": "translation",
     "set": "2023-12-3"
    },
-   "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": false
   },
   {
    "d": "2026-11-22",
@@ -1119,8 +914,7 @@
     "mod": "writing",
     "set": "2024-06-1"
    },
-   "review": true,
-   "steps": []
+   "review": true
   },
   {
    "d": "2026-11-23",
@@ -1143,13 +937,7 @@
     "mod": "translation",
     "set": "2024-06-1"
    },
-   "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": false
   },
   {
    "d": "2026-11-24",
@@ -1168,8 +956,7 @@
     "mod": "writing",
     "set": "2024-06-2"
    },
-   "review": false,
-   "steps": []
+   "review": false
   },
   {
    "d": "2026-11-25",
@@ -1192,13 +979,7 @@
     "mod": "translation",
     "set": "2024-06-2"
    },
-   "review": true,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": true
   },
   {
    "d": "2026-11-26",
@@ -1217,8 +998,7 @@
     "mod": "writing",
     "set": "2024-06-3"
    },
-   "review": false,
-   "steps": []
+   "review": false
   },
   {
    "d": "2026-11-27",
@@ -1241,13 +1021,7 @@
     "mod": "translation",
     "set": "2024-06-3"
    },
-   "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": false
   },
   {
    "d": "2026-11-28",
@@ -1266,8 +1040,7 @@
     "mod": "writing",
     "set": "2024-12-1"
    },
-   "review": true,
-   "steps": []
+   "review": true
   },
   {
    "d": "2026-11-29",
@@ -1290,13 +1063,7 @@
     "mod": "translation",
     "set": "2024-12-1"
    },
-   "review": false,
-   "steps": [
-    "按方法做题",
-    "核实对错",
-    "精读全文",
-    "句子里背单词"
-   ]
+   "review": false
   },
   {
    "d": "2026-11-30",
@@ -1315,8 +1082,7 @@
     "mod": "writing",
     "set": "2024-12-2"
    },
-   "review": false,
-   "steps": []
+   "review": false
   },
   {
    "d": "2026-12-01",
@@ -1331,7 +1097,6 @@
    "listening": null,
    "extra": null,
    "review": false,
-   "steps": [],
    "note": "整套模考：按考试时间一次做完，中途不停。"
   },
   {
@@ -1343,7 +1108,6 @@
    "listening": null,
    "extra": null,
    "review": true,
-   "steps": [],
    "note": "对答案 + 看错题本，逐个写清错因。"
   },
   {
@@ -1355,7 +1119,6 @@
    "listening": null,
    "extra": null,
    "review": true,
-   "steps": [],
    "note": "重读生词本里的词，回到原句里再读一遍。"
   },
   {
@@ -1371,7 +1134,6 @@
    "listening": null,
    "extra": null,
    "review": false,
-   "steps": [],
    "note": "整套模考：按考试时间一次做完，中途不停。"
   },
   {
@@ -1383,7 +1145,6 @@
    "listening": null,
    "extra": null,
    "review": true,
-   "steps": [],
    "note": "对答案 + 看错题本，逐个写清错因。"
   },
   {
@@ -1395,7 +1156,6 @@
    "listening": null,
    "extra": null,
    "review": true,
-   "steps": [],
    "note": "重读生词本里的词，回到原句里再读一遍。"
   },
   {
@@ -1411,7 +1171,6 @@
    "listening": null,
    "extra": null,
    "review": false,
-   "steps": [],
    "note": "整套模考：按考试时间一次做完，中途不停。"
   },
   {
@@ -1423,7 +1182,6 @@
    "listening": null,
    "extra": null,
    "review": true,
-   "steps": [],
    "note": "对答案 + 看错题本，逐个写清错因。"
   },
   {
@@ -1435,7 +1193,6 @@
    "listening": null,
    "extra": null,
    "review": true,
-   "steps": [],
    "note": "重读生词本里的词，回到原句里再读一遍。"
   },
   {
@@ -1447,7 +1204,6 @@
    "listening": null,
    "extra": null,
    "review": true,
-   "steps": [],
    "note": "考前 2 天：只看错题本和生词本，不做新题，调好作息。"
   },
   {
@@ -1459,7 +1215,6 @@
    "listening": null,
    "extra": null,
    "review": true,
-   "steps": [],
    "note": "考前 1 天：只看错题本和生词本，不做新题，调好作息。"
   }
  ]

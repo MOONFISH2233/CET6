@@ -46,13 +46,8 @@ PAGE_TPL = r"""<!DOCTYPE html>
 .big a{text-decoration:none;border-bottom:1px dashed var(--accent-line);color:inherit}
 .big a:hover{color:var(--accent-text)}
 
-/* 四步：胶囊按钮 */
-.dsteps{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0 4px}
-.dstep{font-size:12.5px;padding:6px 13px;border:1px solid var(--line);border-radius:999px;
-  cursor:pointer;user-select:none;background:var(--bg-card);color:var(--fg-soft);
-  transition:background .15s,border-color .15s,color .15s}
-.dstep:hover{border-color:var(--accent-line);color:var(--accent-text)}
-.dstep.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+/* 注：原来每天下面有四个「四步走」手动勾选胶囊（.dsteps/.dstep），
+   2026-10-13 用户嫌乱去掉了 —— 进度改成只看「判完分」这一个客观信号。 */
 
 /* 天数一览：格子数字用等宽数字，阶段靠浅底色区分，今天/完成各有状态 */
 .wk{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:12px}
@@ -263,8 +258,27 @@ var ANS = {};
 function refreshAns(){
   try{ ANS = JSON.parse(localStorage.getItem(ANS_KEY)) || {}; }catch(e){ ANS = {}; }
 }
+/* 模考日：整套的题数 = 这一套六个模块的题数之和（gen_plan 从 data/paper 里算好的） */
+function setTotal(set){
+  var t = PLAN.set_q_total || {};
+  return t[set] || 0;
+}
+
 function autoOf(r){
-  if(!r || !r.set || !r.mod || !r.q_total) return null;
+  if(!r || !r.set) return null;
+  /* 整套模考：把这一套里所有模块的作答加起来算 */
+  if(r.whole){
+    var tot = setTotal(r.set), pre = r.set + '/', judged = 0, ok = 0;
+    Object.keys(ANS).forEach(function(k){
+      if(k.indexOf(pre) !== 0) return;
+      judged++;
+      if(ANS[k] && ANS[k].ok) ok++;
+    });
+    if(!tot) return null;
+    return { judged: judged, total: tot, ok: ok, bad: judged - ok,
+             done: judged >= tot, whole: true };   // whole 要带出来，autoNote 靠它说「本套」
+  }
+  if(!r.mod || !r.q_total) return null;
   var pre = r.set + '/' + r.mod + '/', judged = 0, ok = 0;
   Object.keys(ANS).forEach(function(k){
     if(k.indexOf(pre) !== 0) return;
@@ -275,15 +289,21 @@ function autoOf(r){
            done: judged >= r.q_total };
 }
 
+/* 「这篇判了多少题」那一行。判超了（同一题重复提交等）按总数封顶，别显示 60/55 这种 */
+function autoNote(a){
+  var j = Math.min(a.judged, a.total), who = a.whole ? '套' : '篇';
+  return '<div class="note auto">' + (a.done ? '✓ ' : '') +
+    (a.done ? '本' + who + '已判完 ' + a.total + ' 题'
+            : '本' + who + '已判 ' + j + '/' + a.total + ' 题') +
+    (a.judged ? '（对 ' + a.ok + ' 错 ' + a.bad + '）' : '') +
+    (a.done ? ' · 本日进度已自动记上' : ' · 做完点提交，进度自动记') + '</div>';
+}
+
+/* 这一天算不算完成：只有一个信号 —— 那天的阅读（或整套模考）判满了。
+   手动勾选的四个步骤按钮 2026-10-13 去掉了，prog 只用来存导入导出的旧数据。 */
 function dayDone(dayObj, prog){
   var a = autoOf(dayObj.reading);
-  if(a && a.done) return true;
-  var p = prog[dayObj.d];
-  if(!p) return false;
-  if(dayObj.steps && dayObj.steps.length){
-    return dayObj.steps.every(function(s){ return p[s]; });
-  }
-  return !!p.__done;
+  return !!(a && a.done);
 }
 
 function render(){
@@ -299,7 +319,9 @@ function render(){
 
   var doneN = PLAN.days.filter(function(d){ return dayDone(d,prog); }).length;
   $('pbar').style.width = Math.round(doneN/PLAN.days.length*100)+'%';
-  $('pmeta').textContent = '已完成 '+doneN+' / '+PLAN.days.length+' 天 · 阅读计划 '+PLAN.stats.reading_planned+' 篇 · 听力 '+PLAN.stats.listen_sets+' 套循环';
+  $('pmeta').textContent = '已完成 '+doneN+' / '+PLAN.days.length+
+    ' 天（那天的阅读或模考判满就自动记上） · 阅读计划 '+PLAN.stats.reading_planned+
+    ' 篇 · 听力 '+PLAN.stats.listen_sets+' 套循环';
 
   /* 今日卡片 */
   var t = PLAN.days.filter(function(x){ return x.d===td; })[0];
@@ -312,7 +334,6 @@ function render(){
   } else {
     $('todayCard').innerHTML = todayHTML(t, prog);
     $('todayCard').classList.toggle('done', dayDone(t, prog));   // 做完了给个绿圈
-    bindSteps(t, prog);
     /* 今日卡片被整体重建了，重新填一下「今天的鼓励」（quotes.js 只填没填过的卡片） */
     if(window.CET6Quotes) window.CET6Quotes.fill();
   }
@@ -332,7 +353,6 @@ function render(){
   $('daylist').innerHTML = PLAN.days.map(function(d){
     return rowHTML(d, prog, td);
   }).join('');
-  PLAN.days.forEach(function(d){ bindSteps(d, prog); });
 }
 
 function readingLine(r){
@@ -342,8 +362,10 @@ function readingLine(r){
   var vt = vocabCount(r.set, r.mod);
   var vtag = vt ? ' <span class="vok">本篇收词 '+vt+'</span>' : '';
   if(r.whole){
+    /* 收词数不是「完成」状态，别用 .vok 那个绿色 —— 不然跟完成标记混在一起 */
     return '<span class="tagx">整套模考</span><a href="'+modLink(r.set,null)+'">'+r.set+'</a>'+
-           ' <span class="vok">本套累计收词 '+vocabCountSet(r.set)+'</span>';
+           ' <span style="font-size:12.5px;color:var(--fg-faint)">本套累计收词 '+
+           vocabCountSet(r.set)+'</span>';
   }
   return '<span class="tagx">'+label+'</span><a href="'+href+'">'+r.set+' · '+label+'</a>'+vtag;
 }
@@ -369,13 +391,7 @@ function todayHTML(d, prog){
   if(d.note) h += '<div class="note">'+esc(d.note)+'</div>';
   /* 自动进度：这一篇判了多少题、对几个（不用自己勾四个步骤） */
   var a = autoOf(d.reading);
-  if(a){
-    h += '<div class="note auto">' + (a.done ? '✓ ' : '') +
-         '本篇已判 ' + a.judged + '/' + a.total + ' 题' +
-         (a.judged ? '（对 ' + a.ok + ' 错 ' + a.bad + '）' : '') +
-         (a.done ? ' · 本日进度已自动记上' : ' · 做完点提交，进度自动记') + '</div>';
-  }
-  h += stepsHTML(d, prog);
+  if(a) h += autoNote(a);
   /* 百词斩：生词本攒的词，这里一键过一遍（数量口径与精读站 review.js 一致） */
   var dn = reviewDue();
   h += '<a class="rv-entry" href="../review.html" style="margin-top:10px">'+
@@ -385,16 +401,6 @@ function todayHTML(d, prog){
   /* 今天的鼓励：按第几天取一句温柔台词（quotes.js 填内容） */
   h += '<div class="qcard qsmall" data-quote="day" data-day="'+d.day+'"></div>';
   return h;
-}
-
-function stepsHTML(d, prog){
-  if(!d.steps || !d.steps.length) return '';
-  var p = prog[d.d] || {};
-  var s = d.steps.map(function(st){
-    return '<span class="dstep'+(p[st]?' on':'')+'" data-day="'+d.d+'" data-step="'+esc(st)+'">'+
-           (p[st]?'✓ ':'')+esc(st)+'</span>';
-  }).join('');
-  return '<div class="dsteps">'+s+'</div>';
 }
 
 function rowHTML(d, prog, td){
@@ -413,80 +419,9 @@ function rowHTML(d, prog, td){
   if(d.note) h += '<div class="note">'+esc(d.note)+'</div>';
   /* 自动进度：这一篇判了多少题、对几个（不用自己勾四个步骤） */
   var a = autoOf(d.reading);
-  if(a){
-    h += '<div class="note auto">' + (a.done ? '✓ ' : '') +
-         '本篇已判 ' + a.judged + '/' + a.total + ' 题' +
-         (a.judged ? '（对 ' + a.ok + ' 错 ' + a.bad + '）' : '') +
-         (a.done ? ' · 本日进度已自动记上' : ' · 做完点提交，进度自动记') + '</div>';
-  }
-  h += stepsHTML(d, prog);
+  if(a) h += autoNote(a);
   h += '</div>';
   return h;
-}
-
-/* 只刷新某一天的步骤按钮与相关 UI，避免重建整页 DOM */
-function updateStepsUI(dayId, prog){
-  var p = prog[dayId] || {};
-  var list = document.querySelectorAll('.dstep[data-day="'+dayId+'"]');
-  for(var i=0;i<list.length;i++){
-    var el = list[i];
-    var st = el.dataset.step;
-    var on = !!p[st];
-    if(on) el.classList.add('on'); else el.classList.remove('on');
-    el.textContent = (on ? '✓ ' : '') + st;
-  }
-  var d = null;
-  for(var k=0;k<PLAN.days.length;k++){
-    if(PLAN.days[k].d === dayId){ d = PLAN.days[k]; break; }
-  }
-  if(!d) return;
-  var done = dayDone(d, prog);
-  var cells = document.querySelectorAll('#grid div');
-  for(var m=0;m<cells.length;m++){
-    if((cells[m].title||'').indexOf(dayId)===0){
-      if(done) cells[m].classList.add('done'); else cells[m].classList.remove('done');
-    }
-  }
-  var rows = document.querySelectorAll('.dayrow');
-  for(var n=0;n<rows.length;n++){
-    var b = rows[n].querySelector('.dh b');
-    if(b && b.textContent.indexOf(dayId)>=0){
-      var t = rows[n].querySelector('.dt');
-      if(t) t.innerHTML = '阶段' + d.phase +
-        (done ? ' · <span class="vok">已完成</span>' : '');
-    }
-  }
-}
-
-/* 只刷新顶部进度统计 */
-function updateStats(prog){
-  refreshAns();
-  var doneN = 0;
-  for(var i=0;i<PLAN.days.length;i++){
-    if(dayDone(PLAN.days[i], prog)) doneN++;
-  }
-  var pb = document.getElementById('pbar');
-  if(pb) pb.style.width = Math.round(doneN/PLAN.days.length*100)+'%';
-  var pm = document.getElementById('pmeta');
-  if(pm) pm.textContent = '已完成 ' + doneN + ' / ' + PLAN.days.length +
-    ' 天（做完一篇判完分就自动记上） · 阅读计划 ' + PLAN.stats.reading_planned +
-    ' 篇 · 听力 ' + PLAN.stats.listen_sets + ' 套循环';
-}
-
-function bindSteps(d, prog){
-  document.querySelectorAll('.dstep[data-day="'+d.d+'"]').forEach(function(el){
-    el.onclick = function(){
-      var p = loadProg();
-      if(!p[d.d]) p[d.d] = {};
-      var st = el.dataset.step;
-      p[d.d][st] = !p[d.d][st];
-      if(d.steps.every(function(x){ return p[d.d][x]; })) p[d.d].__done = true;
-      else delete p[d.d].__done;
-      saveProg(p);
-      updateStepsUI(d.d, p);
-      updateStats(p);
-    };
-  });
 }
 
 function jump(date){

@@ -88,6 +88,7 @@ const vocab = ['antibiotic', 'competitiveness', 'hierarchical', 'sustainable', '
   const pe = await p.locator('#todayCard .rv-entry').innerText().catch(() => '(无)');
   console.log('  ' + pe.replace(/\n/g, ' | '));
   ck('今日卡片有背单词入口', await p.locator('#todayCard .rv-entry').count() === 1);
+  ck('四步胶囊已下架', await p.locator('.dstep').count() === 0);
   await p.screenshot({ path: OUT + '/live-07-plan.png' });
   // 入口能真的点进背单词页
   await p.click('#todayCard .rv-entry');
