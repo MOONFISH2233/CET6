@@ -69,12 +69,17 @@ const vocab = ['antibiotic', 'competitiveness', 'hierarchical', 'sustainable', '
   ck('生词本有背单词入口', await p.locator('#meList .rv-entry').count() === 1);
   const n0 = await p.locator('#meList .rv-entry .rv-entry-n').innerText();
   ck('入口显示今日数量', /今天 \d+ 个/.test(n0), n0);
+  ck('分组默认收起', await p.locator('#meList details.vgrp[open]').count() === 0);
   await p.screenshot({ path: OUT + '/live-05-me.png' });
+  await p.click('#meGroupsBtn');
+  await p.waitForTimeout(400);
+  ck('全部展开可用', await p.locator('#meList details.vgrp[open]').count() > 0);
   await p.click('#meGroup [data-g="day"]');
   await p.waitForTimeout(400);
-  const gd = await p.locator('#meList .vgroup span').allInnerTexts();
+  const gd = await p.locator('#meList .vgroup .vgl').allInnerTexts();
   console.log('  按天: ' + JSON.stringify(gd));
   ck('按天分组生效', gd.length > 0 && gd.every(t => /今天|昨天|\d{4}-\d{2}-\d{2}/.test(t)), JSON.stringify(gd));
+  ck('按天也默认收起', await p.locator('#meList details.vgrp[open]').count() === 0);
   await p.screenshot({ path: OUT + '/live-06-me-byday.png' });
 
   console.log('== 打卡站今日卡片 ==');

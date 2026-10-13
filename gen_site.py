@@ -957,6 +957,12 @@ def build_review(meta):
     </div>
     <label class="rv-auto"><input type="checkbox" id="rvAuto" checked>出词时自动发音</label>
   </div>
+  <!-- 发音在这台设备上到底行不行，点开就能看（换设备/换浏览器时排查用） -->
+  <details class="rv-diag" id="rvDiag">
+    <summary>发音没声音？点这里看这台设备的情况</summary>
+    <div id="rvDiagBody"></div>
+    <button type="button" class="rv-diag-btn" id="rvDiagTest">测试发音</button>
+  </details>
 </div>
 
 <div class="card rv-sum" id="rvSum" hidden></div>
@@ -1005,7 +1011,8 @@ def build_me(meta):
   </div>
   <div class="me-bar">
     <input id="meSearch" type="search" placeholder="搜索…" autocomplete="off">
-    <button class="mebtn" id="meGroup" title="生词本换一种分法">按天</button>
+    <button class="mebtn" id="meGroup" title="生词本换一种分法"></button>
+    <button class="mebtn" id="meGroupsBtn" hidden>全部展开</button>
     <button class="mebtn" id="meExport">导出 JSON</button>
     <button class="mebtn" id="meClear">清空当前</button>
   </div>

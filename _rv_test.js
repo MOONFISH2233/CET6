@@ -133,13 +133,13 @@ function ck(name, cond, extra) {
   ck('入口带今日数量', /今天 \d+ 个/.test(entryN), entryN);
   await page.screenshot({ path: OUT + '/08-me-entry.png' });
 
-  const groupsSet = await page.locator('#meList .vgroup span').allInnerTexts();
+  const groupsSet = await page.locator('#meList .vgroup .vgl').allInnerTexts();
   console.log('  按套卷分组: ' + JSON.stringify(groupsSet));
   ck('默认按套卷分组', groupsSet.length >= 2, JSON.stringify(groupsSet));
   ck('默认高亮「按套卷」', await page.locator('#meGroup .rv-grp.on').innerText() === '按套卷');
   await page.click('#meGroup [data-g="day"]');
   await page.waitForTimeout(300);
-  const groupsDay = await page.locator('#meList .vgroup span').allInnerTexts();
+  const groupsDay = await page.locator('#meList .vgroup .vgl').allInnerTexts();
   console.log('  按天分组: ' + JSON.stringify(groupsDay));
   ck('切到按天分组', groupsDay.length > 0 && groupsDay.every(t => /\d{4}-\d{2}-\d{2}/.test(t)),
      JSON.stringify(groupsDay));
@@ -147,7 +147,7 @@ function ck(name, cond, extra) {
   await page.screenshot({ path: OUT + '/09-me-byday.png' });
   await page.click('#meGroup [data-g="set"]');
   await page.waitForTimeout(250);
-  ck('能切回按套卷', (await page.locator('#meList .vgroup span').allInnerTexts())
+  ck('能切回按套卷', (await page.locator('#meList .vgroup .vgl').allInnerTexts())
      .every(t => !/\d{4}-\d{2}-\d{2}/.test(t)));
 
   console.log('== 打卡站今日卡片入口 ==');

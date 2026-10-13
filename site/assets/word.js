@@ -705,6 +705,7 @@
     var tabsEl = document.querySelector('.tabs');
     var searchEl = document.getElementById('meSearch');
     var groupBtn = document.getElementById('meGroup');
+    var groupsAllBtn = document.getElementById('meGroupsBtn');
     var cur = 'vocab', q = '';
 
     var EMPTY = {
@@ -764,7 +765,32 @@
         (d.total ? '今天 ' + d.total + ' 个 →' : '今天没有要背的 →') + '</span></a>';
     }
 
-    // 生词本分组：按套卷（原有行为）或按收录日期（vocab[].t）
+    // 哪些分组是展开的（存 localStorage：生词本越攒越多，每次进来都重新点一遍很烦）
+    function openSet() {
+      var a = load('cet6:vgOpen', null);
+      return Object.prototype.toString.call(a) === '[object Array]' ? a : [];
+    }
+    function isOpen(key) { return openSet().indexOf(key) >= 0; }
+    function markOpen(key, on) {
+      var a = openSet().filter(function (k) { return k !== key; });
+      if (on) a.push(key);
+      save('cet6:vgOpen', a);
+    }
+
+    // 「全部展开 / 全部收起」：一次给所有分组定开合
+    function toggleAllGroups(btn) {
+      var boxes = [].slice.call(document.querySelectorAll('#meList .vgrp'));
+      if (!boxes.length) return;
+      var to = !boxes.every(function (d) { return d.open; });   // 都开着 → 收起；否则全开
+      boxes.forEach(function (d) {
+        d.open = to;
+        markOpen(d.dataset.k, to);
+      });
+      if (btn) btn.textContent = to ? '全部收起' : '全部展开';
+    }
+
+    // 生词本分组：按套卷（原有行为）或按收录日期（vocab[].t）。
+    // 每组一个 <details>：头一行是折叠条，点一下展开该组 —— 几百个词不会一路铺开。
     function groupHTML(list) {
       var labels = (window.CET6_LABELS || {}).sets || {};
       var groups = {}, order = [];
@@ -799,9 +825,13 @@
         } else {
           title = key === '_' ? '重点词页收录' : (labels[key] || key);
         }
-        h.push('<div class="vgroup"><span>' + esc(title) + '</span>' +
-               '<i class="vcount">' + groups[key].length + '</i></div>');
+        var open = isOpen(key) ? ' open' : '';
+        h.push('<details class="vgrp" data-k="' + esc(key) + '"' + open + '>' +
+               '<summary class="vgroup"><span class="vgl">' + esc(title) + '</span>' +
+               '<i class="vcount">' + groups[key].length + '</i>' +
+               '<span class="vcaret" aria-hidden="true">▾</span></summary>');
         groups[key].forEach(function (v) { h.push(vocabRow(v)); });
+        h.push('</details>');
       });
       return h;
     }
@@ -894,6 +924,15 @@
           '<button type="button" class="rv-grp' + (groupBy === 'day' ? ' on' : '') +
           '" data-g="day">按天</button>';
       }
+      var gAll = document.getElementById('meGroupsBtn');
+      if (gAll) {
+        var canFold = cur === 'vocab' && list.querySelectorAll('.vgrp').length > 1;
+        gAll.hidden = !canFold;
+        if (canFold) {
+          var boxes = [].slice.call(list.querySelectorAll('.vgrp'));
+          gAll.textContent = boxes.every(function (d) { return d.open; }) ? '全部收起' : '全部展开';
+        }
+      }
       if (searchEl) searchEl.placeholder = cur === 'vocab'
         ? (groupBy === 'day' ? '搜索生词或释义…（按天分组）' : '搜索生词或释义…')
         : (cur === 'wrong' ? '搜索考期或题型…' : '搜索句子…');
@@ -935,6 +974,17 @@
       groupBy = b.dataset.g;
       render();
     };
+
+    // 分组的开合：用原生 details 的 toggle 事件记状态（键盘 Enter / 点标题都能触发）
+    list.addEventListener('toggle', function (e) {
+      var d = e.target;
+      if (!d.classList || !d.classList.contains('vgrp')) return;
+      markOpen(d.dataset.k, d.open);
+      var btn = document.getElementById('meGroupsBtn');
+      if (btn && !d.open) btn.textContent = '全部展开';
+    }, true);
+
+    if (groupsAllBtn) groupsAllBtn.onclick = function () { toggleAllGroups(groupsAllBtn); };
 
     var exp = document.getElementById('meExport');
     if (exp) exp.onclick = function () {
@@ -1006,11 +1056,15 @@
 
   window.CET6RefreshNotes = renderNotes;   // 判完分后由 quiz.js 叫一声，把生词批注显示出来
 
-  // 别的模块（review.js）复用的几样东西：查词、兜底查词、朗读、喇叭按钮
+  // 别的模块（review.js）复用的几样东西：查词、兜底查词、朗读、喇叭按钮、当前语音
   window.CET6Word = {
     load: loadDict, loadAll: loadDictAll, lookup: lookup, lookupAll: lookupAll,
     speak: speak, spkBtn: spkBtn,
-    all: function () { return dict ? dict.words : null; }
+    all: function () { return dict ? dict.words : null; },
+    voice: function () {
+      var v = pickVoice();
+      return v ? (v.name + '（' + v.lang + '）') : '';
+    }
   };
 
   if (document.readyState === 'loading') {

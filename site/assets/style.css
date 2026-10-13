@@ -1290,7 +1290,7 @@ details[open] > summary .hfw-caret { transform: rotate(180deg); }
 .q-flash { animation: qflash 1.6s ease; border-radius: 8px; }
 
 
-/* 生词本按套卷分组的小标题 */
+/* 生词本的分组小标题 —— 同时是 <details> 的折叠条（点一下展开这一组） */
 .vgroup {
   display: flex;
   align-items: center;
@@ -1299,8 +1299,17 @@ details[open] > summary .hfw-caret { transform: rotate(180deg); }
   font-size: 12.5px;
   font-weight: 600;
   color: var(--accent-text);
+  cursor: pointer;
+  list-style: none;                 /* 去掉原生三角，用自己的 ▾ */
+  border-radius: 6px;
+  padding: 4px 6px;                 /* 折叠条的点击区高一点，手机上好点 */
+  margin: 12px -6px 4px;
+  transition: background .15s, color .15s;
 }
 
+.vgroup::-webkit-details-marker { display: none; }
+.vgroup:hover { background: var(--accent-soft); }
+.vgroup:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .vgroup:first-child { margin-top: 4px; }
 .vgroup::after {
   content: '';
@@ -1310,6 +1319,13 @@ details[open] > summary .hfw-caret { transform: rotate(180deg); }
 }
 
 .vgroup .vcount { background: var(--accent-soft); color: var(--accent-text); }
+
+.vcaret { font-size: 10px; color: var(--fg-faint); transition: transform .15s; }
+details.vgrp[open] .vcaret { transform: rotate(180deg); }
+
+/* 「全部展开 / 全部收起」 */
+#meGroupsBtn[hidden] { display: none; }
+#meGroupsBtn { margin-left: auto; }
 
 /* 「我的学习」页里单独一块：重点词（不跟上面那三个标签并列） */
 .me-block {
@@ -2021,7 +2037,7 @@ body.has-quiz-bar{padding-bottom:70px}
 .rv-choices { display:grid; gap:2px; margin-top:16px; }
 .rv-opt {
   font:inherit; font-size:15px; line-height:1.7; text-align:left;
-  padding:11px 13px; border-radius:6px;
+  padding:11px 13px; border-radius:var(--radius-sm);
   border:1px solid transparent; background:transparent; color:var(--en);
   cursor:pointer; transition:background .15s, border-color .15s, color .15s;
 }
@@ -2078,6 +2094,27 @@ body.has-quiz-bar{padding-bottom:70px}
 .rv-next:hover { background:var(--accent-hover); }
 .rv-next:active { transform:scale(.99); }
 
+/* 发音诊断：平时收着，出问题时展开看（手机排查专用） */
+.rv-diag { margin-top: 14px; font-size: 12.5px; color: var(--fg-faint); }
+.rv-diag > summary {
+  cursor: pointer; list-style: none; padding: 6px 0;
+  border-top: 1px solid var(--line);
+}
+.rv-diag > summary::-webkit-details-marker { display: none; }
+.rv-diag > summary::after { content: ' ▾'; font-size: 10px; }
+.rv-diag[open] > summary::after { content: ' ▴'; }
+.rv-diag > summary:hover { color: var(--accent-text); }
+.rv-diag-body { line-height: 1.9; }
+.rv-diag-body b { font-weight: 600; color: var(--fg-soft); }
+.rv-diag-ok { color: var(--ok); }
+.rv-diag-bad { color: var(--bad); }
+.rv-diag-btn {
+  font: inherit; font-size: 12.5px; padding: 7px 14px; margin-top: 8px;
+  border-radius: var(--radius-pill); border: 1px solid var(--line);
+  background: var(--bg-card); color: var(--fg-soft); cursor: pointer;
+}
+.rv-diag-btn:hover { border-color: var(--accent); color: var(--accent-text); }
+
 /* 一轮结束的成绩单 */
 .rv-sum { border:1px solid var(--ok-line); box-shadow:0 0 0 3px var(--ok-bg); }
 /* [hidden] 得压得住 .card 的 display —— 三档主题里都不许漏出来 */
@@ -2123,7 +2160,6 @@ body.has-quiz-bar{padding-bottom:70px}
 .rv-sub { margin-top: 12px; min-height: 28px; }
 .rv-phon { font-size: 14px; }
 .rv-choices { margin-top: 22px; gap: 8px; }
-.rv-opt { border-radius: var(--radius-sm); }
 .rv-go { width: 100%; font-size: 16px; padding: 13px 20px; border-radius: 999px; box-shadow: var(--shadow-sm);
   transition: transform .12s, box-shadow .15s; }
 .rv-go:hover { transform: translateY(-1px); box-shadow: var(--shadow); }

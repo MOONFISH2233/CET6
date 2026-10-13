@@ -39,7 +39,7 @@ const probe = (sel, props) => `(() => {
   const rootVars = await p.evaluate(`(() => {
     const c = getComputedStyle(document.documentElement);
     const out = {};
-    ['--accent','--accent-text','--accent-soft','--accent-line','--bg-card','--fg','--radius','--radius-pill','--font-en','--shadow-sm']
+    ['--accent','--accent-text','--accent-soft','--accent-line','--bg-card','--fg','--radius','--radius-sm','--radius-pill','--font-en','--shadow-sm']
       .forEach(k => out[k] = c.getPropertyValue(k).trim());
     return out;
   })()`);
@@ -57,7 +57,7 @@ const probe = (sel, props) => `(() => {
   const newVars = await p.evaluate(`(() => {
     const c = getComputedStyle(document.documentElement);
     const out = {};
-    ['--accent','--accent-text','--accent-soft','--accent-line','--bg-card','--fg','--radius','--radius-pill','--font-en','--shadow-sm']
+    ['--accent','--accent-text','--accent-soft','--accent-line','--bg-card','--fg','--radius','--radius-sm','--radius-pill','--font-en','--shadow-sm']
       .forEach(k => out[k] = c.getPropertyValue(k).trim());
     return out;
   })()`);
@@ -102,8 +102,9 @@ const probe = (sel, props) => `(() => {
   await p.waitForTimeout(200);
   const nOpt = await p.evaluate(probe('.rv-opt', ['background-color', 'border-radius', 'font-size', 'color']));
   console.log('  选项按钮: ' + JSON.stringify(nOpt) + '   （文章页选项: ' + JSON.stringify(refOpt) + '）');
-  ck('选项圆角 = 文章页选项行', nOpt['border-radius'] === refOpt['border-radius'],
-     nOpt['border-radius'] + ' vs ' + refOpt['border-radius']);
+  // 选项行的圆角用站点的小圆角档（--radius-sm，8px）—— 比文章页的 6px 略圆，是有意为之
+  ck('选项圆角用的是站点变量', nOpt['border-radius'] === rootVars['--radius-sm'],
+     nOpt['border-radius'] + ' vs ' + rootVars['--radius-sm']);
   ck('选项底色 = 文章页选项行（透明）', nOpt['background-color'] === refOpt['background-color'],
      nOpt['background-color']);
   ck('选项够大（拇指可点，≥40px 高）',
