@@ -128,8 +128,8 @@ ABBREV = {
 
 # ECDICT 有些「词形条目」的释义只写「（某词的复数）」这种——留着会挡住原形的完整释义
 # （attributes 就只有 n. 属性，看不到 attribute 的 vt. 把…归于）。
-INFLECTION_ONLY = re.compile(r"（[A-Za-z][A-Za-z\-']*的(复数|过去式|过去分词|现在分词|"
-                             r"第三人称单数|比较级|最高级)）|^[a-z]+\.\s*$")
+INFLECTION_ONLY = re.compile(r"[（(]\s*[A-Za-z][A-Za-z\-']*的(名词|动词|形容词|副词)?"
+                             r"(复数|过去式|过去分词|现在分词|第三人称单数|比较级|最高级)")
 
 
 def corpus_tokens():
@@ -229,6 +229,30 @@ def main():
             if keep:
                 tags[w] = " ".join(keep)
             raw_forms[w] = row.get("exchange") or ""
+
+    # 先把「谁是谁的变形」摸清楚：某个词的变体 -> 该词
+    variants = {}
+    for w, ex in raw_forms.items():
+        for part in ex.split("/"):
+            if ":" not in part:
+                continue
+            k, v = part.split(":", 1)
+            v = v.strip().lower()
+            if k in FORM_CODES and v and v != w:
+                variants.setdefault(v, w)
+
+    # 变体的独立词条常常是垃圾（acts = "abbr. 声控遥测系统"），
+    # 只要它自己那条释义「没中文 / 是缩写垃圾 / 是词形条目」，就丢掉，让词形表指向原形
+    def weak_gloss(g):
+        if not re.search(r"[一-鿿]", g):
+            return True
+        if g.startswith("abbr."):
+            return True      # 变形词的缩写义项（acts = 声控遥测系统）对六级学习者没用
+        return bool(INFLECTION_ONLY.search(g))
+
+    for w in [x for x in list(lemmas) if x in variants and weak_gloss(lemmas[x])]:
+        lemmas.pop(w, None)
+        tags.pop(w, None)
 
     # 词形 -> 原形（别把真词条盖掉）；顺带记下「这是什么形式」
     forms, ftypes = {}, {}
