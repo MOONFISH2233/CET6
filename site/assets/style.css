@@ -177,12 +177,17 @@ header.site {
   white-space: nowrap;   /* 窄屏顶栏别把站名折成两行 */
 }
 
-/* 手机窄屏：顶栏挤不下时整体缩一点 */
+.b-short { display: none; }
+
+/* 手机窄屏：顶栏三个入口 + 站名，站名换短名并把各项收一收，别挤断 */
 @media (max-width: 430px) {
-  .brand { font-size: 15px; gap: 6px; }
-  .brand .logo { width: 19px; height: 19px; }
-  a.tools { padding: 5px 8px; font-size: 12px; }
-  .site-inner { gap: 8px; padding: 10px 12px; }
+  .brand { font-size: 14px; gap: 5px; }
+  .brand .logo { width: 18px; height: 18px; }
+  .b-long { display: none; }
+  .b-short { display: inline; }
+  a.tools { padding: 5px 7px; font-size: 11.5px; }
+  a.tools .vcount { font-size: 9.5px; padding: 0 4px; }
+  .site-inner { gap: 6px; padding: 9px 10px; }
 }
 
 .brand .dot {
@@ -767,8 +772,18 @@ a.tools {
   cursor: pointer;
 }
 
-/* 顶栏里的两个链接（重点词 / 我的学习）跟按钮长一样 */
+/* 顶栏里的链接（重点词 / 背单词 / 我的学习）跟按钮长一样 */
 a.tools { text-decoration: none; gap: 5px; white-space: nowrap; }
+
+/* 背单词稍微显眼一点：浅青底 + 青字（还是同一套按钮语言，不另起炉灶） */
+a.rv-tools {
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
+  color: var(--accent-text);
+  font-weight: 600;
+}
+
+a.rv-tools:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
 
 .tools button:hover,
 a.tools:hover { border-color: var(--accent); color: var(--accent-text); }

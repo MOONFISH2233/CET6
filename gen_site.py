@@ -102,8 +102,9 @@ def page(title, body, depth=0, subtitle="", extra_head="", body_class="",
 <body class="{body_class}">
 <header class="site">
   <div class="site-inner">
-    <a class="brand" href="{r}index.html"><img class="logo" src="{r}assets/img/logo.png" alt="">六级真题精读</a>
+    <a class="brand" href="{r}index.html"><img class="logo" src="{r}assets/img/logo.png" alt=""><span class="b-long">六级真题精读</span><span class="b-short">六级</span></a>
     <a class="tools" style="margin:0" href="{r}hfw.html">重点词</a>
+    <a class="tools rv-tools" style="margin:0" href="{r}review.html">背单词</a>
     <a class="tools" style="margin:0" href="{r}me.html">我的学习<span class="vcount" id="vocabCount">0</span></a>
     <button class="tools" style="margin:0" onclick="toggleTheme()" aria-label="切换主题" id="themeBtn">◐</button>
   </div>
@@ -941,7 +942,6 @@ def build_review(meta):
 {crumb([("首页", "index.html"), ("背单词", None)], 0)}
 <div class="hero hero-art hero-splash">
   <h1>背单词</h1>
-  <p>弹一个英文，从四个中文里选它的意思。词全来自你自己的生词本 —— 读真题时收的那些。</p>
 </div>
 
 <div class="card rv-stat" id="rvHome">
