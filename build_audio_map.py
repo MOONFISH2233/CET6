@@ -15,6 +15,7 @@
 import json
 import os
 import re
+import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -46,6 +47,49 @@ def qrange(label):
 def load_json(p):
     with open(p, encoding="utf-8") as f:
         return json.load(f)
+
+
+# ---------------------------------------------------------------- 静音检测
+# 题目时间点如果只靠「按字符占比插值」，方向和量级都对，但会落在句子中间。
+# 六级听力的真实结构是：先念题目 → 再读整段对话/短文，答案句在录音里比题目晚十几秒。
+# 所以要把推算出来的点**吸附到真实的语音起点**（停顿结束处），再留一点提前量。
+
+Q_LEAD = 1.2        # 「听这题」提前量：宁可早一点点，别让用户一进来就听半句
+
+
+def speech_starts(mp3, noise="-32dB", dur=0.35):
+    """人声起点 = 每段静音的结束时间。返回 [(起点, 这段静音有多长)]"""
+    if not os.path.exists(mp3):
+        return []
+    out = subprocess.run(
+        ["ffmpeg", "-hide_banner", "-i", mp3, "-af",
+         "silencedetect=noise=%s:d=%s" % (noise, dur), "-f", "null", "-"],
+        capture_output=True, text=True, errors="replace").stderr
+    st = [float(x) for x in re.findall(r"silence_start: ([\d.]+)", out)]
+    en = [float(x) for x in re.findall(r"silence_end: ([\d.]+)", out)]
+    return [(e, e - s) for s, e in zip(st, en)]
+
+
+def snap(t, starts, lo, hi, window=6.0):
+    """把时间点吸附到最近的语音起点（优先往前，避免「一进来已经在读」）。
+
+    starts: [(起点, 静音长度)]；只在这个时间点前后 window 秒内找。
+    找不到就原样返回（宁可不吸附，也别乱跳）。
+    """
+    best = None
+    for st, dur in starts:
+        d = st - t                      # 正数=起点在推算点之后
+        if d > window or d < -window:
+            continue
+        if not (lo - 0.5 <= st <= hi + 0.5):
+            continue
+        # 打分：距离为主，稍长的停顿更可能是句子/题目的边界
+        score = abs(d) - min(dur, 1.2) * 0.8
+        if d > 0.8:                     # 明显在后面的起点，不太可能是这句话的开头
+            score += 3.0
+        if best is None or score < best[0]:
+            best = (score, st)
+    return best[1] if best else t
 
 
 def build(setname):
@@ -143,10 +187,29 @@ def build(setname):
         out_pieces.append({"label": pc.get("label", ""), "start": round(start, 1), "end": round(end, 1),
                            "lines": out_lines, "qs": this_qs})
 
+    # ---- 把每题的时间吸附到真实语音起点，再往前留一点提前量 ----
+    mp3p = os.path.join(HERE, "site", "audio", setname + ".mp3")
+    starts = speech_starts(mp3p)
+    snapped = 0
+    if starts:
+        for p_ in out_pieces:
+            prev = -1.0
+            for q in p_["qs"]:
+                lo, hi = p_["start"], p_["end"]
+                t = snap(q["t"], starts, lo, hi)
+                if abs(t - q["t"]) > 0.05:
+                    snapped += 1
+                t = max(lo, t - Q_LEAD)                   # 提前 2 秒，别一进来就在读
+                if prev >= 0:
+                    t = max(t, prev)                      # 别让提前量把题序弄倒过来
+                q["t"] = round(t, 1)
+                prev = t
+
     mp3 = "audio/%s.mp3" % setname
     total = max([p["end"] for p in out_pieces] or [0])
     res = {"set": setname, "mp3": mp3, "total": round(total, 1),
-           "audio_id": meta.get("audio_id"), "pieces": out_pieces}
+           "audio_id": meta.get("audio_id"), "pieces": out_pieces,
+           "snapped": snapped, "starts": len(starts)}
     return res, matched, len(qs), missed
 
 

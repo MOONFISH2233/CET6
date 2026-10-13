@@ -367,11 +367,13 @@ def build_module(p, m):
     d = p["modules"][m]
     name = MODULE_NAMES[m]
     part = MODULE_PARTS[m]
+    player_first = False    # 听力页且该套有音频时置 True（播放器放最前）
 
     if m == "listening":
         # 模块页在 p/<set>/ 下，音频在站点根的 audio/ —— 用相对路径指过去
         inner = render_listening(d, load_audio(s), "../../audio/%s.mp3" % s)
         with_ans = True
+        player_first = bool(load_audio(s))     # 有音频：播放器放最前，题目紧跟其后
     elif m in ("reading1", "reading2"):
         inner = render_reading(d)
         with_ans = True
@@ -402,7 +404,21 @@ def build_module(p, m):
                    f'<span class="n">{MODULE_PARTS[mm]}</span></a>')
     nav.append("</div>")
 
-    body = f"""
+    # 听力页（有音频时）：播放器放最前，接着就是题目 ——
+    # 「题型导航」和「工具条」往后挪，别把第一道题顶到一屏之外
+    if player_first:
+        body = f"""
+{crumb([("首页", "index.html"), (p["label"], f"p/{s}.html"), (name, None)], 2)}
+<h1 class="page">{esc(part)} · {esc(name)}</h1>
+{inner}
+{"".join(nav)}
+{tools_bar(with_ans)}
+{ANSHINT if with_ans else ""}
+{hfw_card(m, s)}
+{float_nav([mm for mm in MODULE_ORDER if mm in mods], m)}
+"""
+    else:
+        body = f"""
 {crumb([("首页", "index.html"), (p["label"], f"p/{s}.html"), (name, None)], 2)}
 <h1 class="page">{esc(part)} · {esc(name)}</h1>
 <p class="sub">{esc(p["label"])}</p>
@@ -464,6 +480,9 @@ def audio_card(ad, src):
         'webkit-playsinline="true" x5-playsinline="true" '
         'src="%s"></audio>'
         '<div class="aud-chips" id="audChips">%s</div>'
+        '<div class="aud-acts">'
+        '<button type="button" class="aud-textbtn" id="audShowText">看原文与翻译</button>'
+        '</div>'
         '<p class="aud-note">'
         '点上面的篇目跳到那一段；逐题听题在下面每题旁边点「▶ 听这题」。'
         '整套 %s，不点播放不会消耗流量。</p>'
@@ -483,33 +502,15 @@ def listen_qtime(ad, no):
 
 
 def render_listening(d, ad=None, audio_src=""):
+    """听力页的顺序：播放器 → 题目与解析 → （折叠在最后）原文与翻译。
+
+    原文默认不展示 —— 一进来先看题、先听，需要对照原文时点「看原文与翻译」跳到最后。
+    （用户 2026-10-14 的要求：没点显示原文之前，题目下面也不放原文。）
+    """
     out = []
     # 音频播放器（整篇 + 每篇跳转）
     if ad and audio_src:
         out.append(audio_card(ad, audio_src))
-    # 录音原文
-    trs = d.get("transcripts", [])
-    if trs:
-        out.append('<div class="card"><h2><span class="tag">原文</span>听力录音文字稿</h2>')
-        out.append('<p style="font-size:13px;color:var(--fg-faint);margin:-4px 0 14px">'
-                   '考卷上只有选项，题目由录音念出。这里是完整原文与逐句中译——听不懂时对照它。'
-                   '先听、再对原文、然后模仿跟读。</p>')
-        for t in trs:
-            out.append('<div class="piece">')
-            out.append('<div class="piece-head"><span>' + esc(t.get("head", "")) + '</span>')
-            if t.get("seek"):
-                out.append(f'<span class="seek">{esc(t["seek"])}s</span>')
-            out.append('</div>')
-            for ln in t.get("lines", []):
-                out.append('<div class="tr-line">')
-                out.append(f'<span class="no">{ln.get("idx", "")}</span>')
-                if ln.get("en"):
-                    out.append(f'<p class="en">{esc(ln["en"])}</p>')
-                if ln.get("zh"):
-                    out.append(f'<p class="zh">{esc(ln["zh"])}</p>')
-                out.append('</div>')
-            out.append('</div>')
-        out.append('</div>')
 
     # 题目与解析
     qs = d.get("questions", [])
@@ -528,6 +529,32 @@ def render_listening(d, ad=None, audio_src=""):
                                f'（{sdata["from"]}–{sdata["to"]} 题）</div>')
             out.append(render_question(q, show_passage=False, ad=ad))
         out.append('</div>')
+
+    # 录音原文：折叠在页面最后
+    trs = d.get("transcripts", [])
+    if trs:
+        out.append('<details class="card aud-text" id="audText">')
+        out.append('<summary><span class="tag">原文</span>听力录音文字稿'
+                   '<span class="hfw-caret" aria-hidden="true">▾</span></summary>')
+        out.append('<div class="aud-text-body">')
+        out.append('<p class="aud-note" style="margin:0 0 14px">'
+                   '考卷上只有选项，题目由录音念出。这里是完整原文与逐句中译 —— 听不懂时对照它。'
+                   '先听、再对原文、然后模仿跟读。</p>')
+        for t in trs:
+            out.append('<div class="piece">')
+            out.append('<div class="piece-head"><span>' + esc(t.get("head", "")) + '</span>')
+            out.append('</div>')
+            for ln in t.get("lines", []):
+                out.append('<div class="tr-line">')
+                out.append(f'<span class="no">{ln.get("idx", "")}</span>')
+                if ln.get("en"):
+                    out.append(f'<p class="en">{esc(ln["en"])}</p>')
+                if ln.get("zh"):
+                    out.append(f'<p class="zh">{esc(ln["zh"])}</p>')
+                out.append('</div>')
+            out.append('</div>')
+        out.append('</div></details>')
+
     return "".join(out)
 
 
@@ -1163,7 +1190,7 @@ function setText(id, t) {
     if (play) { var p = player.play(); if (p && p.catch) p.catch(function () {}); }
   }
 
-  // 各处的入口：听力页的胶囊、每题旁的「听这题」、打卡站的播放按钮
+  // 各处播放入口：听力页的胶囊、每题旁的「听这题」、打卡站的播放按钮
   document.addEventListener('click', function (e) {
     var el = e.target.closest ? e.target.closest('[data-aud]') : null;
     if (!el) return;
@@ -1173,6 +1200,22 @@ function setText(id, t) {
     // 先把地址记下（分享/刷新能回到这句），再跳；音频出问题也不影响记地址
     try { history.replaceState(null, '', '#t=' + t); } catch (err) {}
     seek(t, true);
+  });
+
+  // 「看原文与翻译」：展开页面最后的原文块并滚过去（原文默认不展开）
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('#audShowText') : null;
+    if (!b) return;
+    var box = document.getElementById('audText');
+    if (!box) return;
+    box.open = true;
+    // ⚠️ 滚的必须是 summary，不是整个 details：原文块展开后有两万像素高，
+    //    拿它去 scrollIntoView，浏览器只会滚到「中间偏下」（用户反馈过）
+    var head = box.querySelector('summary') || box;
+    var y = head.getBoundingClientRect().top + window.pageYOffset - 70;   // 别被顶栏盖住
+    window.scrollTo({ top: y, behavior: 'auto' });
+    b.textContent = '已展开 · 在页面最后';
+    setTimeout(function () { b.textContent = '看原文与翻译'; }, 2200);
   });
 
   // 落地时就带 #t=… 的：滚到播放器、跳过去、自动播一遍

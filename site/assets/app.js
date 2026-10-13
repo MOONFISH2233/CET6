@@ -61,7 +61,7 @@ function setText(id, t) {
     if (play) { var p = player.play(); if (p && p.catch) p.catch(function () {}); }
   }
 
-  // 各处的入口：听力页的胶囊、每题旁的「听这题」、打卡站的播放按钮
+  // 各处播放入口：听力页的胶囊、每题旁的「听这题」、打卡站的播放按钮
   document.addEventListener('click', function (e) {
     var el = e.target.closest ? e.target.closest('[data-aud]') : null;
     if (!el) return;
@@ -71,6 +71,22 @@ function setText(id, t) {
     // 先把地址记下（分享/刷新能回到这句），再跳；音频出问题也不影响记地址
     try { history.replaceState(null, '', '#t=' + t); } catch (err) {}
     seek(t, true);
+  });
+
+  // 「看原文与翻译」：展开页面最后的原文块并滚过去（原文默认不展开）
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('#audShowText') : null;
+    if (!b) return;
+    var box = document.getElementById('audText');
+    if (!box) return;
+    box.open = true;
+    // ⚠️ 滚的必须是 summary，不是整个 details：原文块展开后有两万像素高，
+    //    拿它去 scrollIntoView，浏览器只会滚到「中间偏下」（用户反馈过）
+    var head = box.querySelector('summary') || box;
+    var y = head.getBoundingClientRect().top + window.pageYOffset - 70;   // 别被顶栏盖住
+    window.scrollTo({ top: y, behavior: 'auto' });
+    b.textContent = '已展开 · 在页面最后';
+    setTimeout(function () { b.textContent = '看原文与翻译'; }, 2200);
   });
 
   // 落地时就带 #t=… 的：滚到播放器、跳过去、自动播一遍

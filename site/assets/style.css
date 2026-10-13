@@ -2128,6 +2128,33 @@ body.has-quiz-bar{padding-bottom:70px}
 .aud-q:hover i { color:var(--accent-text); }
 
 .aud-note { font-size:12.5px; color:var(--fg-faint); margin:10px 0 0; line-height:1.7; }
+/* 播放器卡片里的「看原文与翻译」（外形同篇目胶囊，但类名分开，
+   免得「几个篇目按钮」这类判断把它一起数进去） */
+.aud-acts { display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; }
+.aud-textbtn {
+  font:inherit; font-size:12.5px; padding:7px 13px;
+  border-radius:var(--radius-pill);
+  border:1px solid var(--line); background:var(--bg-card); color:var(--fg-soft);
+  cursor:pointer; transition:background .15s, border-color .15s, color .15s;
+}
+.aud-textbtn:hover { border-color:var(--accent); color:var(--accent-text); background:var(--accent-soft); }
+
+/* 页面最后的录音原文块：默认收起，点「看原文与翻译」才展开 */
+details.aud-text { padding:0; }
+details.aud-text > summary {
+  display:flex; align-items:center; gap:8px;
+  padding:14px 16px; margin:0;                    /* 压住 style.css 里 details.card 那套 */
+  font-size:15px; font-weight:600; letter-spacing:-.1px;
+}
+details.aud-text > summary::-webkit-details-marker { display:none; }
+details.aud-text > summary:hover { color:var(--accent-text); }
+details.aud-text > summary .hfw-caret { margin-left:auto; }
+/* ⚠️ style.css 里 `.card{display:block}` 会盖掉 details 收起时「藏住非 summary 内容」的
+   原生行为（那个 UA 规则优先级很低）→ 原文会一直摊开着。必须自己写一条。 */
+details.aud-text:not([open]) > *:not(summary) { display:none; }
+details.aud-text[open] > summary { border-bottom:1px solid var(--line); }
+.aud-text-body { padding:16px; }
+.aud-text-body .piece:last-child { margin-bottom:0; }
 /* 题目行里的「▶ 听这题」靠右，别跟题干挤在一起 */
 .q-head .aud-q { margin-left:auto; align-self:flex-start; flex:none; }
 #audCard[hidden] { display:none; }
