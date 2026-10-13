@@ -74,6 +74,35 @@ def check_hfw_card():
     return bad
 
 
+def check_audio():
+    """有音频的套：听力页必须带播放器，而且每道题都要有「听这题」。
+
+    历史上吃过「以为加了其实没落地」的亏，所以这里把音频也纳入自检。
+    """
+    adir = os.path.join(SITE, 'audio')
+    if not os.path.isdir(adir):
+        print('  site/audio 不存在（还没跑 build_audio.py），跳过')
+        return 0
+    sets = sorted(f[:-4] for f in os.listdir(adir) if f.endswith('.mp3'))
+    print('  有音频 %d 套: %s' % (len(sets), ' '.join(sets[:4]) + (' …' if len(sets) > 4 else '')))
+    bad = 0
+    for s in sets:
+        f = os.path.join(SITE, 'p', s, 'listening.html')
+        if not os.path.exists(f):
+            print('    BAD %s 没有听力页' % s)
+            bad += 1
+            continue
+        h = open(f, encoding='utf-8').read()
+        n_q = h.count('class="aud-q"')
+        need = len([1 for _ in __import__('re').finditer(r'data-qno=', h)])
+        if 'audPlayer' not in h or n_q < need:
+            print('    BAD %s 播放器=%s 听这题=%d/%d' % (s, 'audPlayer' in h, n_q, need))
+            bad += 1
+    if not bad:
+        print('    每套都有播放器，且每题都有「听这题」')
+    return bad
+
+
 if __name__ == '__main__':
     b1 = scan(os.path.join(SITE, 'p', '*', 'cloze.html'), 'cslot', 10)
     b2 = scan(os.path.join(SITE, 'p', '*', 'longreading.html'), 'data-qtype="match"', 10)
@@ -82,4 +111,6 @@ if __name__ == '__main__':
     b4 = check_pages()
     print('重点词折叠块:')
     b5 = check_hfw_card()
-    sys.exit(1 if (b1 or b2 or b4 or b5) else 0)
+    print('听力音频:')
+    b6 = check_audio()
+    sys.exit(1 if (b1 or b2 or b3 or b4 or b5 or b6) else 0)

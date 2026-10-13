@@ -1,0 +1,49 @@
+{
+ "set": "2024-12-1",
+ "audio_id": "207",
+ "m3u8": "https://listening.lazynote.cn/cet6/207/index.m3u8",
+ "pieces": [
+  {
+   "label": "Section A · 第 1 篇 · 1–4 题",
+   "anchor": "lt-1",
+   "start": 37.5,
+   "end": 234.9
+  },
+  {
+   "label": "Section A · 第 2 篇 · 5–8 题",
+   "anchor": "lt-5",
+   "start": 250.566,
+   "end": 435.133
+  },
+  {
+   "label": "Section B · 第 1 篇 · 9–11 题",
+   "anchor": "lt-9",
+   "start": 476.866,
+   "end": 627.966
+  },
+  {
+   "label": "Section B · 第 2 篇 · 12–15 题",
+   "anchor": "lt-12",
+   "start": 642.966,
+   "end": 841.266
+  },
+  {
+   "label": "Section C · 第 1 篇 · 16–18 题",
+   "anchor": "lt-16",
+   "start": 883.3,
+   "end": 1128.766
+  },
+  {
+   "label": "Section C · 第 2 篇 · 19–21 题",
+   "anchor": "lt-19",
+   "start": 1144.766,
+   "end": 1352.133
+  },
+  {
+   "label": "Section C · 第 3 篇 · 22–25 题",
+   "anchor": "lt-22",
+   "start": 1367.8,
+   "end": 1648.533
+  }
+ ]
+}

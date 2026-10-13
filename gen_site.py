@@ -369,7 +369,8 @@ def build_module(p, m):
     part = MODULE_PARTS[m]
 
     if m == "listening":
-        inner = render_listening(d)
+        # 模块页在 p/<set>/ 下，音频在站点根的 audio/ —— 用相对路径指过去
+        inner = render_listening(d, load_audio(s), "../../audio/%s.mp3" % s)
         with_ans = True
     elif m in ("reading1", "reading2"):
         inner = render_reading(d)
@@ -418,8 +419,74 @@ def build_module(p, m):
 
 # ---------------------------------------------------------------- 听力
 
-def render_listening(d):
+
+def load_audio(s):
+    """该套的听力音频数据（build_audio_map.py 产出）。没有就返回 None。
+
+    结构：{set, mp3, total, pieces:[{label,start,end,lines:[…],qs:[{no,t}]}]}
+    """
+    p = os.path.join(DATA, "audio", s + ".json")
+    if not os.path.exists(p):
+        return None
+    try:
+        with open(p, encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return None
+
+
+def mmss(t):
+    t = int(round(float(t or 0)))
+    return "%d:%02d" % (t // 60, t % 60)
+
+
+def audio_card(ad, src):
+    """听力页顶部的播放器：整篇 + 每篇跳转。
+
+    用原生 <audio controls>（浏览器的播放/进度/音量都够用且无障碍），
+    外面包成站点自己的卡片；「跳到某篇」在 JS 里设 currentTime。
+    下载量靠 preload="none" 兜着 —— 不点播放一个字节都不下。
+    src 由调用方给：听力页在 p/<set>/ 下，要用 ../../audio/…
+    """
+    chips = []
+    for p_ in ad["pieces"]:
+        # ⚠️ 属性名必须是 data-aud —— app.js 里那一个委托监听器靠它认所有跳转入口
+        chips.append(
+            '<button type="button" class="aud-chip" data-aud="%.1f" title="%s · 跳到 %s">%s'
+            '<i>%s</i></button>'
+            % (p_["start"], esc(p_["label"]), mmss(p_["start"]),
+               esc(p_["label"].split(" · ")[-1]), mmss(p_["start"]))
+        )
+    return (
+        '<div class="card aud-card" id="audCard">'
+        '<h2><span class="tag">录音</span>听力音频</h2>'
+        '<audio id="audPlayer" class="aud-player" controls preload="none" playsinline '
+        'webkit-playsinline="true" x5-playsinline="true" '
+        'src="%s"></audio>'
+        '<div class="aud-chips" id="audChips">%s</div>'
+        '<p class="aud-note">'
+        '点上面的篇目跳到那一段；逐题听题在下面每题旁边点「▶ 听这题」。'
+        '整套 %s，不点播放不会消耗流量。</p>'
+        '</div>'
+    ) % (esc(src), "".join(chips), mmss(ad["total"]))
+
+
+def listen_qtime(ad, no):
+    """某题在录音里的时间点（没有就返回 None）"""
+    if not ad:
+        return None
+    for p_ in ad["pieces"]:
+        for q in p_.get("qs", []):
+            if str(q.get("no")) == str(no):
+                return q.get("t")
+    return None
+
+
+def render_listening(d, ad=None, audio_src=""):
     out = []
+    # 音频播放器（整篇 + 每篇跳转）
+    if ad and audio_src:
+        out.append(audio_card(ad, audio_src))
     # 录音原文
     trs = d.get("transcripts", [])
     if trs:
@@ -459,7 +526,7 @@ def render_listening(d):
                     cur_sec = sname
                     out.append(f'<div class="sec-head">{esc(sec_names.get(sname, sname))}'
                                f'（{sdata["from"]}–{sdata["to"]} 题）</div>')
-            out.append(render_question(q, show_passage=False))
+            out.append(render_question(q, show_passage=False, ad=ad))
         out.append('</div>')
     return "".join(out)
 
@@ -756,11 +823,18 @@ def render_writing(d):
 
 # ---------------------------------------------------------------- 题目组件
 
-def render_question(q, show_passage=True):
+def render_question(q, show_passage=True, ad=None):
     out = ['<div class="q" data-qno="%s" data-answer="%s" data-qtype="choice">' % (esc(str(q.get('no', ''))), esc(q.get('answer', '')))]
     out.append('<div class="q-head">')
     out.append(f'<span class="q-no">{q["no"]}</span>')
     out.append('<div class="q-stem">')
+    # 听力题：给一个「听这题」，跳到这道题在录音里的位置
+    if ad:
+        t = listen_qtime(ad, q.get("no"))
+        if t is not None:
+            out.append('<button type="button" class="aud-q" data-aud="%.1f" '
+                       'title="从 %s 开始听这道题">▶ 听这题<i>%s</i></button>'
+                       % (t, mmss(t), mmss(t)))
     if q.get("stem"):
         out.append(f'<p class="en" style="margin:0">{esc(q["stem"])}</p>')
     if q.get("stem_zh"):
@@ -1074,6 +1148,58 @@ function setText(id, t) {
   var e = document.getElementById(id);
   if (e) e.textContent = t;
 }
+
+// ---------------------------------------------------------------- 听力音频
+// 播放器就一个 <audio>（原生控件），页面上所有「听这题」「跳到第 N 篇」都是在设它的
+// currentTime：比每处塞一个播放器省事，也不会好几个播放器一起响。
+// 时间点还可以带在地址里（#t=123），分享/刷新都能回到那句话。
+(function () {
+  var player = null;
+  var pending = null;       // 音频还没就绪前记下想跳的时间，等 loadedmetadata 再跳
+
+  function seek(t, play) {
+    if (!player) return;
+    player.currentTime = t;
+    if (play) { var p = player.play(); if (p && p.catch) p.catch(function () {}); }
+  }
+
+  // 各处的入口：听力页的胶囊、每题旁的「听这题」、打卡站的播放按钮
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest ? e.target.closest('[data-aud]') : null;
+    if (!el) return;
+    var t = parseFloat(el.dataset.aud);
+    if (isNaN(t)) return;
+    e.preventDefault();                              // A 标签也别真跳走
+    // 先把地址记下（分享/刷新能回到这句），再跳；音频出问题也不影响记地址
+    try { history.replaceState(null, '', '#t=' + t); } catch (err) {}
+    seek(t, true);
+  });
+
+  // 落地时就带 #t=… 的：滚到播放器、跳过去、自动播一遍
+  function fromHash() {
+    var m = (location.hash || '').match(/t=([\d.]+)/);
+    if (!m || !player) return;
+    var t = parseFloat(m[1]);
+    var card = document.getElementById('audCard');
+    if (card && card.scrollIntoView) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // ⚠️ 手机上用 #t= 那种片段跳转，音频元素自己是不认的（它只认媒体片段），
+    //    这里手动设 currentTime；自动播放在部分浏览器要用户手势，失败了就静静等着
+    if (player.readyState === 0) { pending = t; player.load(); }
+    else seek(t, true);
+  }
+
+  window.addEventListener('DOMContentLoaded', function () {
+    player = document.getElementById('audPlayer');
+    if (!player) return;
+    player.addEventListener('loadedmetadata', function () {
+      if (pending === null) return;
+      var t = pending;
+      pending = null;
+      seek(t, true);
+    });
+    if (location.hash) fromHash();
+  });
+})();
 
 // 初始化：恢复用户偏好
 (function () {

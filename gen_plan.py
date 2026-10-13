@@ -26,7 +26,8 @@ from plan_tpl import PAGE_TPL
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, "data")
-OUT = os.path.join(HERE, "site", "plan")
+SITE = os.path.join(HERE, "site")
+OUT = os.path.join(SITE, "plan")
 
 START = dt.date(2026, 10, 12)         # 第一天 = 10/12（改这里要同步 plan_tpl 的静态文案 + 迁移链）
 EXAM = dt.date(2026, 12, 12)          # 六级考试日（周六）
@@ -242,6 +243,9 @@ def main():
         "module_names": MODULE_NAMES,
         # 每套卷的总题数：模考日按它判断「整套判完了没」（精读站判完一道题就写 cet6:answers）
         "set_q_total": {s: sum(n for (st, _m), n in qn.items() if st == s) for s in SETS},
+        # 哪些套有音频（site/audio/<set>.mp3）—— 今日卡片据此决定要不要出播放器
+        "audio_sets": sorted(f[:-4] for f in os.listdir(os.path.join(SITE, "audio"))
+                             if f.endswith(".mp3")) if os.path.isdir(os.path.join(SITE, "audio")) else [],
         "stats": stats,
         "days": days,
     }

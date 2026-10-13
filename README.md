@@ -1,7 +1,8 @@
 # 六级真题精读 + 备考打卡站
 
 个人自用的大学英语六级备考站点。把 2022-06 ~ 2026-06 的 33 套真题（听力原文、阅读逐段翻译、
-逐题解析、翻译参考译文、写作范文）整理成静态网页，配一套 69 天冲刺计划。
+逐题解析、翻译参考译文、写作范文）整理成静态网页，配一套 61 天冲刺计划。
+计划用到的 10 套还带**听力音频**（可整篇播、按篇跳、逐题跳）。
 
 | 页面 | 路径 | 说明 |
 |---|---|---|
@@ -23,18 +24,26 @@ build/
   build_img.py        生成站点用图 -> site/assets/img/
   gen_site.py         生成精读站（首页 / 套卷页 / 模块页 / 专项页 / 我的学习 / 重点词 / 背单词）
   gen_plan.py         生成打卡站 -> site/plan/
+  build_audio.py      抓听力音频（HLS 分片）并转成 mp3 -> site/audio/，同时抓每篇区间
+  build_audio_map.py  逐题时间轴（句子↔音频对齐）-> data/audio/<set>.json
   gen_pdf.py          生成 PDF（精读版 + 速查版）
   pipeline.py         一键全流程（--no-fetch 跳过抓取）
-  _check_site.py      生成后自检
+  _check_site.py      生成后自检（含「有音频的套必须带播放器和听这题」）
+  _serve.py           本地预览服务器（比 http.server 多一件事：支持 HTTP Range，音频才能拖）
+  _patch_server.py    给线上 Node 静态服务加 Range 支持（见「音频」一节）
   _rv_test.js         背单词页功能实测（Playwright，390×780）
   _rv_design.js       新页面与既有页面的 computed style 逐项比对（防「加了东西设计变了」）
   _rv_edge.js         背单词页边界（空生词本 / 查不到释义 / SM-2 到期口径 / 发音已撤掉的回归）
   _rv_fold.js         生词本分组折叠 + 展开状态记忆
   _rv_live.js         部署后打线上地址复测
-  data/               解析结果 + 词库 + 台词（进仓库）
+  _audio_page.js      听力播放器实测（能加载 / 能跳 / 逐题按钮 / 三档主题）
+  _audio_live.js      线上音频复测
+  _plan_test.js       打卡站回归（进度判定 + 今日卡片的播放器）
+  data/               解析结果 + 词库 + 台词 + 音频时间轴（进仓库）
   raw/                抓下来的原始 HTML（不进仓库，可用 fetch.py 重抓）
-  _cache/             ECDICT 原始 csv 缓存（不进仓库）
+  _cache/             ECDICT 原始 csv + 音频 ts 分片缓存（不进仓库）
   site/               生成好的静态站点（进仓库，可直接部署）
+  site/audio/         10 套听力 mp3（92MB，不进仓库；build_audio.py 可重抓）
 ```
 
 ## 重建
@@ -49,6 +58,27 @@ python gen_site.py
 python gen_plan.py
 python _check_site.py
 ```
+
+## 听力音频
+
+源站听力页里 `<audio>` 指向 HLS 流 `https://listening.lazynote.cn/cet6/<id>/index.m3u8`
+（标准 VOD 清单，**无签名、无防盗链**，分片 .ts 可直连下载）。本机把它整套抓下来，
+用 ffmpeg 合成一个 48kbps 单声道 mp3。
+
+```bash
+python build_audio.py       # 抓 + 转码 -> site/audio/<set>.mp3（计划用的 10 套，约 92MB）
+                            # 同时把每篇的起止时间抓进 data/audio_src/<set>.json
+python build_audio_map.py   # 逐题时间轴 -> data/audio/<set>.json
+python gen_site.py          # 听力页就带上播放器了
+```
+
+- **每篇的区间**来自源站播放器的 props（Section A·第 1 篇 = 35.9–208.6s 这种）
+- **每道题的时间**是推出来的：每题解析里都有一条「定位」（答案句），拿它去逐句文本里定位，
+  再按字符占比在篇内插值。实测 250/250 题都能对上
+- ⚠️ **音频必须支持 HTTP Range**，否则浏览器跳不动，只能从头播
+  - 本地预览请用 `python _serve.py`（不是 `python -m http.server`）
+  - 线上那台 Node 静态服务原来不支持 Range，`_patch_server.py` 是给它打补丁用的
+    （已打过，备份在 `/opt/astock-learn/server.js.bak-range`）
 
 ## 部署
 

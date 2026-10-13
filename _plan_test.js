@@ -123,6 +123,32 @@ const ck = (n, c, e) => { console.log((c ? '  OK   ' : '  FAIL ') + n + (c ? '' 
   ck('导出按钮在', await p.locator('button:has-text("导出进度")').count() === 1);
   ck('清空按钮在', await p.locator('button:has-text("清空进度")').count() === 1);
 
+  console.log('== 今日卡片里的听力播放器 ==');
+  await p.evaluate(() => { localStorage.clear(); });
+  await p.reload();
+  await p.waitForTimeout(1200);
+  const aud = await p.evaluate(() => {
+    const a = document.querySelector('#todayCard .aud-embed audio');
+    const n = document.querySelectorAll('#todayCard audio').length;
+    const rows = document.querySelectorAll('.dayrow audio').length;
+    if (!a) return { n, rows, none: true };
+    return { n, rows, src: a.getAttribute('src'), preload: a.preload,
+             playsinline: a.hasAttribute('playsinline'), x5: a.getAttribute('x5-playsinline'),
+             open: (document.querySelector('#todayCard .aud-embed-open') || {}).getAttribute
+                   ? document.querySelector('#todayCard .aud-embed-open').getAttribute('href') : null };
+  });
+  console.log('  ' + JSON.stringify(aud));
+  if (aud.none) {
+    console.log('  （今天没有听力任务，跳过播放器断言）');
+  } else {
+    ck('今日卡片有一个播放器', aud.n === 1, String(aud.n));
+    ck('播放器指向那天那套的 mp3', /^\.\.\/audio\/[\d-]+\.mp3$/.test(aud.src || ''), aud.src);
+    ck('preload=none（不点不下载）', aud.preload === 'none', aud.preload);
+    ck('带 playsinline / x5', aud.playsinline && aud.x5 === 'true');
+    ck('有「原文与解析」入口', /listening\.html$/.test(aud.open || ''), aud.open);
+    ck('清单 61 行里没有重复嵌播放器', aud.rows === 0, String(aud.rows));
+  }
+
   console.log('\n报错: ' + (errs.join(' | ') || '（无）'));
   ck('无 JS 报错', errs.length === 0, errs.join(' | '));
   await b.close();

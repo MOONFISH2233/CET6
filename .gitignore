@@ -4,6 +4,15 @@ raw/
 # ECDICT 原始 csv 缓存（62MB，按 build_dict_all.py 里的地址重新下载）
 _cache/
 
+# 听力音频（92MB，build_audio.py 可从源站重抓）
+site/audio/
+
+# 误落到这里的杂物（百度网盘安装包等，2.1GB，与本项目无关）
+学习/
+
+# 测试截图
+_shots/
+
 # PDF 构建产物
 pdfbuild/
 

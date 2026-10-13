@@ -103,6 +103,14 @@ PAGE_TPL = r"""<!DOCTYPE html>
 .vok{color:var(--ok);font-weight:600}
 .rowacts{display:flex;gap:7px;align-items:center;margin-top:8px;flex-wrap:wrap}
 
+/* 今日卡片里嵌的音频：原生控件 + 圆角，旁边给一个「原文与解析」的去处 */
+.aud-embed{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.aud-embed audio{flex:1;min-width:190px;height:40px;border-radius:var(--radius-pill);
+  background:var(--bg-soft)}
+.aud-embed-open{font-size:12.5px;color:var(--accent-text);text-decoration:none;flex:none;
+  border-bottom:1px dashed var(--accent-line)}
+.aud-embed-open:hover{color:var(--accent)}
+
 /* 三个阶段说明：左侧色条 + 浅底色 */
 .phase-card{border-left:3px solid var(--line);border-radius:0 var(--radius-sm) var(--radius-sm) 0;
   padding:11px 14px;margin:12px 0}
@@ -402,6 +410,18 @@ function listenLine(l){
          '<span class="tnum">模仿 '+n+' 句</span>';
 }
 
+/* 那天要听的那套录音，直接嵌一个播放器（preload=none，不点不下载）。
+   没有音频的套（现阶段只有 2023-06 ~ 2025-06 这 10 套有）就不出播放器。 */
+function listenPlayer(set){
+  if(!set) return '';
+  if((PLAN.audio_sets||[]).indexOf(set) < 0) return '';
+  return '<div class="aud-embed">'+
+    '<audio controls preload="none" playsinline webkit-playsinline="true" x5-playsinline="true" '+
+    'src="../audio/'+esc(set)+'.mp3"></audio>'+
+    '<a class="aud-embed-open" href="../p/'+esc(set)+'/listening.html" '+
+    'title="打开这一篇的原文、翻译与逐题解析">原文与解析 →</a></div>';
+}
+
 /* 一天要做的事：阅读 / 听力 / 写作翻译 / 模考，一行一件 */
 function taskLines(d){
   var h = '';
@@ -423,6 +443,7 @@ function todayHTML(d, prog){
   var h = '<div class="th"><span class="tag">今天</span><b>第 '+d.day+' 天 · '+d.weekday+
           ' · '+monthDay(d.d)+'</b></div>';
   h += '<div class="big">'+taskLines(d)+'</div>';
+  if(d.listening) h += listenPlayer(d.listening.set);
   if(d.note) h += '<div class="note">'+esc(d.note)+'</div>';
   /* 自动进度：这一篇判了多少题、对几个（不用自己勾四个步骤） */
   var a = autoOf(d.reading);
