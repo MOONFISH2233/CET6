@@ -848,30 +848,6 @@ footer.site a { color: var(--fg-faint); }
 
 .w:hover { background: var(--accent-soft); }
 
-/* 朗读按钮：点词释义、生词本、背单词页通用 */
-.spk {
-  font: inherit;
-  border: none;
-  background: none;
-  padding: 0;
-  margin: 0 6px 0 0;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  display: inline-grid;
-  place-items: center;
-  color: var(--fg-faint);
-  cursor: pointer;
-  vertical-align: middle;
-  transition: background .15s, color .15s;
-}
-
-.spk svg { width: 15px; height: 15px; }
-.spk:hover { color: var(--accent-text); background: var(--accent-soft); }
-.spk:active { transform: scale(.92); }
-.wpop-head .spk { width: 26px; height: 26px; margin: 0 0 0 2px; }
-.wpop-head .spk svg { width: 17px; height: 17px; }
-
 /* 段落下的生词批注（收了词就自动留一行，像旁边写的笔记） */
 .wnotes {
   margin-top: 9px;
@@ -1985,14 +1961,9 @@ body.has-quiz-bar{padding-bottom:70px}
 .rv-go:active { transform:scale(.98); }
 .rv-go:disabled { opacity:.45; cursor:not-allowed; transform:none; }
 
-/* 设置：每天新词量 + 自动发音 */
+/* 设置：每天新词量 */
 .rv-settings { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-top:14px; }
 .rv-settings .rv-lab { font-size:12.5px; color:var(--fg-faint); }
-.rv-auto {
-  font-size:12.5px; color:var(--fg-soft); display:inline-flex;
-  align-items:center; gap:6px; cursor:pointer;
-}
-.rv-auto input { accent-color:var(--accent); width:15px; height:15px; }
 
 /* 进度：数字 + 细条，跟打卡站的进度条同款 */
 .rv-top { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
@@ -2028,10 +1999,6 @@ body.has-quiz-bar{padding-bottom:70px}
   color:var(--fg-faint); letter-spacing:.01em;
 }
 /* 单词旁边的喇叭：比正文里的大一号，手机上也好点 */
-.rv-spk-btn { width:30px; height:30px; margin:0; color:var(--accent-text); background:var(--accent-soft); }
-.rv-spk-btn svg { width:17px; height:17px; }
-.rv-spk-btn:hover { background:var(--accent-line); color:var(--accent-text); }
-
 /* 选项：和文章页的 .opts li 同一套配色（透明底、选中浅青、对绿错红），
    只是行厚一点 —— 背单词时一只手点，得点得准。 */
 .rv-choices { display:grid; gap:2px; margin-top:16px; }
@@ -2077,13 +2044,13 @@ body.has-quiz-bar{padding-bottom:70px}
 .rv-src a:hover { text-decoration:underline; }
 
 .rv-acts { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
-.rv-spk, .rv-mini {
+.rv-mini {
   font:inherit; font-size:12.5px; padding:7px 14px;
   border-radius:var(--radius-pill); border:1px solid var(--line);
   background:var(--bg-card); color:var(--fg-soft); cursor:pointer;
   transition:background .15s, border-color .15s, color .15s;
 }
-.rv-spk:hover, .rv-mini:hover { border-color:var(--accent); color:var(--accent-text); background:var(--accent-soft); }
+.rv-mini:hover { border-color:var(--accent); color:var(--accent-text); background:var(--accent-soft); }
 .rv-next {
   display:block; min-width:132px; margin:12px auto 2px;
   font:inherit; font-size:14px; font-weight:600; padding:9px 20px;
@@ -2093,27 +2060,6 @@ body.has-quiz-bar{padding-bottom:70px}
 }
 .rv-next:hover { background:var(--accent-hover); }
 .rv-next:active { transform:scale(.99); }
-
-/* 发音诊断：平时收着，出问题时展开看（手机排查专用） */
-.rv-diag { margin-top: 14px; font-size: 12.5px; color: var(--fg-faint); }
-.rv-diag > summary {
-  cursor: pointer; list-style: none; padding: 6px 0;
-  border-top: 1px solid var(--line);
-}
-.rv-diag > summary::-webkit-details-marker { display: none; }
-.rv-diag > summary::after { content: ' ▾'; font-size: 10px; }
-.rv-diag[open] > summary::after { content: ' ▴'; }
-.rv-diag > summary:hover { color: var(--accent-text); }
-.rv-diag-body { line-height: 1.9; }
-.rv-diag-body b { font-weight: 600; color: var(--fg-soft); }
-.rv-diag-ok { color: var(--ok); }
-.rv-diag-bad { color: var(--bad); }
-.rv-diag-btn {
-  font: inherit; font-size: 12.5px; padding: 7px 14px; margin-top: 8px;
-  border-radius: var(--radius-pill); border: 1px solid var(--line);
-  background: var(--bg-card); color: var(--fg-soft); cursor: pointer;
-}
-.rv-diag-btn:hover { border-color: var(--accent); color: var(--accent-text); }
 
 /* 一轮结束的成绩单 */
 .rv-sum { border:1px solid var(--ok-line); box-shadow:0 0 0 3px var(--ok-bg); }

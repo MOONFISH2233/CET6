@@ -55,7 +55,8 @@ function ck(name, cond, extra) {
   ck('4 个选项', choices.length === 4, choices.length);
   ck('选项互不相同', new Set(choices).size === 4, choices.join(' / '));
   ck('进度 1 / 12', /1 \/ 12/.test(await page.locator('#rvCount').innerText()));
-  ck('喇叭按钮存在', await page.locator('#rvSpk .spk').count() === 1);
+  ck('显示音标', (await page.locator('#rvPhon').innerText()).length > 2,
+     await page.locator('#rvPhon').innerText());
   await page.screenshot({ path: OUT + '/02-review-card.png' });
 
   console.log('== 点一个选项 → 立刻判定 + 反馈 ==');
@@ -68,9 +69,9 @@ function ck(name, cond, extra) {
   ck('反馈出现', !(await page.locator('#rvFb').isHidden()));
   ck('反馈有对错徽标', /答对了|答错了/.test(fb), fb);
   ck('反馈有完整释义', fb.length > 20, fb);
-  ck('有「太简单」按钮', await page.locator('#rvFb [data-act="easy"]').count() === 1);
+  ck('有「重点标记」按钮', await page.locator('#rvFb [data-act="star"]').count() === 1);
   ck('有「已学会」按钮', await page.locator('#rvFb [data-act="learned"]').count() === 1);
-  ck('有「再听一遍」', await page.locator('#rvFb [data-act="say"]').count() === 1);
+  ck('反馈里没有发音按钮了', await page.locator('#rvFb [data-act="say"]').count() === 0);
   ck('正确项恰好一个变绿', await page.locator('.rv-opt.ok').count() === 1,
      String(await page.locator('.rv-opt.ok').count()));
   ck('选项已锁（不可再点）', await page.locator('.rv-opt').first().isDisabled());

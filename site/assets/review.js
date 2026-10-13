@@ -1,10 +1,10 @@
 /* ==========================================================================
-   背单词（百词斩式）：弹英文大字 → 4 选 1 中文 → 立刻反馈 + 释义 + 出处 + 🔊
+   背单词（百词斩式）：弹英文大字 → 4 选 1 中文 → 立刻反馈 + 释义 + 出处
 
    数据：
      词源   cet6:vocab（生词本，精读站点词收的词）—— 新词就从这个池子里取
-     调度   cet6:srs   { "<词>": {EF, I, n, due, seen, ok, bad, learned} }
-     设置   cet6:srsOpt { newPerDay: 20|30|40, auto: 0|1 }
+     调度   cet6:srs   { "<词>": {EF, I, n, due, seen, ok, bad, learned, star} }
+     设置   cet6:srsOpt { newPerDay: 20|30|40 }
    词义/音标来自 word.js 的词库（核心 dict.json + 兜底 dict_all.json）。
 
    SM-2：答对 n++，间隔 1 → 6 → round(I×EF) 天；答错 n 归零、明天必来。
@@ -25,21 +25,13 @@
   // 页面上要用到的元素，一次抓齐（id 与 gen_site.build_review 一致）
   var el = {};
   ['rvHome', 'rvStat', 'rvStartBtn', 'rvHomeNote', 'rvSession', 'rvCount', 'rvBar',
-   'rvCard', 'rvWord', 'rvPhon', 'rvChoices', 'rvFb', 'rvSum', 'rvOpt',
-   'rvAuto', 'rvDiag', 'rvDiagBody', 'rvDiagTest'].forEach(function (id) {
+   'rvCard', 'rvWord', 'rvPhon', 'rvChoices', 'rvFb', 'rvSum', 'rvOpt'].forEach(function (id) {
     el[id] = document.getElementById(id);
-  });
-
-  // 发音失败要看得见：word.js 的 speak() 内部是 try/catch 静默的，
-  // 「点了没声」在页面上只能靠这里留下痕迹（诊断面板里显示）。
-  var spkErr = '';
-  window.addEventListener('error', function (e) {
-    if (e.message) spkErr = String(e.message).slice(0, 120);
   });
 
   var mode = 'home';
   var session = null;
-  var opt = load(OPT_KEY, null) || { newPerDay: 20, auto: 1 };
+  var opt = load(OPT_KEY, null) || { newPerDay: 20 };
   if ([20, 30, 40].indexOf(+opt.newPerDay) < 0) opt.newPerDay = 20;
 
   // ------------------------------------------------------------ 存取
@@ -265,12 +257,6 @@
     el.rvBar.style.width = Math.round(s.i / s.queue.length * 100) + '%';
     el.rvWord.textContent = card.shown;
     el.rvPhon.textContent = card.phon ? '/' + card.phon + '/' : '';
-    // 喇叭交给 word.js 生成（data-say 是它的委托钩子）；在卡片里给个大一号的皮肤
-    var spk = document.getElementById('rvSpk');
-    if (spk) {
-      var W = window.CET6Word;
-      spk.innerHTML = (W && W.spkBtn) ? W.spkBtn(card.shown, 'rv-spk-btn') : '';
-    }
     el.rvFb.hidden = true;
     el.rvFb.innerHTML = '';
     el.rvChoices.hidden = false;
@@ -280,8 +266,6 @@
     el.rvCard.classList.toggle('rv-ext', !!card.ext);
     if (card.ext) el.rvCard.setAttribute('data-ext', '扩展词库');
     else el.rvCard.removeAttribute('data-ext');
-
-    if (opt.auto) speak(card.shown);
   }
 
   function pick(i) {
@@ -408,54 +392,8 @@
     return r;
   }
 
-  var lastSpoke = 0;
-  function speak(w) {
-    var W = window.CET6Word;
-    if (!W || !W.speak) { spkErr = 'word.js 的朗读函数没加载出来'; updateDiag(); return; }
-    try { W.speak(w); lastSpoke = Date.now(); }
-    catch (e) { spkErr = String(e && e.message || e); }
-    updateDiag();
-  }
-
-  // ------------------------------------------------------------ 发音诊断
-  // 手机上「点了没声」的原因有好几种（不支持 / 没语音包 / 非 HTTPS / 被静音键掐掉），
-  // 与其猜，不如把当前设备的实情列出来。
-
-  function updateDiag() {
-    if (!el.rvDiagBody) return;
-    var ss = window.speechSynthesis, vs = [];
-    try { vs = (ss && ss.getVoices()) || []; } catch (e) {}
-    var en = vs.filter(function (v) { return /^en/i.test(v.lang || ''); });
-    var y = function (b) { return b ? '是' : '否'; };
-    if (!ss) {
-      el.rvDiagBody.innerHTML = '<div class="rv-diag-bad">这台设备的浏览器不支持网页朗读' +
-        '（没有 speechSynthesis）。单词只能看看音标，或在电脑上听。</div>';
-      return;
-    }
-    // 手机本地中文语音包常把英文单词念成字母（"a-n-t-i"），这里给个判断依据
-    var onlyOnline = en.length > 0 && en.every(function (v) { return v.localService === false; });
-    var rows = [
-      ['浏览器', navigator.userAgent],
-      ['HTTPS', y(location.protocol === 'https:') + '（' + location.protocol + '//' + location.host + '）'],
-      ['可用语音', vs.length + ' 个，其中英文 ' + en.length + ' 个'],
-      ['挑选的语音', (window.CET6Word && window.CET6Word.voice && window.CET6Word.voice()) ||
-        (en[0] ? en[0].name + '（' + en[0].lang + '）' : '无 —— 只能靠系统默认读音')],
-      ['最近一次朗读', lastSpoke ? new Date(lastSpoke).toTimeString().slice(0, 8) : '还没点过'],
-      ['声音包', onlyOnline ? '只有联网语音（关网就没声）' : (en.length ? '本机语音' : '未加载')],
-    ];
-    var h = ['<div class="rv-diag-body">'];
-    rows.forEach(function (r) {
-      h.push('<div><b>' + esc(r[0]) + '</b>：' + esc(String(r[1])) + '</div>');
-    });
-    if (spkErr) h.push('<div class="rv-diag-bad">朗读时出错：' + esc(spkErr) + '</div>');
-    if (!en.length) {
-      h.push('<div class="rv-diag-bad">系统没提供英文语音 —— 朗读多半是哑的。' +
-             '安卓可以装一个「Google 文字转语音」；iPhone 可以在「设置 → 辅助功能 → ' +
-             '朗读内容 → 声音」里下载英文语音。</div>');
-    }
-    h.push('</div>');
-    el.rvDiagBody.innerHTML = h.join('');
-  }
+  // 注：这一版去掉了网页发音（原「🔊 再听一遍」+ 出词自动朗读 + 发音诊断面板）。
+  // 用户的手机上没有英文语音包，放不出声；页面只留音标，要听音得靠词典 App。
 
   // ------------------------------------------------------------ 首页 / 收尾
 
@@ -485,7 +423,6 @@
     el.rvOpt.querySelectorAll('.lvchip').forEach(function (b) {
       b.classList.toggle('on', +b.dataset.n === +opt.newPerDay);
     });
-    el.rvAuto.checked = !!opt.auto;
   }
 
   // 组不出题：生词本空、或词都查不到释义 —— 直接回首页，别给一张空的成绩单
@@ -539,7 +476,6 @@
     }
     var act = t.dataset.act;
     if (act === 'next') return next();
-    if (act === 'say') return speak(session && session.cur ? session.cur.shown : '');
     if (act === 'easy') return easy();
     if (act === 'star') return star();
     if (act === 'learned') return learned();
@@ -560,18 +496,7 @@
     }
   });
 
-  if (el.rvAuto) el.rvAuto.onchange = function () {
-    opt.auto = el.rvAuto.checked ? 1 : 0;
-    save(OPT_KEY, opt);
-  };
   if (el.rvStartBtn) el.rvStartBtn.onclick = start;
-  if (el.rvDiagTest) el.rvDiagTest.onclick = function () {
-    // 用固定的测试句：中文语音包会把英文单词念成字母，用句子能听出到底有没有声
-    speak(session && session.cur ? session.cur.shown : 'reading');
-    updateDiag();
-  };
-  if (el.rvDiag) el.rvDiag.addEventListener('toggle', function () { if (el.rvDiag.open) updateDiag(); });
-  if (window.speechSynthesis) window.speechSynthesis.onvoiceschanged = function () { updateDiag(); };
   if (el.rvSum) el.rvSum.onclick = function (e) {
     if (e.target.closest && e.target.closest('.rv-sum-go')) start();
   };
@@ -591,7 +516,6 @@
       e.preventDefault();
       if (s.judged) next(); else submit();
     }
-    if (e.key === 's' || e.key === 'S') speak(s.cur ? s.cur.shown : '');
   });
 
   // ------------------------------------------------------------ 启动

@@ -99,6 +99,13 @@ const vocab = ['antibiotic', 'competitiveness', 'hierarchical', 'sustainable', '
   await p.waitForTimeout(1000);
   ck('模块页仍能点词（.w 已包）', await p.locator('.w').count() > 50, String(await p.locator('.w').count()));
   ck('重点词块还在', await p.locator('#hfwBox').count() === 1);
+  // 点一个词，弹窗里应该只有释义，不该再有喇叭
+  await p.locator('.w').nth(20).click();
+  await p.waitForTimeout(400);
+  const pop = await p.locator('.wpop').innerText().catch(() => '');
+  ck('弹窗还能弹出来', pop.length > 3, pop.slice(0, 60));
+  ck('弹窗里没有喇叭按钮', await p.locator('.wpop .spk').count() === 0);
+  ck('弹窗仍显示音标', await p.locator('.wpop-phon').count() >= 0);
 
   console.log('\n控制台/网络问题: ' + (errs.join('\n') || '（无）'));
   ck('无报错、无 404', errs.length === 0, errs.join(' | '));

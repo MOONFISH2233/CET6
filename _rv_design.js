@@ -89,8 +89,7 @@ const probe = (sel, props) => `(() => {
      ['background-color', 'color', 'border-radius'].every(k => nTag[k] === refTag[k]),
      JSON.stringify([refTag, nTag]));
 
-  const nSpk = await p.evaluate(probe('#rvSpk .spk', ['border-radius']));
-  ck('喇叭按钮仍是圆形', nSpk && nSpk['border-radius'] === '50%', JSON.stringify(nSpk));
+  ck('没有发音按钮残留', await p.locator('.spk').count() === 0);
 
   // 鼠标挪开，别让上一处 hover/active 影响取色
   await p.mouse.move(5, 5);

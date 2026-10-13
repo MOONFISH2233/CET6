@@ -926,7 +926,7 @@ def build_review(meta):
     """背单词（百词斩式）：弹英文大字 → 4 选 1 中文 → 反馈 + 释义 + 出处。
 
     词从生词本（cet6:vocab）来，调度存 cet6:srs（SM-2）。页面骨架在这里，
-    逻辑全在 assets/review.js —— 它还要借 word.js 的词库和朗读。
+    逻辑全在 assets/review.js —— 它借 word.js 的词库查释义和音标。
     """
     labels = {
         "sets": {p["set"]: p["label"] for p in meta["papers"]},
@@ -955,14 +955,7 @@ def build_review(meta):
       <button class="lvchip" data-n="30" type="button">30 个</button>
       <button class="lvchip" data-n="40" type="button">40 个</button>
     </div>
-    <label class="rv-auto"><input type="checkbox" id="rvAuto" checked>出词时自动发音</label>
   </div>
-  <!-- 发音在这台设备上到底行不行，点开就能看（换设备/换浏览器时排查用） -->
-  <details class="rv-diag" id="rvDiag">
-    <summary>发音没声音？点这里看这台设备的情况</summary>
-    <div id="rvDiagBody"></div>
-    <button type="button" class="rv-diag-btn" id="rvDiagTest">测试发音</button>
-  </details>
 </div>
 
 <div class="card rv-sum" id="rvSum" hidden></div>
@@ -975,7 +968,7 @@ def build_review(meta):
     </div>
     <div class="rv-card" id="rvCard">
       <div class="rv-word" id="rvWord"></div>
-      <div class="rv-sub"><span id="rvSpk"></span><span class="rv-phon" id="rvPhon"></span></div>
+      <div class="rv-sub"><span class="rv-phon" id="rvPhon"></span></div>
       <div class="rv-choices" id="rvChoices"></div>
       <div class="rv-fb" id="rvFb" hidden></div>
     </div>

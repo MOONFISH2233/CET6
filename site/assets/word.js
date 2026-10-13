@@ -191,52 +191,9 @@
     return vocabHas(word);
   }
 
-  // ------------------------------------------------------------ 发音
-  // 用浏览器内置语音合成，不下载音频文件（离线也能读）；点一下读一遍
-  var voice = null;
-  function pickVoice() {
-    if (voice || !window.speechSynthesis) return voice;
-    var vs = window.speechSynthesis.getVoices() || [];
-    for (var i = 0; i < vs.length; i++) {
-      if (/^en[-_]US/i.test(vs[i].lang)) { voice = vs[i]; break; }
-    }
-    if (!voice) {
-      for (var j = 0; j < vs.length; j++) {
-        if (/^en/i.test(vs[j].lang)) { voice = vs[j]; break; }
-      }
-    }
-    return voice;
-  }
-  function speak(word) {
-    var w = String(word || '').trim();
-    if (!w || !window.speechSynthesis) return;
-    try {
-      var ss = window.speechSynthesis;
-      // ⚠️ 只在真的还在读的时候才 cancel：手机上 cancel 紧跟 speak 会把新的一句也掐掉（点了没声）
-      if (ss.speaking || ss.pending) ss.cancel();
-      var u = new SpeechSynthesisUtterance(w);
-      u.lang = 'en-US';
-      u.rate = 0.9;
-      u.volume = 1;
-      var v = pickVoice();
-      if (v) u.voice = v;
-      ss.speak(u);          // 必须在用户手势里同步调用，手机上才不会静音
-    } catch (e) {}
-  }
-  if (window.speechSynthesis) {
-    window.speechSynthesis.onvoiceschanged = function () { voice = null; pickVoice(); };
-  }
-  // 有些手机要等 voices 加载完；页面一进来先预热一下
-  if (window.speechSynthesis) { try { pickVoice(); } catch (e) {} }
-
-  function spkBtn(word, cls) {
-    return '<button type="button" class="spk ' + (cls || '') + '" data-say="' +
-           esc(word) + '" aria-label="朗读 ' + esc(word) + '" title="读一遍">' +
-           '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
-           'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-           '<path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="M16 9a4 4 0 0 1 0 6"/>' +
-           '<path d="M19 6.5a8 8 0 0 1 0 11"/></svg></button>';
-  }
+  // 注：这里原来有一套用浏览器语音合成（speechSynthesis）的「点喇叭读一遍」。
+  // 2026-10-13 撤掉了 —— 用户的手机上放不出声（系统没有英文语音包，非 HTTPS 也有限制），
+  // 与其留个按不响的按钮，不如只显示音标。
 
   function esc(s) {
     return String(s == null ? '' : s)
@@ -367,7 +324,6 @@
     var inVocab = vocabHas(key);
     var h = [];
     h.push('<div class="wpop-head"><span class="wpop-word">' + esc(word) + '</span>');
-    h.push(spkBtn(word));
     if (res.phon) h.push('<span class="wpop-phon">/' + esc(res.phon) + '/</span>');
     if (res.cefr) h.push('<span class="wpop-cefr">' + esc(res.cefr) + '</span>');
     if (res.ext) h.push('<span class="wpop-ext">扩展词库</span>');
@@ -839,7 +795,6 @@
     function vocabRow(v) {
       return '<div class="vitem">' +
         '<div class="vitem-main">' +
-          spkBtn(v.w) +
           '<b class="vw" data-w="' + esc(v.w) + '">' + esc(v.w) + '</b>' +
           (v.cefr ? '<span class="vcefr">' + esc(v.cefr) + '</span>' : '') +
           '<span class="vgloss">' + esc(v.gloss || '—') + '</span>' +
@@ -953,7 +908,6 @@
 
     root.onclick = function (e) {
       var t = e.target;
-      if (t.closest && t.closest('.spk')) return;      // 点喇叭只发音，别弹词条
       if (t.classList && t.classList.contains('vdel')) {
         var kind = t.dataset.del, i = +t.dataset.i;
         if (kind === 'vocab') delVocab(t.dataset.w);
@@ -1032,18 +986,10 @@
     // 重点词页：渲染全局词表
     if (document.getElementById('hfwPage')) { initHfwPage(); return; }
 
-    // 背单词页：界面全由 review.js 画（它要用下面的词库和发音），这里只提供这三样
+    // 背单词页：界面全由 review.js 画，这里只把下面的词库借给它
     if (document.getElementById('reviewRoot')) return;
 
     document.addEventListener('click', onClick);
-    // 喇叭按钮：任何页面、任何位置都能用
-    document.addEventListener('click', function (e) {
-      var b = e.target.closest && e.target.closest('.spk');
-      if (!b) return;
-      e.preventDefault();
-      e.stopPropagation();
-      speak(b.dataset.say || '');
-    }, true);
 
     // 只包正文区域，避免把按钮/导航也切开
     document.querySelectorAll('.card, .zhblock, .enblock').forEach(wrapWords);
@@ -1056,15 +1002,10 @@
 
   window.CET6RefreshNotes = renderNotes;   // 判完分后由 quiz.js 叫一声，把生词批注显示出来
 
-  // 别的模块（review.js）复用的几样东西：查词、兜底查词、朗读、喇叭按钮、当前语音
+  // 别的模块（review.js）复用的几样东西：核心词库、兜底词库、查词
   window.CET6Word = {
     load: loadDict, loadAll: loadDictAll, lookup: lookup, lookupAll: lookupAll,
-    speak: speak, spkBtn: spkBtn,
-    all: function () { return dict ? dict.words : null; },
-    voice: function () {
-      var v = pickVoice();
-      return v ? (v.name + '（' + v.lang + '）') : '';
-    }
+    all: function () { return dict ? dict.words : null; }
   };
 
   if (document.readyState === 'loading') {

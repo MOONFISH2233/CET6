@@ -28,7 +28,8 @@ build/
   _check_site.py      生成后自检
   _rv_test.js         背单词页功能实测（Playwright，390×780）
   _rv_design.js       新页面与既有页面的 computed style 逐项比对（防「加了东西设计变了」）
-  _rv_edge.js         背单词页边界（空生词本 / 查不到释义 / SM-2 到期口径 / 发音接线）
+  _rv_edge.js         背单词页边界（空生词本 / 查不到释义 / SM-2 到期口径 / 发音已撤掉的回归）
+  _rv_fold.js         生词本分组折叠 + 展开状态记忆
   _rv_live.js         部署后打线上地址复测
   data/               解析结果 + 词库 + 台词（进仓库）
   raw/                抓下来的原始 HTML（不进仓库，可用 fetch.py 重抓）

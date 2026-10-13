@@ -95,23 +95,13 @@ const vocab = WORDS.map((w, i) => ({
   await p.click('.tab[data-tab="vocab"]');
   await p.waitForTimeout(300);
 
-  console.log('== 发音诊断面板 ==');
+  console.log('== 发音相关的东西都不在了 ==');
   await p.goto(BASE + '/review.html');
   await p.waitForTimeout(900);
-  ck('诊断面板存在（默认收起）', !(await p.locator('#rvDiagBody').isVisible()));
-  await p.locator('#rvDiag > summary').click();
-  await p.waitForTimeout(400);
-  const diag = (await p.locator('#rvDiagBody').innerText()).replace(/\n/g, ' | ');
-  console.log('  ' + diag.slice(0, 220));
-  ck('展开后列出浏览器信息', /浏览器/.test(diag) && /HTTPS/.test(diag), diag.slice(0, 80));
-  ck('列出了可用语音数', /可用语音/.test(diag));
-  ck('有测试发音按钮', await p.locator('#rvDiagTest').isVisible());
-  await p.locator('#rvDiagTest').click();
-  await p.waitForTimeout(500);
-  const after = await p.locator('#rvDiagBody').innerText();
-  ck('点测试后记录了朗读时间', /最近一次朗读/.test(after) && !/还没点过/.test(after),
-     after.replace(/\n/g, ' | ').slice(0, 200));
-  await p.screenshot({ path: 'D:/学习/六级/build/_shots/fold-04-diag.png' });
+  ck('诊断面板已移除', await p.locator('#rvDiag').count() === 0);
+  ck('自动发音设置项已移除', await p.locator('#rvAuto').count() === 0);
+  ck('页面上没有喇叭按钮', await p.locator('.spk').count() === 0);
+  await p.screenshot({ path: 'D:/学习/六级/build/_shots/fold-04-nosound.png' });
 
   console.log('\n报错: ' + (errs.join(' | ') || '（无）'));
   ck('无 JS 报错', errs.length === 0, errs.join(' | '));
