@@ -1311,6 +1311,36 @@ details[open] > summary .hfw-caret { transform: rotate(180deg); }
 
 .vgroup .vcount { background: var(--accent-soft); color: var(--accent-text); }
 
+/* 「我的学习」页里单独一块：重点词（不跟上面那三个标签并列） */
+.me-block {
+  display: grid;
+  gap: 3px;
+  text-decoration: none;
+  color: var(--fg);
+  transition: border-color .15s, box-shadow .15s, transform .15s;
+}
+
+.me-block:hover {
+  border-color: var(--accent-line);
+  box-shadow: var(--shadow);
+  transform: translateY(-1px);
+}
+
+.me-block-t { font-size: 15px; font-weight: 600; }
+.me-block-t::before {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 13px;
+  border-radius: 2px;
+  background: var(--accent);
+  margin-right: 9px;
+  vertical-align: -1px;
+}
+
+.me-block-d { font-size: 12.5px; color: var(--fg-faint); line-height: 1.7; }
+.me-block-n { font-size: 12.5px; color: var(--accent-text); font-weight: 600; }
+
 .vitem {
   display: flex;
   gap: 10px;
@@ -1911,9 +1941,12 @@ body.has-quiz-bar{padding-bottom:70px}
 
 /* 进度：数字 + 细条，跟打卡站的进度条同款 */
 .rv-top { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
-.rv-count { font-size:13px; color:var(--fg-faint); font-variant-numeric:tabular-nums; }
+.rv-count {
+  font-size:14px; font-weight:600; color:var(--accent-text);
+  font-variant-numeric:tabular-nums; letter-spacing:.02em;
+}
 .rv-pbar {
-  flex:1; height:6px; border-radius:999px;
+  flex:1; height:8px; border-radius:999px;
   background:var(--bg-soft); overflow:hidden;
 }
 .rv-pbar i {

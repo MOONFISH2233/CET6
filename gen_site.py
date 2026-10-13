@@ -1002,7 +1002,6 @@ def build_me(meta):
     <button class="tab on" data-tab="vocab">生词本 <span class="vcount" id="cntVocab">0</span></button>
     <button class="tab" data-tab="wrong">错题本 <span class="vcount" id="cntWrong">0</span></button>
     <button class="tab" data-tab="sents">句子 <span class="vcount" id="cntSents">0</span></button>
-    <a class="tab" href="hfw.html">重点词</a>
   </div>
   <div class="me-bar">
     <input id="meSearch" type="search" placeholder="搜索…" autocomplete="off">
@@ -1014,6 +1013,12 @@ def build_me(meta):
 <div class="card" id="meRoot">
   <div id="meList"></div>
 </div>
+
+<a class="card me-block" href="hfw.html">
+  <span class="me-block-t">重点词</span>
+  <span class="me-block-d">历年真题高频词，按 CEFR 等级筛着背，点词一键收进生词本</span>
+  <span class="me-block-n">2062 词 →</span>
+</a>
 """
     return page("我的学习 · 六级真题精读", body, 0,
                 "生词本、错题本、句子收藏，只存在本机浏览器", extra_js=extra_js)
