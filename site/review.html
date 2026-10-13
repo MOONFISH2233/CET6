@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>背单词 · 六级真题精读</title>
+<meta name="description" content="从生词本里抽词，弹英文选中文，按 SM-2 间隔重复安排复习">
+<link rel="stylesheet" href="assets/style.css?v=202610131750">
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="apple-touch-icon" href="assets/img/logo.png">
+
+</head>
+<body class="">
+<header class="site">
+  <div class="site-inner">
+    <a class="brand" href="index.html"><img class="logo" src="assets/img/logo.png" alt="">六级真题精读</a>
+    <a class="tools" style="margin:0" href="hfw.html">重点词</a>
+    <a class="tools" style="margin:0" href="me.html">我的学习<span class="vcount" id="vocabCount">0</span></a>
+    <button class="tools" style="margin:0" onclick="toggleTheme()" aria-label="切换主题" id="themeBtn">◐</button>
+  </div>
+</header>
+<div class="wrap" id="top">
+
+<div class="crumb"><a href="index.html">首页</a> / 背单词</div>
+<div class="hero hero-art hero-splash">
+  <h1>背单词</h1>
+  <p>弹一个英文，从四个中文里选它的意思。词全来自你自己的生词本 —— 读真题时收的那些。</p>
+</div>
+
+<div class="card rv-stat" id="rvHome">
+  <h2><span class="tag">今天</span>要背的词</h2>
+  <div id="rvStat"></div>
+  <button type="button" class="rv-go" id="rvStartBtn">开始背</button>
+  <p class="hfw-note" id="rvHomeNote" style="margin-top:14px"></p>
+  <div class="rv-settings">
+    <span class="rv-lab">每天新词</span>
+    <div class="lvrow" id="rvOpt">
+      <button class="lvchip" data-n="20" type="button">20 个</button>
+      <button class="lvchip" data-n="30" type="button">30 个</button>
+      <button class="lvchip" data-n="40" type="button">40 个</button>
+    </div>
+    <label class="rv-auto"><input type="checkbox" id="rvAuto" checked>出词时自动发音</label>
+  </div>
+</div>
+
+<div class="card rv-sum" id="rvSum" hidden></div>
+
+<div id="rvSession" hidden>
+  <div class="card">
+    <div class="rv-top">
+      <span class="rv-count" id="rvCount"></span>
+      <div class="rv-pbar"><i id="rvBar" style="width:0"></i></div>
+    </div>
+    <div class="rv-card" id="rvCard">
+      <div class="rv-word" id="rvWord"></div>
+      <div class="rv-sub"><span id="rvSpk"></span><span class="rv-phon" id="rvPhon"></span></div>
+      <div class="rv-choices" id="rvChoices"></div>
+      <div class="rv-fb" id="rvFb" hidden></div>
+    </div>
+  </div>
+</div>
+
+<footer class="site">
+  <p>真题与解析整理自公开资料，仅供个人学习使用。内容版权归原权利人所有。</p>
+  <p>页面上的台词与图片版权归原作者／版权方所有，仅作个人学习非商业使用，侵删。</p>
+  <p>共 33 套 · 197 个题型模块 · 覆盖 2022 年 6 月 — 2026 年 6 月</p>
+</footer>
+</div>
+<script src="assets/app.js?v=202610131750"></script>
+<script src="assets/word.js?v=202610131750"></script>
+<script src="assets/quotes.js?v=202610131750"></script>
+<script src="assets/quiz.js?v=202610131750"></script>
+<script>window.CET6_LABELS = {"sets":{"2022-06-1":"2022年6月 · 第1套","2022-06-2":"2022年6月 · 第2套","2022-06-3":"2022年6月 · 第3套","2022-09-1":"2022年9月 · 第1套","2022-09-2":"2022年9月 · 第2套","2022-09-3":"2022年9月 · 第3套","2022-12-1":"2022年12月 · 第1套","2022-12-2":"2022年12月 · 第2套","2022-12-3":"2022年12月 · 第3套","2023-03-1":"2023年3月 · 第1套","2023-03-2":"2023年3月 · 第2套","2023-03-3":"2023年3月 · 第3套","2023-06-1":"2023年6月 · 第1套","2023-06-2":"2023年6月 · 第2套","2023-06-3":"2023年6月 · 第3套","2023-12-1":"2023年12月 · 第1套","2023-12-2":"2023年12月 · 第2套","2023-12-3":"2023年12月 · 第3套","2024-06-1":"2024年6月 · 第1套","2024-06-2":"2024年6月 · 第2套","2024-06-3":"2024年6月 · 第3套","2024-12-1":"2024年12月 · 第1套","2024-12-2":"2024年12月 · 第2套","2024-12-3":"2024年12月 · 第3套","2025-06-1":"2025年6月 · 第1套","2025-06-2":"2025年6月 · 第2套","2025-06-3":"2025年6月 · 第3套","2025-12-1":"2025年12月 · 第1套","2025-12-2":"2025年12月 · 第2套","2025-12-3":"2025年12月 · 第3套","2026-06-1":"2026年6月 · 第1套","2026-06-2":"2026年6月 · 第2套","2026-06-3":"2026年6月 · 第3套"},"mods":{"writing":"写作","listening":"听力","cloze":"选词填空","longreading":"长篇阅读","reading1":"仔细阅读①","reading2":"仔细阅读②","translation":"翻译"}};</script><script src="assets/review.js?v=202610131750"></script>
+</body>
+</html>

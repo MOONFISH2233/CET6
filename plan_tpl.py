@@ -230,6 +230,26 @@ function vocabCountSet(set){
   return loadVocab().filter(function(v){ return v && v.src && v.src.split('/')[0] === set; }).length;
 }
 
+/* 今天要背多少个词（到期复习 + 每天的新词额度）—— 精读站 review.js 的同一套口径 */
+var SRS_KEY = 'cet6:srs';
+var SRS_OPT_KEY = 'cet6:srsOpt';
+function reviewDue(){
+  var srs = {}, o = {};
+  try{ srs = JSON.parse(localStorage.getItem(SRS_KEY))||{}; }catch(e){ srs = {}; }
+  try{ o = JSON.parse(localStorage.getItem(SRS_OPT_KEY))||{}; }catch(e){ o = {}; }
+  var per = [20,30,40].indexOf(+o.newPerDay) >= 0 ? +o.newPerDay : 20;
+  var now = Date.now(), due = 0, fresh = 0;
+  loadVocab().forEach(function(v){
+    var w = String((v&&v.w)||'').toLowerCase();
+    if(!w) return;
+    var r = srs[w];
+    if(!r){ fresh++; return; }
+    if(r.learned) return;
+    if(!r.due || r.due <= now || !r.n) due++;
+  });
+  return due + Math.min(fresh, per);
+}
+
 function modLink(set, mod){
   if(!set) return null;
   return mod ? ('../p/'+set+'/'+mod+'.html') : ('../p/'+set+'.html');
@@ -356,6 +376,12 @@ function todayHTML(d, prog){
          (a.done ? ' · 本日进度已自动记上' : ' · 做完点提交，进度自动记') + '</div>';
   }
   h += stepsHTML(d, prog);
+  /* 背单词：生词本攒的词，这里一键过一遍（数量口径与精读站 review.js 一致） */
+  var dn = reviewDue();
+  h += '<a class="rv-entry" href="../review.html" style="margin-top:10px">'+
+       '<span><b>背单词</b>'+
+       '<span class="rv-entry-q">弹英文、选中文，答错的明天还会来</span></span>'+
+       '<span class="rv-entry-n">'+(dn? '今天 '+dn+' 个 →' : '今天没有要背的 →')+'</span></a>';
   /* 今天的鼓励：按第几天取一句温柔台词（quotes.js 填内容） */
   h += '<div class="qcard qsmall" data-quote="day" data-day="'+d.day+'"></div>';
   return h;

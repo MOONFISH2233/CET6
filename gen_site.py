@@ -920,6 +920,68 @@ def build_hfw(meta):
                 "六级历年真题高频词总表，按 CEFR 等级与出现频次整理")
 
 
+# ================================================================ 背单词页
+
+def build_review(meta):
+    """背单词（百词斩式）：弹英文大字 → 4 选 1 中文 → 反馈 + 释义 + 出处。
+
+    词从生词本（cet6:vocab）来，调度存 cet6:srs（SM-2）。页面骨架在这里，
+    逻辑全在 assets/review.js —— 它还要借 word.js 的词库和朗读。
+    """
+    labels = {
+        "sets": {p["set"]: p["label"] for p in meta["papers"]},
+        "mods": MODULE_NAMES,
+    }
+    extra_js = ('<script>window.CET6_LABELS = '
+                + json.dumps(labels, ensure_ascii=False, separators=(",", ":"))
+                + ';</script>'
+                '<script src="assets/review.js?v=' + ASSET_VER + '"></script>')
+
+    body = f"""
+{crumb([("首页", "index.html"), ("背单词", None)], 0)}
+<div class="hero hero-art hero-splash">
+  <h1>背单词</h1>
+  <p>弹一个英文，从四个中文里选它的意思。词全来自你自己的生词本 —— 读真题时收的那些。</p>
+</div>
+
+<div class="card rv-stat" id="rvHome">
+  <h2><span class="tag">今天</span>要背的词</h2>
+  <div id="rvStat"></div>
+  <button type="button" class="rv-go" id="rvStartBtn">开始背</button>
+  <p class="hfw-note" id="rvHomeNote" style="margin-top:14px"></p>
+  <div class="rv-settings">
+    <span class="rv-lab">每天新词</span>
+    <div class="lvrow" id="rvOpt">
+      <button class="lvchip" data-n="20" type="button">20 个</button>
+      <button class="lvchip" data-n="30" type="button">30 个</button>
+      <button class="lvchip" data-n="40" type="button">40 个</button>
+    </div>
+    <label class="rv-auto"><input type="checkbox" id="rvAuto" checked>出词时自动发音</label>
+  </div>
+</div>
+
+<div class="card rv-sum" id="rvSum" hidden></div>
+
+<div id="rvSession" hidden>
+  <div class="card">
+    <div class="rv-top">
+      <span class="rv-count" id="rvCount"></span>
+      <div class="rv-pbar"><i id="rvBar" style="width:0"></i></div>
+    </div>
+    <div class="rv-card" id="rvCard">
+      <div class="rv-word" id="rvWord"></div>
+      <div class="rv-sub"><span id="rvSpk"></span><span class="rv-phon" id="rvPhon"></span></div>
+      <div class="rv-choices" id="rvChoices"></div>
+      <div class="rv-fb" id="rvFb" hidden></div>
+    </div>
+  </div>
+</div>
+"""
+    return page("背单词 · 六级真题精读", body, 0,
+                "从生词本里抽词，弹英文选中文，按 SM-2 间隔重复安排复习",
+                extra_js=extra_js)
+
+
 # ================================================================ 我的学习页
 
 def build_me(meta):
@@ -944,6 +1006,7 @@ def build_me(meta):
   </div>
   <div class="me-bar">
     <input id="meSearch" type="search" placeholder="搜索…" autocomplete="off">
+    <button class="mebtn" id="meGroup" title="生词本换一种分法">按天</button>
     <button class="mebtn" id="meExport">导出 JSON</button>
     <button class="mebtn" id="meClear">清空当前</button>
   </div>
@@ -1124,6 +1187,9 @@ def main():
     with open(os.path.join(SITE, "me.html"), "w", encoding="utf-8") as f:
         f.write(build_me(meta))
     print("  me.html")
+    with open(os.path.join(SITE, "review.html"), "w", encoding="utf-8") as f:
+        f.write(build_review(meta))
+    print("  review.html")
 
     print(f"\n站点输出: {SITE}")
 

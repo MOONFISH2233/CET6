@@ -1237,6 +1237,24 @@ details[open] > summary .hfw-caret { transform: rotate(180deg); }
 }
 
 .mebtn:hover { border-color: var(--accent); color: var(--accent-text); }
+.mebtn[hidden] { display: none; }
+
+/* 生词本的分组切换：胶囊按钮组（跟重点词页的等级筛选同一套语言） */
+.rv-grp {
+  font: inherit;
+  font-size: 12.5px;
+  padding: 6px 12px;
+  border-radius: 7px;
+  border: 1px solid var(--line);
+  background: var(--bg-soft);
+  color: var(--fg-soft);
+  cursor: pointer;
+  transition: background .15s, border-color .15s, color .15s;
+}
+.rv-grp + .rv-grp { margin-left: 5px; }
+.rv-grp:hover { border-color: var(--accent); }
+.rv-grp.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+#meGroup[hidden] { display: none; }
 .hfw-more { margin-top: 12px; width: 100%; }
 
 .me-en { font-family: var(--font-en); font-size: 15px; color: var(--en); line-height: 1.6; }
@@ -1843,3 +1861,172 @@ body.has-quiz-bar{padding-bottom:70px}
 
 /* 从错题本跳过来时，粘性顶栏别盖住题目 */
 .q{scroll-margin-top:74px}
+
+/* ==================== 背单词（review.js） ====================
+   元件全部复用上面的设计变量与既有语言：青绿主色、胶囊按钮、卡片阴影、
+   衬线只用在「今天的鼓励」那句台词上。深浅色与 OLED 档靠变量自动适配。 */
+
+/* 首页那张主卡：等宽数字看着不跳 */
+.rv-stat { border:1px solid var(--accent-line); box-shadow:0 0 0 3px var(--accent-soft); }
+.rv-stat b { display:block; font-size:19px; letter-spacing:-.2px; }
+.rv-stat span {
+  display:block; font-size:13.5px; color:var(--fg-soft);
+  margin-top:6px; line-height:1.7; font-variant-numeric:tabular-nums;
+}
+
+/* 开始按钮：主色胶囊，跟题目页底部的提交按钮同一套 */
+.rv-go {
+  font:inherit; font-size:15px; font-weight:600; padding:11px 26px;
+  border-radius:var(--radius-pill); border:none; cursor:pointer;
+  background:var(--accent); color:#fff; margin-top:14px;
+  transition:background .15s, transform .1s;
+}
+.rv-go:hover { background:var(--accent-hover); }
+.rv-go:active { transform:scale(.98); }
+.rv-go:disabled { opacity:.45; cursor:not-allowed; transform:none; }
+
+/* 设置：每天新词量 + 自动发音 */
+.rv-settings { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-top:14px; }
+.rv-settings .rv-lab { font-size:12.5px; color:var(--fg-faint); }
+.rv-auto {
+  font-size:12.5px; color:var(--fg-soft); display:inline-flex;
+  align-items:center; gap:6px; cursor:pointer;
+}
+.rv-auto input { accent-color:var(--accent); width:15px; height:15px; }
+
+/* 进度：数字 + 细条，跟打卡站的进度条同款 */
+.rv-top { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.rv-count { font-size:13px; color:var(--fg-faint); font-variant-numeric:tabular-nums; }
+.rv-pbar {
+  flex:1; height:6px; border-radius:999px;
+  background:var(--bg-soft); overflow:hidden;
+}
+.rv-pbar i {
+  display:block; height:100%; border-radius:inherit;
+  background:linear-gradient(90deg,var(--accent),var(--accent-hover));
+  transition:width .3s ease;
+}
+
+/* 抽认卡：单词区 + 选项区。单词用大字（英文衬线感靠 font-en 撑，不加粗到失真） */
+.rv-card { position:relative; }
+.rv-card[data-ext]::after {
+  content:attr(data-ext); position:absolute; right:16px; top:16px;
+  font-size:10px; color:var(--fg-faint); border:1px solid var(--line);
+  border-radius:var(--radius-pill); padding:2px 8px;
+}
+
+.rv-word {
+  font-family:var(--font-en); font-size:38px; font-weight:700;
+  letter-spacing:-.6px; line-height:1.15; word-break:break-word;
+}
+.rv-sub { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:8px; min-height:26px; }
+.rv-phon {
+  font-family:var(--font-en); font-size:13.5px;
+  color:var(--fg-faint); letter-spacing:.01em;
+}
+/* 单词旁边的喇叭：比正文里的大一号，手机上也好点 */
+.rv-spk-btn { width:30px; height:30px; margin:0; color:var(--accent-text); background:var(--accent-soft); }
+.rv-spk-btn svg { width:17px; height:17px; }
+.rv-spk-btn:hover { background:var(--accent-line); color:var(--accent-text); }
+
+/* 选项：和文章页的 .opts li 同一套配色（透明底、选中浅青、对绿错红），
+   只是行厚一点 —— 背单词时一只手点，得点得准。 */
+.rv-choices { display:grid; gap:2px; margin-top:16px; }
+.rv-opt {
+  font:inherit; font-size:15px; line-height:1.7; text-align:left;
+  padding:11px 13px; border-radius:6px;
+  border:1px solid transparent; background:transparent; color:var(--en);
+  cursor:pointer; transition:background .15s, border-color .15s, color .15s;
+}
+.rv-opt:hover { background:var(--accent-soft); border-color:var(--accent-line); }
+.rv-opt:active { background:var(--bg-hover); }
+.rv-opt.on { background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); font-weight:600; }
+.rv-opt.ok { background:var(--ok-bg); border-color:var(--ok-line); color:var(--ok); font-weight:600; }
+.rv-opt.bad { background:var(--bad-bg); border-color:var(--bad-line); color:var(--bad); }
+.rv-opt:disabled { cursor:default; }
+.rv-opt:disabled:hover { border-color:transparent; }
+.rv-opt.ok:disabled:hover { border-color:var(--ok-line); }
+.rv-opt.bad:disabled:hover { border-color:var(--bad-line); }
+
+/* 答完的反馈块：对错徽标 + 完整释义 + 出处 + 底部动作，用浅底跟选项区分开 */
+.rv-fb {
+  margin-top:16px; padding:14px 15px;
+  background:var(--bg-soft); border-radius:var(--radius);
+  border-left:3px solid var(--accent-line);
+  animation:pop-in .18s ease-out both;
+}
+.rv-fb[hidden] { display:none; }
+.rv-fb:empty { display:none; }
+.rv-fbstat { font-size:13.5px; font-weight:600; display:flex; align-items:baseline; gap:8px; }
+.rv-fbstat.ok { color:var(--ok); }
+.rv-fbstat.bad { color:var(--bad); }
+.rv-fbstat i { font-style:normal; font-size:11px; font-weight:400; color:var(--fg-faint); }
+.rv-def { font-size:15px; line-height:1.75; margin-top:8px; color:var(--fg); }
+.rv-fbmeta { display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:12.5px; color:var(--fg-faint); margin-top:6px; }
+.rv-fbmeta .rv-cefr, .rv-fbmeta .rv-exttag {
+  font-size:10px; font-weight:700; letter-spacing:.03em;
+  color:var(--accent-text); background:var(--accent-soft);
+  border-radius:var(--radius-pill); padding:2px 8px;
+}
+.rv-fbmeta .rv-exttag { color:var(--fg-faint); background:var(--bg-card); font-weight:400; }
+.rv-src { font-size:12.5px; color:var(--fg-faint); margin-top:6px; }
+.rv-src a { color:var(--accent-text); text-decoration:none; }
+.rv-src a:hover { text-decoration:underline; }
+
+.rv-acts { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+.rv-spk, .rv-mini {
+  font:inherit; font-size:12.5px; padding:7px 14px;
+  border-radius:var(--radius-pill); border:1px solid var(--line);
+  background:var(--bg-card); color:var(--fg-soft); cursor:pointer;
+  transition:background .15s, border-color .15s, color .15s;
+}
+.rv-spk:hover, .rv-mini:hover { border-color:var(--accent); color:var(--accent-text); background:var(--accent-soft); }
+.rv-next {
+  display:block; min-width:132px; margin:12px auto 2px;
+  font:inherit; font-size:14px; font-weight:600; padding:9px 20px;
+  border-radius:var(--radius-pill); border:none; cursor:pointer;
+  background:var(--accent); color:#fff;
+  transition:background .15s, transform .1s;
+}
+.rv-next:hover { background:var(--accent-hover); }
+.rv-next:active { transform:scale(.99); }
+
+/* 一轮结束的成绩单 */
+.rv-sum { border:1px solid var(--ok-line); box-shadow:0 0 0 3px var(--ok-bg); }
+/* [hidden] 得压得住 .card 的 display —— 三档主题里都不许漏出来 */
+.rv-sum[hidden], #rvSession[hidden] { display:none; }
+.rv-sum-h { font-size:12px; font-weight:600; letter-spacing:.06em; color:var(--ok); }
+.rv-sum-n {
+  font-family:var(--font-en); font-size:26px; font-weight:700;
+  letter-spacing:-.4px; margin:6px 0 4px; font-variant-numeric:tabular-nums;
+}
+.rv-sum-sub { font-size:13px; color:var(--fg-soft); line-height:1.8; }
+.rv-sum-go {
+  font:inherit; font-size:13px; padding:8px 18px; margin-top:12px;
+  border-radius:var(--radius-pill); border:1px solid var(--line);
+  background:var(--bg-card); color:var(--fg-soft); cursor:pointer;
+  transition:background .15s, border-color .15s, color .15s;
+}
+.rv-sum-go:hover { border-color:var(--accent); color:var(--accent-text); background:var(--accent-soft); }
+
+@media (max-width:430px) {
+  .rv-word { font-size:33px; }
+}
+
+/* 入口按钮：打卡站今日卡片 / 我的学习页共用，主色胶囊 + 一句数量说明 */
+.rv-entry {
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  flex-wrap:wrap; color:var(--fg); text-decoration:none;
+  border:1px solid var(--accent-line); border-radius:var(--radius);
+  background:var(--accent-soft); padding:11px 14px;
+  transition:border-color .15s, transform .12s, background .15s;
+}
+.rv-entry:hover { border-color:var(--accent); transform:translateY(-1px); }
+/* 嵌入正文时（打卡站今日卡片）与上方内容拉开一点 */
+.card .rv-entry { margin-top:12px; }
+/* 正文里的链接样式（.big a / .dayrow .body a 是虚线底）别渗进来 */
+.big .rv-entry, .dayrow .body .rv-entry { border-bottom:1px solid var(--accent-line); }
+.big .rv-entry:hover, .dayrow .body .rv-entry:hover { border-color:var(--accent); color:var(--fg); }
+.rv-entry b { font-size:14.5px; letter-spacing:-.1px; }
+.rv-entry .rv-entry-n { font-size:12.5px; color:var(--accent-text); font-variant-numeric:tabular-nums; }
+.rv-entry .rv-entry-q { font-size:11.5px; color:var(--fg-faint); display:block; margin-top:2px; }

@@ -266,6 +266,13 @@
     return l.href ? '<a href="' + esc(l.href) + '">' + esc(l.text) + '</a>' : esc(l.text);
   }
 
+  // 时间戳 → "2026-10-13"（生词本按天分组用）
+  function fmtDay(t) {
+    var d = new Date(t);
+    return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) +
+           '-' + ('0' + d.getDate()).slice(-2);
+  }
+
   function fmtTime(t) {
     if (!t) return '';
     var d = Math.floor((Date.now() - t) / 86400000);
@@ -697,6 +704,7 @@
     if (!root || !list) return;
     var tabsEl = document.querySelector('.tabs');
     var searchEl = document.getElementById('meSearch');
+    var groupBtn = document.getElementById('meGroup');
     var cur = 'vocab', q = '';
 
     var EMPTY = {
@@ -707,7 +715,9 @@
 
     // 空状态：提示 + 一句温柔台词（台词由 quotes.js 提供，取哪句按标签名固定）
     function emptyHTML(tab) {
-      var h = '<p class="vempty">' + EMPTY[tab] + '</p>';
+      // 生词本是空的：先给一条「怎么把词收进来」的路，再给背单词入口
+      var h = '<div class="vempty">' + esc(EMPTY[tab]) + '</div>';
+      if (tab === 'vocab') return h + '<div style="margin-top:14px">' + entryHTML() + '</div>';
       var q = (window.CET6Quotes && window.CET6Quotes.pick) ? window.CET6Quotes.pick(tabHash(tab)) : null;
       if (q) {
         h += '<p class="vempty-quote">「' + esc(q.t) + '」<br>——' + esc(q.a) +
@@ -720,6 +730,80 @@
       var n = 0;
       for (var i = 0; i < s.length; i++) n = (n * 31 + s.charCodeAt(i)) % 9973;
       return n;
+    }
+
+    // ---- 背单词入口 + 生词本分组（按套卷 / 按天） ----
+
+    var SRS_KEY = 'cet6:srs', SRS_OPT_KEY = 'cet6:srsOpt';
+    var groupBy = 'set';        // 'set' = 按套卷（默认，和以前一样）· 'day' = 按收录日期
+
+    // 今天要背多少个（到期复习 + 每天的新词额度）—— 口径和 review.js 的 dueCount() 一致
+    function reviewDue() {
+      var srs = load(SRS_KEY, {}) || {};
+      var o = load(SRS_OPT_KEY, null) || {};
+      var per = [20, 30, 40].indexOf(+o.newPerDay) >= 0 ? +o.newPerDay : 20;
+      var now = Date.now(), due = 0, fresh = 0, learned = 0;
+      vocab.forEach(function (v) {
+        var w = String(v.w || '').toLowerCase();
+        if (!w) return;
+        var r = srs[w];
+        if (!r) { fresh++; return; }
+        if (r.learned) { learned++; return; }
+        if (!r.due || r.due <= now || !r.n) due++;
+      });
+      return { total: due + Math.min(fresh, per), due: due,
+               fresh: Math.min(fresh, per), learned: learned };
+    }
+
+    function entryHTML() {
+      var d = reviewDue();
+      return '<a class="rv-entry" href="review.html">' +
+        '<span><b>背单词</b>' +
+        '<span class="rv-entry-q">弹英文、选中文，答错的明天还会来</span></span>' +
+        '<span class="rv-entry-n">' +
+        (d.total ? '今天 ' + d.total + ' 个 →' : '今天没有要背的 →') + '</span></a>';
+    }
+
+    // 生词本分组：按套卷（原有行为）或按收录日期（vocab[].t）
+    function groupHTML(list) {
+      var labels = (window.CET6_LABELS || {}).sets || {};
+      var groups = {}, order = [];
+      list.forEach(function (v) {
+        var key;
+        if (groupBy === 'day') {
+          var t = v.t || 0;
+          key = t ? fmtDay(t) : '0';        // 早期没有时间戳的记录兜在一起
+        } else {
+          key = String(v.src || '').split('/')[0] || '_';
+        }
+        if (!groups[key]) { groups[key] = []; order.push(key); }
+        groups[key].push(v);
+      });
+      if (groupBy === 'day') {
+        // 新的一天排前面；没有日期的垫底
+        order.sort(function (a, b) {
+          if (a === '0') return 1;
+          if (b === '0') return -1;
+          return a < b ? 1 : (a > b ? -1 : 0);
+        });
+      }
+      var h = [];
+      order.forEach(function (key) {
+        var title;
+        if (groupBy === 'day') {
+          if (key === '0') title = '早期收录';
+          else {
+            var n = Math.floor((Date.now() - new Date(key + 'T00:00:00').getTime()) / 86400000);
+            title = (n <= 0 ? '今天' : (n === 1 ? '昨天' : key)) + ' · ' + key;
+          }
+        } else {
+          title = key === '_' ? '重点词页收录' : (labels[key] || key);
+        }
+        h.push('<div class="vgroup"><span>' + esc(title) + '</span>' +
+               '<i class="vcount">' + groups[key].length + '</i></div>');
+        groups[key].forEach(function (v) { h.push(vocabRow(v)); });
+      });
+      return h;
     }
 
     function vocabRow(v) {
@@ -778,24 +862,14 @@
 
       var qq = q.toLowerCase(), h = [];
       if (cur === 'vocab') {
+        // 背单词入口置顶：生词本越攒越多，一条条翻不如先过一遍
+        h.push(entryHTML());
         var vs = vocab.filter(function (v) {
           return !qq || String(v.w).toLowerCase().indexOf(qq) >= 0 ||
                  String(v.gloss || '').toLowerCase().indexOf(qq) >= 0;
         });
-        // 按「哪一套卷」分组，免得几百个词一路往下划
-        var labels = (window.CET6_LABELS || {}).sets || {};
-        var groups = {}, order = [];
-        vs.forEach(function (v) {
-          var set = String(v.src || '').split('/')[0] || '_';
-          if (!groups[set]) { groups[set] = []; order.push(set); }
-          groups[set].push(v);
-        });
-        order.forEach(function (set) {
-          h.push('<div class="vgroup"><span>' +
-                 esc(set === '_' ? '重点词页收录' : (labels[set] || set)) +
-                 '</span><i class="vcount">' + groups[set].length + '</i></div>');
-          groups[set].forEach(function (v) { h.push(vocabRow(v)); });
-        });
+        // 分组由 groupHTML 负责（按套卷 / 按天），免得几百个词一路往下划
+        h = h.concat(groupHTML(vs));
       } else if (cur === 'wrong') {
         var ws = wrong.filter(function (v) {
           return !qq || (String(v.set || '') + '/' + String(v.mod || '') + '/' + String(v.no || ''))
@@ -811,7 +885,17 @@
       }
 
       list.innerHTML = h.length ? h.join('') : emptyHTML(cur);
-      if (searchEl) searchEl.placeholder = cur === 'vocab' ? '搜索生词或释义…'
+      if (groupBtn) {                                    // 分组只管生词本
+        groupBtn.hidden = cur !== 'vocab';
+        // 胶囊按钮组：当前分法高亮，这就是「现在按什么排」的显示
+        groupBtn.innerHTML =
+          '<button type="button" class="rv-grp' + (groupBy === 'set' ? ' on' : '') +
+          '" data-g="set">按套卷</button>' +
+          '<button type="button" class="rv-grp' + (groupBy === 'day' ? ' on' : '') +
+          '" data-g="day">按天</button>';
+      }
+      if (searchEl) searchEl.placeholder = cur === 'vocab'
+        ? (groupBy === 'day' ? '搜索生词或释义…（按天分组）' : '搜索生词或释义…')
         : (cur === 'wrong' ? '搜索考期或题型…' : '搜索句子…');
       updateCounts();
     }
@@ -842,6 +926,14 @@
       if (t.classList && t.classList.contains('vw') && t.dataset.w) {
         openWordPop(t, t.dataset.w);
       }
+    };
+
+    // 生词本换个分法：按套卷（默认，和以前一样）↔ 按天
+    if (groupBtn) groupBtn.onclick = function (e) {
+      var b = e.target.closest ? e.target.closest('.rv-grp') : null;
+      if (!b || b.dataset.g === groupBy) return;
+      groupBy = b.dataset.g;
+      render();
     };
 
     var exp = document.getElementById('meExport');
@@ -890,6 +982,9 @@
     // 重点词页：渲染全局词表
     if (document.getElementById('hfwPage')) { initHfwPage(); return; }
 
+    // 背单词页：界面全由 review.js 画（它要用下面的词库和发音），这里只提供这三样
+    if (document.getElementById('reviewRoot')) return;
+
     document.addEventListener('click', onClick);
     // 喇叭按钮：任何页面、任何位置都能用
     document.addEventListener('click', function (e) {
@@ -910,6 +1005,13 @@
   }
 
   window.CET6RefreshNotes = renderNotes;   // 判完分后由 quiz.js 叫一声，把生词批注显示出来
+
+  // 别的模块（review.js）复用的几样东西：查词、兜底查词、朗读、喇叭按钮
+  window.CET6Word = {
+    load: loadDict, loadAll: loadDictAll, lookup: lookup, lookupAll: lookupAll,
+    speak: speak, spkBtn: spkBtn,
+    all: function () { return dict ? dict.words : null; }
+  };
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
