@@ -103,8 +103,7 @@ def page(title, body, depth=0, subtitle="", extra_head="", body_class="",
 <header class="site">
   <div class="site-inner">
     <a class="brand" href="{r}index.html"><img class="logo" src="{r}assets/img/logo.png" alt=""><span class="b-long">六级真题精读</span><span class="b-short">六级</span></a>
-    <a class="tools" style="margin:0" href="{r}hfw.html">重点词</a>
-    <a class="tools rv-tools" style="margin:0" href="{r}review.html">背单词</a>
+    <a class="tools rv-tools" style="margin:0" href="{r}review.html">百词斩</a>
     <a class="tools" style="margin:0" href="{r}me.html">我的学习<span class="vcount" id="vocabCount">0</span></a>
     <button class="tools" style="margin:0" onclick="toggleTheme()" aria-label="切换主题" id="themeBtn">◐</button>
   </div>
@@ -941,7 +940,7 @@ def build_review(meta):
     body = f"""
 {crumb([("首页", "index.html"), ("背单词", None)], 0)}
 <div class="hero hero-art hero-splash">
-  <h1>背单词</h1>
+  <h1>百词斩</h1>
 </div>
 
 <div class="card rv-stat" id="rvHome">
@@ -977,7 +976,7 @@ def build_review(meta):
   </div>
 </div>
 """
-    return page("背单词 · 六级真题精读", body, 0,
+    return page("百词斩 · 六级真题精读", body, 0,
                 "从生词本里抽词，弹英文选中文，按 SM-2 间隔重复安排复习",
                 extra_js=extra_js)
 
@@ -1003,6 +1002,7 @@ def build_me(meta):
     <button class="tab on" data-tab="vocab">生词本 <span class="vcount" id="cntVocab">0</span></button>
     <button class="tab" data-tab="wrong">错题本 <span class="vcount" id="cntWrong">0</span></button>
     <button class="tab" data-tab="sents">句子 <span class="vcount" id="cntSents">0</span></button>
+    <a class="tab" href="hfw.html">重点词</a>
   </div>
   <div class="me-bar">
     <input id="meSearch" type="search" placeholder="搜索…" autocomplete="off">

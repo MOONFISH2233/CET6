@@ -376,10 +376,10 @@ function todayHTML(d, prog){
          (a.done ? ' · 本日进度已自动记上' : ' · 做完点提交，进度自动记') + '</div>';
   }
   h += stepsHTML(d, prog);
-  /* 背单词：生词本攒的词，这里一键过一遍（数量口径与精读站 review.js 一致） */
+  /* 百词斩：生词本攒的词，这里一键过一遍（数量口径与精读站 review.js 一致） */
   var dn = reviewDue();
   h += '<a class="rv-entry" href="../review.html" style="margin-top:10px">'+
-       '<span><b>背单词</b>'+
+       '<span><b>百词斩</b>'+
        '<span class="rv-entry-q">弹英文、选中文，答错的明天还会来</span></span>'+
        '<span class="rv-entry-n">'+(dn? '今天 '+dn+' 个 →' : '今天没有要背的 →')+'</span></a>';
   /* 今天的鼓励：按第几天取一句温柔台词（quotes.js 填内容） */
