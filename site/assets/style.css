@@ -1618,6 +1618,45 @@ html { scroll-behavior: smooth; }
   html { scroll-behavior: auto; }
 }
 
+/* ---------------------------------------------------------------- 百词斩页 · 细节打磨
+   （写在后面覆盖前面的同名规则：只动观感，不动 review.js 的逻辑） */
+
+/* ① 单词区：词再大一点、留白更稳；音标那行压低存在感 */
+.rv-card { padding: 26px 22px 20px; }
+.rv-word { font-size: 42px; letter-spacing: -.8px; line-height: 1.12; }
+.rv-sub { margin-top: 12px; min-height: 28px; }
+.rv-phon { font-size: 14px; color: var(--fg-faint); }
+.rv-choices { margin-top: 22px; gap: 8px; }
+
+/* ② 答题反馈：选对/选错那一下轻轻弹一下，比直接变色有回应感 */
+@keyframes rvPop {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.015); }
+  100% { transform: scale(1); }
+}
+.rv-opt.ok, .rv-opt.bad { animation: rvPop .26s ease-out; }
+@media (prefers-reduced-motion: reduce) {
+  .rv-opt.ok, .rv-opt.bad { animation: none; }
+}
+
+/* ⑤ 首屏：把「开始背」做成明确的主按钮，设置项退到次要位置 */
+.rv-go {
+  width: 100%;
+  font-size: 16px;
+  padding: 13px 20px;
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-sm);
+  transition: transform .12s, box-shadow .15s, background .15s;
+}
+.rv-go:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+.rv-go:active { transform: translateY(0) scale(.99); }
+.rv-settings { margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--line); }
+.rv-lab { font-size: 12.5px; color: var(--fg-faint); }
+
+/* ④ 收尾小结：当成一张成绩单 */
+.rv-sum { text-align: center; padding: 26px 20px 22px; }
+.rv-sum h2 { justify-content: center; margin-bottom: 14px; }
+
 /* ---------------------------------------------------------------- 彩蛋弹层
    做完一篇阅读（或完成一天）时弹出来：对错统计 + 一句台词。由 quotes.js 按需创建。 */
 
@@ -2078,3 +2117,19 @@ body.has-quiz-bar{padding-bottom:70px}
 .rv-entry b { font-size:14.5px; letter-spacing:-.1px; }
 .rv-entry .rv-entry-n { font-size:12.5px; color:var(--accent-text); font-variant-numeric:tabular-nums; }
 .rv-entry .rv-entry-q { font-size:11.5px; color:var(--fg-faint); display:block; margin-top:2px; }
+/* ================= 百词斩页 · 覆盖（必须放最后才能盖过上面的 .rv-* 定义） ================= */
+.rv-card { padding: 26px 22px 20px; }
+.rv-word { font-size: 42px; letter-spacing: -.8px; line-height: 1.12; }
+.rv-sub { margin-top: 12px; min-height: 28px; }
+.rv-phon { font-size: 14px; }
+.rv-choices { margin-top: 22px; gap: 8px; }
+.rv-opt { border-radius: var(--radius-sm); }
+.rv-go { width: 100%; font-size: 16px; padding: 13px 20px; border-radius: 999px; box-shadow: var(--shadow-sm);
+  transition: transform .12s, box-shadow .15s; }
+.rv-go:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+.rv-go:active { transform: translateY(0) scale(.99); }
+.rv-settings { margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--line); }
+.rv-sum { text-align: center; padding: 26px 20px 22px; }
+@keyframes rvPop { 0% { transform: scale(1); } 45% { transform: scale(1.015); } 100% { transform: scale(1); } }
+.rv-opt.ok, .rv-opt.bad { animation: rvPop .26s ease-out; }
+@media (prefers-reduced-motion: reduce) { .rv-opt.ok, .rv-opt.bad { animation: none; } }
