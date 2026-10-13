@@ -404,16 +404,19 @@ def build_module(p, m):
                    f'<span class="n">{MODULE_PARTS[mm]}</span></a>')
     nav.append("</div>")
 
-    # 听力页（有音频时）：播放器放最前，接着就是题目 ——
-    # 「题型导航」和「工具条」往后挪，别把第一道题顶到一屏之外
+    # 听力页（有音频时）：标题 → 两个开关 → 播放器 + 题目 → 其它题型 → 重点词。
+    # 开关放最上面（用户要求：做题时一进来就要能点到「显示答案 / 中文对照」），
+    # 播放器和题目紧随其后（用户要求：点听力进去就显示题目）。
     if player_first:
         body = f"""
 {crumb([("首页", "index.html"), (p["label"], f"p/{s}.html"), (name, None)], 2)}
 <h1 class="page">{esc(part)} · {esc(name)}</h1>
-{inner}
-{"".join(nav)}
 {tools_bar(with_ans)}
 {ANSHINT if with_ans else ""}
+{inner}
+<h2 style="font-size:15px;margin:24px 0 8px">其它题型</h2>
+{"".join(nav)}
+<h2 style="font-size:15px;margin:24px 0 8px">本篇重点词</h2>
 {hfw_card(m, s)}
 {float_nav([mm for mm in MODULE_ORDER if mm in mods], m)}
 """
@@ -429,8 +432,11 @@ def build_module(p, m):
 {hfw_card(m, s)}
 {float_nav([mm for mm in MODULE_ORDER if mm in mods], m)}
 """
-    return page(f'{p["label"]} {name} · 六级真题解析', body, 2,
-                body_class="hide-ans" if with_ans else "")
+    # 听力页默认连中文一起藏起来：题目自带中译，亮着等于先看答案
+    # （用户 2026-10-14：「听力题目还自带中文，我要怎么做题」）——
+    # 想看对照点上面「中文对照」就行，选择记在 localStorage，之后所有页面跟着走
+    cls = ("hide-ans" if with_ans else "") + (" no-zh" if player_first else "")
+    return page(f'{p["label"]} {name} · 六级真题解析', body, 2, body_class=cls.strip())
 
 
 # ---------------------------------------------------------------- 听力

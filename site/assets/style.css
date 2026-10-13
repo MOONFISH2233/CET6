@@ -460,6 +460,14 @@ h1.page {
 
 /* 中英对照开关控制 */
 body.no-zh .zh { display: none; }
+
+/* 「中文对照」关掉时，听力题的中译（题干 + 选项）**全部**藏起来 —— 不然等于先看答案
+   （用户 2026-10-14 的要求）。段落/原文那些不需要额外规则：上面的 body.no-zh .zh 已经盖住，
+   而且听力原文块 .aud-text 是默认收起的折叠块，本来就看不见。
+   ⚠️ 选项里的 .zh 自带内联 `style="display:block"`（gen_site 生成的），
+      内联优先级比任何选择器都高，所以这里必须 !important，否则压不住。 */
+body.no-zh .q-stem .zh,
+body.no-zh .opts .zh { display: none !important; }
 body.no-en .en { display: none; }
 
 /* ---------------------------------------------------------------- 题目 */

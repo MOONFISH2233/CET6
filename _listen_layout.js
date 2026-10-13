@@ -65,6 +65,87 @@ const ck = (n, c, e) => { console.log((c ? '  OK   ' : '  FAIL ') + n + (c ? '' 
   ck('原文含逐句内容', after.lines > 30, String(after.lines));
   await p.screenshot({ path: 'D:/学习/六级/build/_shots/layout-02-text.png' });
 
+  console.log('== 两个开关（显示答案 / 中文对照）在不在最上面 ==');
+  await p.evaluate(() => window.scrollTo(0, 0));   // ⚠️ 上一段点过「看原文」，页面已经滚到底了
+  await p.waitForTimeout(400);
+  const tools = await p.evaluate(() => {
+    // ⚠️ 页头也用 .tools 类（4 处），工具栏要限定在 .wrap 里才拿得准
+    const t = document.querySelector('.wrap .tools');
+    const firstQ = document.querySelector('.q');
+    const mk = document.getElementById('meRoot');
+    return {
+      hasTools: !!t,
+      top: t ? Math.round(t.getBoundingClientRect().top) : -1,
+      qTop: Math.round(firstQ.getBoundingClientRect().top),
+      ansBtn: (document.getElementById('ansBtn') || {}).textContent || '',
+      zhBtn: (document.getElementById('zhBtn') || {}).textContent || '',
+      btnCount: (document.querySelector('.wrap .tools') || { querySelectorAll: () => [] })
+        .querySelectorAll('button').length,
+      bodyCls: document.body.className,
+      // 题目里的中文
+      qZhHidden: (() => {
+        const zh = firstQ.querySelector('.zh');
+        return zh ? getComputedStyle(zh).display === 'none' : null;
+      })(),
+      qEnVisible: (() => {
+        const en = firstQ.querySelector('.en');
+        return en ? getComputedStyle(en).display !== 'none' : null;
+      })(),
+    };
+  });
+  console.log('  ' + JSON.stringify(tools));
+  ck('工具栏在（且在视口内）', tools.hasTools && tools.top > 0 && tools.top < 780, JSON.stringify(tools));
+  ck('工具栏在题目之上', tools.top < tools.qTop, tools.top + ' vs ' + tools.qTop);
+  // 工具栏一共三个：显示答案 / 中文对照 / 深色
+  ck('工具栏三个按钮都在', tools.btnCount === 3, String(tools.btnCount));
+  ck('「显示答案」按钮在', /答案/.test(tools.ansBtn), tools.ansBtn);
+  ck('「中文对照」按钮在', /中文/.test(tools.zhBtn), tools.zhBtn);
+  ck('听力页默认隐藏中文', tools.qZhHidden === true, String(tools.qZhHidden));
+  ck('题干英文仍在', tools.qEnVisible === true, String(tools.qEnVisible));
+
+  console.log('== 点「中文对照」能看回中文 ==');
+  await p.locator('#zhBtn').click();
+  await p.waitForTimeout(500);
+  const shown = await p.evaluate(() => {
+    const zh = document.querySelector('.q .zh');
+    return { disp: zh ? getComputedStyle(zh).display : null,
+             cls: document.body.className,
+             label: (document.getElementById('zhBtn') || {}).textContent };
+  });
+  console.log('  ' + JSON.stringify(shown));
+  ck('点后题干中文显示出来', shown.disp !== 'none', JSON.stringify(shown));
+  // 点完中文亮起来 → 按钮文字变成「中文对照」（它的语义是「点我就切中文对照」）
+  ck('按钮文字已切换', /中文对照/.test(shown.label), shown.label);
+
+  console.log('== 关键：中文开关只该管题干，选项的中文要一直在 ==');
+  const scope = await p.evaluate(async () => {
+    const q = document.querySelector('.q');
+    const stemZh = q.querySelector('.q-stem .zh');
+    const optZh = q.querySelector('.opts .zh');
+    const read = () => ({
+      stemZh: stemZh ? getComputedStyle(stemZh).display : null,
+      optZh: optZh ? getComputedStyle(optZh).display : null,
+    });
+    const on = read();                       // 此刻中文是开着的
+    document.getElementById('zhBtn').click();   // 关掉
+    await new Promise(r => setTimeout(r, 250));
+    const off = read();
+    document.getElementById('zhBtn').click();   // 再打开
+    await new Promise(r => setTimeout(r, 250));
+    const back = read();
+    return { on, off, back };
+  });
+  console.log('  中文开着: ' + JSON.stringify(scope.on));
+  console.log('  中文关掉: ' + JSON.stringify(scope.off));
+  console.log('  再打开: ' + JSON.stringify(scope.back));
+  ck('开着时题干与选项的中文都在', scope.on.stemZh !== 'none' && scope.on.optZh !== 'none',
+     JSON.stringify(scope.on));
+  ck('关掉时题干中文藏起来', scope.off.stemZh === 'none', JSON.stringify(scope.off));
+  ck('关掉时选项中文也藏起来', scope.off.optZh === 'none', JSON.stringify(scope.off));
+  ck('再打开中文回来', scope.back.stemZh !== 'none' && scope.back.optZh !== 'none',
+     JSON.stringify(scope.back));
+  await p.waitForTimeout(200);
+
   console.log('== 题目行的「听这题」还在不在 ==');
   await p.evaluate(() => window.scrollTo(0, 0));
   await p.waitForTimeout(300);
