@@ -782,9 +782,15 @@
           title = key === '_' ? '重点词页收录' : (labels[key] || key);
         }
         var open = isOpen(key) ? ' open' : '';
+        // 「背这组」：拿这一组当范围去背单词页（按天=那天的词，按套卷=那套的词）
+        var canScope = !(groupBy === 'day' && key === '0');   // 没日期的老记录没法按天筛
+        var scope = groupBy === 'day'
+          ? 'review.html?day=' + encodeURIComponent(key)
+          : 'review.html?set=' + encodeURIComponent(key);
         h.push('<details class="vgrp" data-k="' + esc(key) + '"' + open + '>' +
                '<summary class="vgroup"><span class="vgl">' + esc(title) + '</span>' +
                '<i class="vcount">' + groups[key].length + '</i>' +
+               (canScope ? '<a class="vgo" href="' + esc(scope) + '">背这组</a>' : '') +
                '<span class="vcaret" aria-hidden="true">▾</span></summary>');
         groups[key].forEach(function (v) { h.push(vocabRow(v)); });
         h.push('</details>');

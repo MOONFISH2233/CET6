@@ -34,6 +34,79 @@
   var opt = load(OPT_KEY, null) || { newPerDay: 20 };
   if ([20, 30, 40].indexOf(+opt.newPerDay) < 0) opt.newPerDay = 20;
 
+  // ------------------------------------------------------------ 只背一部分
+  // 「这一天的词」「这一套的词」「重点标记的词」—— 生词本的分组按钮和标记入口都用它。
+  // 地址带参数（?day= / ?set= / ?star=1）就是为了能从别的页面点进来。
+  var FILTER_MODE = 0;      // 0 = 今天该背的（默认）
+  var FILTER_KEY = '';      // 拿来匹配的原始值（日期 '2026-10-13' 或套次 '2023-06-1'）
+  var FILTER_LABEL = '';    // 显示用的名字（套次会翻成「2023年6月 · 第1套」）
+  var FILTER_IDS = null;    // 按套次筛时的词集合（键 = 小写单词）
+
+  function readFilter() {
+    var q = {};
+    (location.search || '').replace(/^\?/, '').split('&').forEach(function (kv) {
+      if (!kv) return;
+      var i = kv.indexOf('=');
+      var k = decodeURIComponent(i < 0 ? kv : kv.slice(0, i));
+      var v = i < 0 ? '' : decodeURIComponent(kv.slice(i + 1));
+      q[k] = v;
+    });
+    FILTER_IDS = null;
+    FILTER_KEY = FILTER_LABEL = '';
+    if (q.day) { FILTER_MODE = 1; FILTER_KEY = FILTER_LABEL = q.day; return; }
+    if (q.set) {
+      FILTER_MODE = 2;
+      FILTER_KEY = q.set;                                  // ⚠️ 匹配要用原始 key
+      FILTER_LABEL = (((window.CET6_LABELS || {}).sets || {})[q.set]) || q.set;
+      return;
+    }
+    if (q.star) { FILTER_MODE = 3; FILTER_LABEL = '重点标记的词'; return; }
+    FILTER_MODE = 0;
+  }
+
+  // 按套次筛：先把这套的词集合建出来（用 src 前缀直接判，别经 passFilter ——
+  // 建集合的过程中集合本身还是空的，绕回去会自己把自己判成「不在范围内」）
+  function buildSetIds(vocab) {
+    if (FILTER_MODE !== 2 || FILTER_IDS) return;
+    var ids = {};
+    vocab.forEach(function (v) {
+      if (String(v.src || '').split('/')[0] === FILTER_KEY) ids[String(v.w || '').toLowerCase()] = 1;
+    });
+    FILTER_IDS = ids;
+  }
+
+  function passFilter(v, S) {
+    var w = String(v.w || '').toLowerCase();
+    if (FILTER_MODE === 0) return true;
+    if (FILTER_MODE === 1) {                    // 某一天收的词
+      var t = v.t || 0;
+      if (!t) return false;
+      var d = new Date(t);
+      var key = d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) +
+                '-' + ('0' + d.getDate()).slice(-2);
+      return key === FILTER_KEY;
+    }
+    if (FILTER_MODE === 2) {                    // 某一套卷收的词
+      // ⚠️ 判空要用「有没有键」：空对象是 truthy，写 if (FILTER_IDS) 会永远走进去、
+      //    结果全是 false（踩过：?set= 筛不出任何词）
+      if (FILTER_IDS && Object.keys(FILTER_IDS).length) return !!FILTER_IDS[w];
+      return String(v.src || '').split('/')[0] === FILTER_KEY;
+    }
+    if (FILTER_MODE === 3) return !!(S[w] && S[w].star);
+    return true;
+  }
+
+  function starCount() {
+    var S = srs(), n = 0;
+    for (var k in S) if (S.hasOwnProperty(k) && S[k] && S[k].star) n++;
+    return n;
+  }
+
+  // 「背这组」的地址（me.html 的分组按钮用它）—— 换个范围就重载页面，逻辑最省事
+  function scopeHref(param, value) {
+    return 'review.html?' + param + '=' + encodeURIComponent(value);
+  }
+
   // ------------------------------------------------------------ 存取
 
   function load(key, def) {
@@ -107,23 +180,26 @@
   // 今天该背哪些：到期复习 + 新词（新词 = 生词本里还没进过轮转的）
   function buildQueue(S, vocab) {
     var now = Date.now(), due = [], fresh = [];
-    var known = {};
-    for (var k in S) if (S.hasOwnProperty(k)) known[k] = 1;
-
     vocab.forEach(function (v) {
+      if (!passFilter(v, S)) return;
       var w = String(v.w || '').toLowerCase();
       if (!w) return;
       var rec = S[w];
       if (!rec) { fresh.push(v); return; }
       if (rec.learned) return;
+      // 指定范围（某天/某套/标记）时，「今天到没到期」不作数 —— 用户就是想现在过一遍
+      if (FILTER_MODE) { due.push(v); return; }
       if (!rec.due || rec.due <= now || !rec.n) due.push(v);   // n=0：上回答错，明天必来
     });
     due.sort(function (a, b) {
-      return (S[String(a.w).toLowerCase()].due || 0) - (S[String(b.w).toLowerCase()].due || 0);
+      var da = (S[String(a.w).toLowerCase()] || {}).due || 0;
+      var db = (S[String(b.w).toLowerCase()] || {}).due || 0;
+      return da - db;
     });
     fresh.sort(function (a, b) { return (b.t || 0) - (a.t || 0); });   // 新收录的优先
 
-    var picks = due.concat(fresh.slice(0, opt.newPerDay));
+    // 指定范围时不设每天新词上限（那是「今天背多少」的额度，按组背就该整组过一遍）
+    var picks = FILTER_MODE ? due.concat(fresh) : due.concat(fresh.slice(0, opt.newPerDay));
     var out = [], seen = {};
     picks.forEach(function (v) {
       var w = String(v.w || '').toLowerCase();
@@ -131,7 +207,7 @@
       seen[w] = 1;
       out.push(v);
     });
-    return out.slice(0, 48);   // 单次上限，别一口气背到吐
+    return out.slice(0, FILTER_MODE ? 200 : 48);   // 单次上限，别一口气背到吐
   }
 
   // 还没进轮转的下标（今天新学的那几张，本次会话内不再当新词重复收进来）
@@ -150,21 +226,30 @@
   function dueCount() {
     var S = prune(srs()), now = Date.now(), vocab = load(VOCAB_KEY, []);
     if (!Array.isArray(vocab)) vocab = [];
+    buildSetIds(vocab);                         // 按套次筛的话，先把这套的词集合建出来
     var due = 0, fresh = 0, learned = 0;
     vocab.forEach(function (v) {
       var w = String(v.w || '').toLowerCase();
       if (!w) return;
       var rec = S[w];
+      if (FILTER_MODE) {
+        // 指定范围：只要在范围里、没标「已学会」，就该过一遍（不看今天到没到期）
+        if (!passFilter(v, S)) return;
+        if (rec && rec.learned) { learned++; return; }
+        if (rec) due++; else fresh++;
+        return;
+      }
       if (!rec) { fresh++; return; }
       if (rec.learned) { learned++; return; }
       if (!rec.due || rec.due <= now || !rec.n) due++;
     });
+    var freshCap = FILTER_MODE ? fresh : Math.min(fresh, opt.newPerDay);
     return {
       due: due,
-      fresh: Math.min(fresh, opt.newPerDay),
-      rest: Math.max(0, fresh - opt.newPerDay),
+      fresh: freshCap,
+      rest: FILTER_MODE ? 0 : Math.max(0, fresh - opt.newPerDay),
       learned: learned,
-      total: due + Math.min(fresh, opt.newPerDay)
+      total: due + freshCap
     };
   }
 
@@ -172,6 +257,7 @@
     var vocab = load(VOCAB_KEY, []);
     if (!Array.isArray(vocab)) vocab = [];
     var S = srs();
+    buildSetIds(vocab);
     var picks = buildQueue(prune(S), vocab);
     var cards = [], skipped = 0, missing = 0;
     picks.forEach(function (v) {
@@ -398,17 +484,35 @@
   // ------------------------------------------------------------ 首页 / 收尾
 
   function renderHome() {
+    // 按范围背的时候，把范围写回地址栏（刷新/分享都还在这个范围里）
+    if (mode !== 'home' || FILTER_MODE) {
+      try {
+        var qs = FILTER_MODE === 1 ? '?day=' + encodeURIComponent(FILTER_KEY)
+               : FILTER_MODE === 2 ? '?set=' + encodeURIComponent(FILTER_KEY)
+               : FILTER_MODE === 3 ? '?star=1' : '';
+        history.replaceState(null, '', location.pathname + qs);
+      } catch (e) {}
+    }
+
     var c = dueCount();
     mode = 'home';
     el.rvSession.hidden = true;
     el.rvHome.hidden = false;
     el.rvStartBtn.disabled = !c.total;
-    el.rvStartBtn.textContent = c.total ? '开始背' : '今天背完了';
+    el.rvStartBtn.textContent = c.total ? '开始背' : '这一组背完了';
 
     var h = '';
     if (!c.total) {
-      h = '<b>今天没有要背的词</b>' +
+      h = FILTER_MODE
+        ? '<b>这一组没有要背的词</b>' +
+          '<span>里面的词都标过「已学会」了，或者本来就没词。</span>'
+        : '<b>今天没有要背的词</b>' +
           '<span>到期复习和今天的新词都清完了。去读一篇真题，把生词收进生词本，明天就有了。</span>';
+    } else if (FILTER_MODE) {
+      h = '<b>「' + esc(FILTER_LABEL) + '」' + c.total + ' 个词</b>' +
+          '<span>对过 / 标记过的 ' + c.due + ' 个 · 没动过的 ' + c.fresh + ' 个' +
+          (c.learned ? ' · 里面的已学会 ' + c.learned + ' 个' : '') +
+          ' · <a href="review.html" id="rvClearFilter">回到今天该背的</a></span>';
     } else {
       h = '<b>今天 ' + c.total + ' 个词</b>' +
           '<span>到期复习 ' + c.due + ' 个 · 新词 ' + c.fresh + ' 个' +
@@ -416,6 +520,18 @@
           (c.learned ? ' · 已学会 ' + c.learned + ' 个' : '') + '</span>';
     }
     el.rvStat.innerHTML = h;
+
+    // 重点标记：标过的词给个入口（原来标完就沉在 cet6:srs 里，没地方看 —— 用户问过）
+    var sn = starCount();
+    if (FILTER_MODE !== 3) {
+      el.rvStat.innerHTML += '<div class="rv-starline"><a class="rv-starlink" href="review.html?star=1">★ 重点标记' +
+        (sn ? ' ' + sn + ' 个' : '（还没有）') + '</a>' +
+        (sn ? '<span class="rv-starhint">标过的词会提前到今天再来</span>' : '') + '</div>';
+    } else if (sn) {
+      el.rvStat.innerHTML += '<div class="rv-starline"><span class="rv-starhint">' +
+        '点下面的「已学会」可以把它从这个列表里拿掉</span></div>';
+    }
+
     var v = load(VOCAB_KEY, []);
     el.rvHomeNote.textContent = '生词本共 ' + (Array.isArray(v) ? v.length : 0) +
       ' 个词 · 答对的词按 1 → 6 → 更久的间隔再来，答错的明天必来。';
@@ -526,6 +642,8 @@
     if (!W) return Promise.resolve();
     return Promise.all([W.load(), W.loadAll()]);
   }
+
+  readFilter();     // ?day= / ?set= / ?star=1 —— 从生词本的分组按钮或标记入口点进来
 
   function boot() {
     var t0 = Date.now();

@@ -40,7 +40,9 @@ const vocab = WORDS.map((w, i) => ({
 
   console.log('== 点标题展开这一组 ==');
   const head = await p.locator('#meList .vgroup span').first().innerText();
-  await p.locator('#meList details.vgrp > summary').first().click();
+  // ⚠️ 点标题**文字**，别点整条 summary：右半边有「背这组」按钮，
+  //    点中心会点到它，那就变成跳转了（不是折叠）
+  await p.locator('#meList details.vgrp > summary .vgl').first().click();
   await p.waitForTimeout(300);
   console.log('  展开了: ' + head);
   ck('该组展开', await p.locator('#meList details.vgrp').first().evaluate(d => d.open));
@@ -49,7 +51,9 @@ const vocab = WORDS.map((w, i) => ({
   await p.screenshot({ path: 'D:/学习/六级/build/_shots/fold-02-one-open.png' });
 
   console.log('== 再点一次收起 ==');
-  await p.locator('#meList details.vgrp > summary').first().click();
+  // ⚠️ 点标题**文字**，别点整条 summary：右半边有「背这组」按钮，
+  //    点中心会点到它，那就变成跳转了（不是折叠）
+  await p.locator('#meList details.vgrp > summary .vgl').first().click();
   await p.waitForTimeout(300);
   ck('收起成功', await p.locator('#meList details.vgrp[open]').count() === 0);
 
@@ -67,7 +71,7 @@ const vocab = WORDS.map((w, i) => ({
   ck('按钮文案变回「全部展开」', /展开/.test(await p.locator('#meGroupsBtn').innerText()));
 
   console.log('== 展开状态要记住（刷新后） ==');
-  await p.locator('#meList details.vgrp > summary').nth(1).click();
+  await p.locator('#meList details.vgrp > summary .vgl').nth(1).click();
   await p.waitForTimeout(250);
   const kept = await p.locator('#meList details.vgrp').nth(1).getAttribute('data-k');
   await p.reload();
